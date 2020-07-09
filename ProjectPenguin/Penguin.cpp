@@ -7,7 +7,7 @@
 Penguin::Penguin(glm::vec3 pos)
 	:
 	pos(pos),
-	model("Penguin.gltf", transform),
+	model("goop_waddle_slow.gltf", transform),
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
@@ -42,6 +42,9 @@ void Penguin::Update(float dt)
 	}
 
 	transform = glm::translate(glm::mat4(1.0f), pos) * glm::orientation(direction, glm::vec3(0.0f, 0.0f, -1.0f));
+
+	//Update animation
+	model.Update(0.01f);
 }
 
 void Penguin::Draw(Camera& camera)

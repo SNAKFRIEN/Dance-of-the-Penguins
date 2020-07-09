@@ -1,7 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "Model.h"
+#include "AnimatedModel.h"
 #include <random>
 
 class Camera;
@@ -27,7 +27,7 @@ private:
 
 	glm::mat4 transform;
 
-	Model model;
+	AnimatedModel model;
 
 	//Gameplay
 	glm::vec3 direction;	//Must be normalized at all times

@@ -47,18 +47,18 @@ void IceSkater::Update(float dt, const Input& input)
 	{
 		direction = glm::normalize(direction);
 		float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, 1.0f, 0.0f));
-		if (angle > glm::radians(1.0f))
+		if (angle > glm::radians(1.5f))
 		{
-			deltaRotation = glm::radians(1.0f);
+			deltaRotation = glm::radians(1.5f);
 		}
-		else if (angle < glm::radians(-1.0f))
+		else if (angle < glm::radians(-1.5f))
 		{
-			deltaRotation = glm::radians(-1.0f);
+			deltaRotation = glm::radians(-1.5f);
 		}
 		rotation = glm::rotate(rotation, deltaRotation, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	if (!input.IsPressed(GLFW_KEY_LEFT_CONTROL))
+	if (input.IsPressed(GLFW_KEY_SPACE))
 	{
 		pos -= GetForward() * speed;
 	}

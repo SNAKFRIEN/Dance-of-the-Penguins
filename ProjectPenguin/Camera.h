@@ -17,7 +17,7 @@ private:
 	glm::mat4 view;
 	glm::mat4 projection;
 
-	static constexpr float fov = glm::radians(45.0f);
+	static constexpr float fov = glm::radians(20.0f);
 	static constexpr float nearPlane = 0.1f;
 	static constexpr float farPlane = 200.0f;
 

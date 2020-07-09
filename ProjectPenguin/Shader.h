@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <vector>
 
 class Shader
 {
@@ -28,6 +29,7 @@ public:
 	void SetUniformMat2(const std::string& name, const glm::mat2& mat) const;
 	void SetUniformMat3(const std::string& name, const glm::mat3& mat) const;
 	void SetUniformMat4(const std::string& name, const glm::mat4& mat) const;
+	void SetUniformMat4Array(const std::string& name, const std::vector<glm::mat4>& values) const;
 private:
 	std::string FromFile(std::string path);
 	unsigned int CreateShader(const char* source, unsigned int type);

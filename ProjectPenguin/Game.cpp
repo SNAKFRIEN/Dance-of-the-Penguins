@@ -22,8 +22,8 @@ Game::Game(Window& window)
 	srand(std::random_device()());
 
 
-	penguins.reserve(10);
-	for (int i = 0; i < 10; i++)
+	penguins.reserve(1);
+	for (int i = 0; i < 1; i++)
 	{
 		penguins.emplace_back(glm::vec3(2.0f, 0.0f, 0.0f));
 	}

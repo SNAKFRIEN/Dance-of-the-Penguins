@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{dc7e92b3-c12e-4fd1-83a0-9425410443df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Animation">
+      <UniqueIdentifier>{80a8e286-581e-4491-aa79-97151b1c1687}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -66,6 +69,12 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnimatedModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLTFData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -113,6 +122,21 @@
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AnimatedModel.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Joint.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyFrame.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="JointTransform.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="GLTFData.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\NoShader.frag">
@@ -131,6 +155,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\CelShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\AnimationCelShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\AnimationCelShader.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
