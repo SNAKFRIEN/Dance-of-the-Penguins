@@ -7,7 +7,7 @@
 Penguin::Penguin(glm::vec3 pos)
 	:
 	pos(pos),
-	model("goop_waddle_slow.gltf", transform),
+	model("Goppie.gltf", transform),
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
@@ -17,20 +17,53 @@ Penguin::Penguin(glm::vec3 pos)
 	direction = glm::vec3(newDir.x, 0.0, newDir.y);
 }
 
+Penguin::Penguin(const Penguin& rhs)
+	:
+	model("Goppie.gltf", transform),
+	rng(std::random_device()()),
+	minMaxWalkTime(1.0f, 5.0f),
+	minMaxThinktime(1.0f, 3.0f)
+{
+	pos = rhs.pos;
+	transform = rhs.transform;
+	direction = rhs.direction;
+	speed = rhs.speed;
+	state = rhs.state;
+	stateCountDown = rhs.stateCountDown;
+}
+
+Penguin::Penguin(Penguin&& rhs)
+	:
+	model("Goppie.gltf", transform),
+	rng(std::random_device()()),
+	minMaxWalkTime(1.0f, 5.0f),
+	minMaxThinktime(1.0f, 3.0f)
+{
+	pos = rhs.pos;
+	transform = rhs.transform;
+	direction = rhs.direction;
+	speed = rhs.speed;
+	state = rhs.state;
+	stateCountDown = rhs.stateCountDown;
+}
+
 void Penguin::Update(float dt)
 {
 	stateCountDown -= dt;
 	switch (state)
 	{
 	case State::Walking:
+		model.SetAnimation("waddle_neutral_fast");
 		pos += direction * speed;
 		if (stateCountDown < 0.0f)
 		{
 			state = State::Thinking;
+			
 			stateCountDown = minMaxThinktime(rng);
 		}
 		break;
 	case State::Thinking:
+		model.SetAnimation("Thunking");
 		if (stateCountDown < 0.0f)
 		{
 			state = State::Walking;
@@ -49,7 +82,7 @@ void Penguin::Update(float dt)
 
 void Penguin::Draw(Camera& camera)
 {
-	model.Draw(camera);
+	model.AddToRenderQueue(camera);
 }
 
 void Penguin::ChangeDirection()

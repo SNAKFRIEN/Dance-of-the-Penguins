@@ -16,12 +16,15 @@ class Penguin
 {
 public:
 	Penguin(glm::vec3 pos);
+	Penguin(const Penguin& rhs);
+	Penguin operator=(const Penguin& rhs) = delete;
+	Penguin(Penguin&& rhs);
+	Penguin operator=(Penguin&& rhs) = delete;
 	
 	void Update(float dt);
 	void Draw(Camera& camera);
 private:
 	void ChangeDirection();
-
 private:
 	glm::vec3 pos;
 

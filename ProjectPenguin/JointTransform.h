@@ -19,7 +19,7 @@ struct JointTransform
 	{
 		JointTransform result;
 		result.position = glm::mix(transA.position, transB.position, alpha);
-		result.rotation = glm::mix(transA.rotation, transB.rotation, alpha);
+		result.rotation = glm::slerp(transA.rotation, transB.rotation, alpha);
 		return result;
 	}
 };

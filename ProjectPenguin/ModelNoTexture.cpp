@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "ModelNoTexture.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -15,9 +15,9 @@
 	}\
 }
 
-Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vertexShader, std::string fragShader)
+ModelNoTexture::ModelNoTexture(std::string name, const glm::mat4& ownerTransform)
 	:
-	shader(vertexShader, fragShader),
+	shader("NoTextureShader.vert", "NoTextureShader.frag"),
 	ownerTransform(ownerTransform)
 {
 	//-------------------------Step 1: Load the model using tinyGLTF-------------------------------------------------
@@ -97,7 +97,7 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 		glBufferData(bufferView.target, bufferView.byteLength,
 			&buffer.data.at(0) + bufferView.byteOffset, GL_STATIC_DRAW);
 	}
-	
+
 	//std::vector<unsigned int> vbos;
 
 	/*
@@ -162,103 +162,21 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 		}
 	}
 	GL_ERROR_CHECK();
-
-
-	//-------------------------Step 4: Set up the texture-------------------------------------------------
-	//Gain access to the gltf data
-	if (data.materials.empty())
-	{
-		std::string errorMessage;
-		errorMessage.append("The model \"");
-		errorMessage.append(name);
-		errorMessage.append("\" could not be loaded, because it doesn't have any materials");
-		throw std::exception(errorMessage.c_str());
-	}
-	const tinygltf::Material& material = data.materials[primitiveData.material];
-	if (data.textures.empty())
-	{
-		std::string errorMessage;
-		errorMessage.append("The model \"");
-		errorMessage.append(name);
-		errorMessage.append("\" could not be loaded, because it doesn't have any textures");
-		throw std::exception(errorMessage.c_str());
-	}
-	tinygltf::Texture& textureData = data.textures[material.pbrMetallicRoughness.baseColorTexture.index];
-	tinygltf::Image& image = data.images[textureData.source];
-
-	//Figure out format
-	GLenum format;
-	switch (image.component)
-	{
-	case 1:
-		format = GL_RED;
-		break;
-	case 2:
-		format = GL_RG;
-		break;
-	case 3:
-		format = GL_RGB;
-		break;
-	case 4:
-		format = GL_RGBA;
-		break;
-	default:
-		std::string errorMessage;
-		errorMessage.append("The texture for ");
-		errorMessage.append(name);
-		errorMessage.append(" could not be loaded, because it had an unsupported format: ");
-		errorMessage.append(std::to_string(image.component));
-		errorMessage.append(" components");
-		throw std::exception(errorMessage.c_str());
-	}
-
-	//Figure out the type
-	GLenum type;
-	switch (image.bits)
-	{
-	case 8:
-		type = GL_UNSIGNED_BYTE;
-		break;
-	case 16:
-		type = GL_UNSIGNED_SHORT;
-		break;
-	}
-
-	//Generate texture
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	//Set texture settings
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//Load data into texture (REPLACE: might want to use GL_RGBA instead of GL_RGB to support transparent textures, or vice versa to save space)
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, format, type, &image.image.at(0));
-
-	GL_ERROR_CHECK()
 }
 
-void Model::Draw(Camera& camera)
+void ModelNoTexture::Draw(Camera& camera)
 {
-	//Rotate the model (due to axes in OpenGL)
-	const auto modelTransform = glm::rotate(ownerTransform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	
+	//Correct model matrix
+	glm::mat4 model = glm::scale(ownerTransform, glm::vec3(-1.0f, 1.0f, -1.0f));
+
 	//Calculate MVP
-	const auto transform = camera.GetVPMatrix() * modelTransform;
+	const auto transform = camera.GetVPMatrix() * glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	GL_ERROR_CHECK()
-
-	//Bind texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	
 	GL_ERROR_CHECK()
 
 	//Bind shader and uniforms
 	shader.Use();
-	shader.SetUniformMat4("model", modelTransform);
+	shader.SetUniformMat4("model", model);
 	shader.SetUniformMat4("mvp", transform);
 
 	GL_ERROR_CHECK()

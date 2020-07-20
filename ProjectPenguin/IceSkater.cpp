@@ -46,21 +46,21 @@ void IceSkater::Update(float dt, const Input& input)
 	if (pressed)
 	{
 		direction = glm::normalize(direction);
-		float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, 1.0f, 0.0f));
-		if (angle > glm::radians(1.5f))
+		float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, -1.0f, 0.0f));
+		if (angle > 0.0f)
 		{
-			deltaRotation = glm::radians(1.5f);
+			deltaRotation = std::min(angle, glm::radians(1.5f));
 		}
-		else if (angle < glm::radians(-1.5f))
+		else if (angle < 0.0f)
 		{
-			deltaRotation = glm::radians(-1.5f);
+			deltaRotation = std::max(angle, glm::radians(-1.5f));
 		}
 		rotation = glm::rotate(rotation, deltaRotation, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	if (input.IsPressed(GLFW_KEY_SPACE))
 	{
-		pos -= GetForward() * speed;
+		pos += GetForward() * speed;
 	}
 
 	transform = glm::translate(glm::mat4(1.0f), pos) * rotation;

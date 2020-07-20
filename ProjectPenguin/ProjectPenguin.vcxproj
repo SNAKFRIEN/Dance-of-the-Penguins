@@ -147,17 +147,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedModel.cpp" />
-    <ClCompile Include="BadModel.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLTFData.cpp" />
-    <ClCompile Include="GLTFLoader.cpp" />
+    <ClCompile Include="IceRink.cpp" />
     <ClCompile Include="IceSkater.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelNoTexture.cpp" />
     <ClCompile Include="Penguin.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -167,12 +168,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedModel.h" />
-    <ClInclude Include="BadModel.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GLTFData.h" />
-    <ClInclude Include="GLTFLoader.h" />
+    <ClInclude Include="IceRink.h" />
     <ClInclude Include="IceSkater.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Joint.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="KeyFrame.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelNoTexture.h" />
     <ClInclude Include="Penguin.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
@@ -188,6 +190,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NoTextureShader.frag" />
+    <None Include="NoTextureShader.vert" />
     <None Include="Shaders\AnimationCelShader.frag" />
     <None Include="Shaders\AnimationCelShader.vert" />
     <None Include="Shaders\CelShader.frag" />
@@ -196,6 +200,8 @@
     <None Include="Shaders\NoShader.vert" />
     <None Include="Shaders\Shader.frag" />
     <None Include="Shaders\Shader.vert" />
+    <None Include="SmoothShader.frag" />
+    <None Include="SmoothShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

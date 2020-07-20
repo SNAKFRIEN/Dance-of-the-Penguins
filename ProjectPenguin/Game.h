@@ -4,6 +4,8 @@
 #include "Input.h"
 #include "IceSkater.h"
 #include "Penguin.h"
+#include "IceRink.h"
+#include "FrameTimer.h"
 
 class Window;
 
@@ -21,6 +23,7 @@ private:
 	IceSkater player;
 	std::vector<Penguin> penguins;
 
-	Model ice;
-	glm::mat4 iceTransform = glm::mat4(1.0f);
+	IceRink iceRink;
+
+	FrameTimer ft;
 };
