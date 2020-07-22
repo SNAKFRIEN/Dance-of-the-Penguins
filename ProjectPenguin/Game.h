@@ -26,4 +26,6 @@ private:
 	IceRink iceRink;
 
 	FrameTimer ft;
+	float accumulator = 0.01f;
+	static constexpr float deltaTime = 0.005f;	//Update physics 200 times per second
 };

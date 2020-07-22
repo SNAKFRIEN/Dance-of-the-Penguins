@@ -242,8 +242,8 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 
 void Model::Draw(Camera& camera)
 {
-	//Rotate the model (due to axes in OpenGL)
-	const auto modelTransform = glm::rotate(ownerTransform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//Store model matrix
+	const auto modelTransform = ownerTransform;
 	
 	//Calculate MVP
 	const auto transform = camera.GetVPMatrix() * modelTransform;

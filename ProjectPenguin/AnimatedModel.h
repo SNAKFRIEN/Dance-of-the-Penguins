@@ -53,7 +53,7 @@ private:
 	void ApplyPoseToJointsRecursively(const std::vector<glm::mat4>& pose, Joint& headJoint, const glm::mat4& parentTransform);
 private:
 	//Animation
-	std::string currentAnimation = "waddle_neutral_fast";	//Name of current animation
+	std::string currentAnimation;	//Name of current animation
 	float animationTime = 0.0f;	//Current time in animation
 	std::vector<glm::mat4> pose;	//Stores pose for when it's time to draw
 

@@ -68,8 +68,8 @@ void AnimatedModel::Update(float dt)
 
 void AnimatedModel::AddToRenderQueue(Camera& camera)
 {
-	//Rotate the model (due to axes in OpenGL)
-	const auto modelTransform = glm::rotate(ownerTransform, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//Store model matrix
+	const auto modelTransform = ownerTransform;
 
 	//Calculate MVP
 	const auto transform = camera.GetVPMatrix() * modelTransform;
@@ -127,6 +127,7 @@ void AnimatedModel::DrawAllInstances()
 
 void AnimatedModel::SetAnimation(std::string name)
 {
+	assert(modelData.animations.count(name) > 0);	//Make sure animation exists
 	currentAnimation = name;
 }
 
@@ -308,7 +309,24 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 			tinygltf::Node jointNode = data.nodes[skin.joints[i]];
 
 			//Add joint and store in vector
-			if (jointNode.name.find("IK") == std::string::npos && jointNode.name.find("pole") == std::string::npos)
+			if (true) /*jointNode.name.find("IK") == std::string::npos
+				&& jointNode.name.find("pole") == std::string::npos
+				&& jointNode.name.find("WGT") == std::string::npos
+				&& jointNode.name.find("SHP") == std::string::npos
+				&& jointNode.name.find("CS") == std::string::npos
+				&& jointNode.name.find("POLE") == std::string::npos
+				&& jointNode.name.find("FK") == std::string::npos
+				&& jointNode.name.find("SPL") == std::string::npos
+				&& jointNode.name.find("CTRL") == std::string::npos
+				&& jointNode.name.find("CON") == std::string::npos
+				&& jointNode.name.find("STR") == std::string::npos
+				&& jointNode.name.find("NSTR") == std::string::npos
+				&& jointNode.name.find("ASTR") == std::string::npos
+				&& jointNode.name.find("NSCA") == std::string::npos
+				&& jointNode.name.find("ASCA") == std::string::npos
+				&& jointNode.name.find("MM") == std::string::npos
+				&& jointNode.name.find("MUSC") == std::string::npos
+				&& jointNode.name.find("MCH") == std::string::npos)*/
 			{
 				newModelData.joints.emplace_back();
 				Joint& joint = newModelData.joints[i];

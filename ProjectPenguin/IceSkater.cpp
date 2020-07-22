@@ -15,6 +15,7 @@ IceSkater::IceSkater(glm::vec3 pos)
 	model("IceSkater.gltf", transform)
 {
 	rotation = glm::mat4(1.0f);
+	model.SetAnimation("Skating");
 }
 
 void IceSkater::Update(float dt, const Input& input)
@@ -49,26 +50,28 @@ void IceSkater::Update(float dt, const Input& input)
 		float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, -1.0f, 0.0f));
 		if (angle > 0.0f)
 		{
-			deltaRotation = std::min(angle, glm::radians(1.5f));
+			deltaRotation = std::min(angle, glm::radians(rotationSpeed * dt));
 		}
 		else if (angle < 0.0f)
 		{
-			deltaRotation = std::max(angle, glm::radians(-1.5f));
+			deltaRotation = std::max(angle, glm::radians(-rotationSpeed * dt));
 		}
 		rotation = glm::rotate(rotation, deltaRotation, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	if (input.IsPressed(GLFW_KEY_SPACE))
+	if (!input.IsPressed(GLFW_KEY_SPACE))
 	{
-		pos += GetForward() * speed;
+		pos += GetForward() * speed * dt;
 	}
 
 	transform = glm::translate(glm::mat4(1.0f), pos) * rotation;
+
+	model.Update(dt);
 }
 
 void IceSkater::Draw(Camera& camera)
 {
-	model.Draw(camera);
+	model.AddToRenderQueue(camera);
 }
 
 glm::vec3 IceSkater::GetPos() const

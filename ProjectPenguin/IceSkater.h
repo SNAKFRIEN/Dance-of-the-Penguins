@@ -1,7 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "Model.h"
+#include "AnimatedModel.h"
 
 class Camera;
 class Input;
@@ -19,9 +19,10 @@ public:
 private:
 	glm::vec3 pos;
 
-	float speed = 0.075f;
+	float speed = 7.5f;
+	float rotationSpeed = 150.0f;
 
-	Model model;
+	AnimatedModel model;
 
 	glm::mat4 rotation;
 	glm::mat4 transform;
