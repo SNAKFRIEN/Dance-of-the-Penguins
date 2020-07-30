@@ -14,13 +14,15 @@ public:
 	void Update(float dt, const Input& input);
 	void Draw(Camera& camera);
 
+	void Reset();	//Sets the player back to the starting location
+
 	glm::vec3 GetPos() const;
 	glm::vec3 GetForward() const;
 private:
 	glm::vec3 pos;
 
-	float speed = 7.5f;
-	float rotationSpeed = 150.0f;
+	static constexpr float speed = 7.5f;
+	static constexpr float rotationSpeed = 150.0f;
 
 	AnimatedModel model;
 

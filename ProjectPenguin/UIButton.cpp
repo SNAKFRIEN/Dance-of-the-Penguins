@@ -142,7 +142,7 @@ bool UIButton::UpdateAndCheckClick(const Input& input)
 		&& mouseY > bottom)
 	{
 		color = glm::vec3(0.0f, 1.0f, 0.0f);
-		if (input.LMBPressed())
+		if (input.LMBShortPressed())
 		{
 			return true;
 		}

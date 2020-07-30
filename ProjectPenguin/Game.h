@@ -15,16 +15,32 @@ class Game
 private:
 	enum class State
 	{
+		MainMenu,
 		Playing,
 		Paused
 	};
 public:
 	Game(Window& window);
+
 	void Update();
 	void Draw();
+	
 	bool ReadyToQuit() const;
 private:
+	void SetUpMainMenu();
 	void SetUpPauseMenu();
+
+	void StartPlaying();
+
+	void UpdatePlaying();
+	void UpdatePauseMenu();
+	void UpdateMainMenu();
+
+	void EndPlaying();
+
+	void DrawPlaying();
+	void DrawPauseMenu();
+	void DrawMainMenu();
 private:
 	Window& window;
 	Camera camera;
@@ -39,8 +55,9 @@ private:
 	float accumulator = 0.01f;
 	static constexpr float deltaTime = 0.005f;	//Update physics 200 times per second
 
-	State state = State::Playing;
+	State state = State::MainMenu;
 	bool quit = false;
 
+	MenuCanvas mainMenu;
 	MenuCanvas pauseMenu;
 };

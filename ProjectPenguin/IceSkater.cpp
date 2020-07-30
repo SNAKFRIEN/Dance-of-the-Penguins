@@ -74,6 +74,12 @@ void IceSkater::Draw(Camera& camera)
 	model.AddToRenderQueue(camera);
 }
 
+void IceSkater::Reset()
+{
+	pos = glm::vec3(0.0f);
+	rotation = glm::mat4(1.0f);
+}
+
 glm::vec3 IceSkater::GetPos() const
 {
 	return pos;

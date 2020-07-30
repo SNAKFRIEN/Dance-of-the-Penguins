@@ -8,12 +8,14 @@ class Window;
 enum class InputAction
 {
 	//---Character controls---
-	Forward,
+	Forward = 0,
 	Backward,
 	Right,
 	Left,
 	//---Menu navigation---
-	Pause
+	Pause,
+
+	NumberOfInputActions
 };
 
 class Input
@@ -21,10 +23,11 @@ class Input
 public:
 	Input(const Window& window);
 	bool IsPressed(const InputAction& action) const;
+	bool IsShortPressed(const InputAction& action) const;
 	bool IsPressed(int key) const;
 	void BindKey(InputAction action, int key);
 
-	bool LMBPressed() const;
+	bool LMBShortPressed() const;	//Returns true only once after the mouse button is pressed
 	//Relative to the top left of the window
 	glm::vec2 GetMousePos() const;
 	//Get mouse pos as percentage of width and height of the window
@@ -33,4 +36,7 @@ public:
 private:
 	const Window& window;
 	std::unordered_map<InputAction, int> buttonBindings;
+
+	mutable bool prevLMBState = false;
+	mutable std::vector<bool> prevInputActionStates;
 };

@@ -9,6 +9,8 @@ Input::Input(const Window& window)
 	:
 	window(window)
 {
+	prevInputActionStates.resize((unsigned int)InputAction::NumberOfInputActions, false);
+
 	//Load default button bindings
 	//REPLACE: somehow load button bindings from file?
 	BindKey(InputAction::Forward, GLFW_KEY_W);
@@ -27,7 +29,23 @@ bool Input::IsPressed(const InputAction& action) const
 	}
 	else
 	{
-		assert(false);
+		assert(false);	//InputAction not bound??
+		return false;
+	}
+}
+
+bool Input::IsShortPressed(const InputAction& action) const
+{
+	auto buttonIterator = buttonBindings.find(action);
+	if (buttonIterator != buttonBindings.end())
+	{
+		bool result = !prevInputActionStates[(unsigned int)action] && window.KeyIsPressed(buttonIterator->second);
+		prevInputActionStates[(unsigned int)action] = window.KeyIsPressed(buttonIterator->second);
+		return result;
+	}
+	else
+	{
+		assert(false);	//InputAction not bound??
 		return false;
 	}
 }
@@ -43,9 +61,11 @@ void Input::BindKey(InputAction action, int key)
 	buttonBindings[action] = key;
 }
 
-bool Input::LMBPressed() const
+bool Input::LMBShortPressed() const
 {
-	return window.MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT);
+	bool result = !prevLMBState && window.MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT);
+	prevLMBState = window.MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT);
+	return result;
 }
 
 glm::vec2 Input::GetMousePos() const
