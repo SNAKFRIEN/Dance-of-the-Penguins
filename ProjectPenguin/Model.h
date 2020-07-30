@@ -2,7 +2,7 @@
 
 #define TINYGLTF_NO_STB_IMAGE_WRITE
 #include "tiny_gltf.h"
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "Shader.h"
 
@@ -16,6 +16,7 @@ public:
 		std::string vertexShader = "CelShader.vert",
 		std::string fragShader = "CelShader.frag");
 	void Draw(Camera& camera);
+	static constexpr int test = 5;
 private:
 	//Geometry
 	unsigned int vao = 0;

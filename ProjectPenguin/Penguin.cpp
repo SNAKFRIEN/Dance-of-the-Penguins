@@ -51,40 +51,46 @@ Penguin::Penguin(Penguin&& rhs) noexcept
 
 void Penguin::Collide(int index, std::vector<Penguin>& penguins)
 {
-	if (state == State::Walking)
+	//Collide with other penguins
+	for (int i = index + 1; i < penguins.size(); i++)
 	{
-		for (int i = 0; i < penguins.size(); i++)
+		glm::vec3 difference = pos - penguins[i].pos;
+		float distanceSquared = glm::length2(difference);
+		
+		if (distanceSquared < minPenguinDistanceSquared)
 		{
-			if (i != index)
+			if (state == State::Walking)
 			{
-				glm::vec3 difference = pos - penguins[i].pos;
-				float distance = glm::length(difference);
-				
-				if (distance < personalSpaceRadius * 2.0f)
-				{
-					//If two penguins are in exactly the same position, separate them in a random direction
-					if (pos == penguins[i].pos)
-					{
-						//Randomly select a direction split the two penguins
-						glm::vec2 newDir = glm::circularRand(1.0f);
-						glm::vec3 splitDirection = glm::vec3(newDir.x, 0.0f, newDir.y);
-						pos += splitDirection * (personalSpaceRadius * 0.5f);
-						penguins[i].pos -= splitDirection * (personalSpaceRadius * 0.5f);
-					}
-					else
-					{
-						glm::vec3 collisionNormal = glm::normalize(difference);
-						//Point the penguins away from each other
-						//direction = collisionNormal;
-						//penguins[i].direction = -collisionNormal;
-						//Put some space between those penguins
-						pos += collisionNormal * (personalSpaceRadius * 2.0f - distance + 0.001f);
-						//Set state to thinking
-						SetState(State::Thinking);
-					}
-				}
+				ResolveCollision(penguins[i], distanceSquared, difference);
+			}
+			if (penguins[i].state == State::Walking)
+			{
+				penguins[i].ResolveCollision(*this, distanceSquared, -difference);
 			}
 		}
+	}
+
+	//Collide with boundaries
+	//REPLACE: boundaries shouldn't be hardcoded
+	if (pos.x + personalSpaceRadius >= 26.0f)
+	{
+		pos.x = 26.0f - personalSpaceRadius - 0.001f;
+		SetState(State::Thinking);
+	}
+	else if (pos.x - personalSpaceRadius <= -26.0f)
+	{
+		pos.x = -26.0f + personalSpaceRadius + 0.001f;
+		SetState(State::Thinking);
+	}
+	if (pos.z + personalSpaceRadius >= 15.0f)
+	{
+		pos.z = 15.0f - personalSpaceRadius - 0.001f;
+		SetState(State::Thinking);
+	}
+	else if (pos.z - personalSpaceRadius <= -15.0f)
+	{
+		pos.z = -15.0f + personalSpaceRadius + 0.001f;
+		SetState(State::Thinking);
 	}
 }
 
@@ -134,5 +140,29 @@ void Penguin::SetState(State newState)
 	case State::Walking:
 		model.SetAnimation("Waddle");
 		break;
+	}
+}
+
+void Penguin::ResolveCollision(Penguin& other, float distanceSquared, glm::vec3 difference)
+{
+	//If two penguins are in exactly the same position, separate them in a random direction
+	if (pos == other.pos)
+	{
+		//Randomly select a direction split the two penguins
+		glm::vec2 newDir = glm::circularRand(1.0f);
+		glm::vec3 splitDirection = glm::vec3(newDir.x, 0.0f, newDir.y);
+		pos += splitDirection * (personalSpaceRadius * 0.5f);
+		other.pos -= splitDirection * (personalSpaceRadius * 0.5f);
+	}
+	else
+	{
+		//Calculate distance between the penguins
+		float distance = sqrt(distanceSquared);
+		//Calculate the collision normal by normalizing the difference
+		glm::vec3 collisionNormal = difference / distance;
+		//Put some space between those penguins
+		pos += collisionNormal * (minPenguinDistance - distance + 0.001f);
+		//Set state to thinking
+		SetState(State::Thinking);
 	}
 }

@@ -7,7 +7,6 @@ class GLTFData
 {
 public:
 	GLTFData(tinygltf::Model& model, tinygltf::Accessor& accessor);
-	//REPLACE: try implementing this template function in cpp file to see if that actually makes a difference
 	template<typename T>
 	const T* GetElement(size_t index)
 	{
@@ -24,7 +23,7 @@ private:
 private:
 	tinygltf::Accessor& accessor;
 	const unsigned char* data;	//Pointer to first byte of data
-	size_t elementSize;
+	size_t elementSize;	//Size of individual elements
 	size_t totalSize;	//Size of all elements combined in bytes
 	size_t emptySpace;	//Empty space between elements
 	size_t nElements;

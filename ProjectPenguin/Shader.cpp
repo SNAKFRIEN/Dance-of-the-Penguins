@@ -13,11 +13,12 @@ Shader::Shader(std::string vertexName, std::string fragmentName)
 	std::string fragmentCode = FromFile(fragmentPath);
 
 	//Compile shaders
-	unsigned int vertexShader = CreateShader(vertexCode.c_str(), GL_VERTEX_SHADER);
-	unsigned int fragmentShader = CreateShader(fragmentCode.c_str(), GL_FRAGMENT_SHADER);
+	unsigned int vertexShader = CreateShader(vertexName, vertexCode.c_str(), GL_VERTEX_SHADER);
+	unsigned int fragmentShader = CreateShader(fragmentName, fragmentCode.c_str(), GL_FRAGMENT_SHADER);
 
 	//Link shaders
 	shaderProgram = glCreateProgram();
+	assert(shaderProgram > 0);
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
@@ -29,11 +30,32 @@ Shader::Shader(std::string vertexName, std::string fragmentName)
 		{
 			glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 			std::cout << "ERROR::SHADER::LINKING_FAILED\n" << infoLog << std::endl;
-			throw;
+			std::string errorMessage = "Could not link shaders ";
+			errorMessage.append(vertexName);
+			errorMessage.append(" and ");
+			errorMessage.append(fragmentName);
+			errorMessage.append("\n\ninfoLog: ");
+			errorMessage.append(infoLog);
+			throw std::exception(errorMessage.c_str());
 		}
 	}
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+}
+
+Shader::~Shader()
+{
+	if (shaderProgram > 0)
+	{
+		glDeleteProgram(shaderProgram);
+	}
+}
+
+Shader::Shader(Shader&& rhs) noexcept
+	:
+	shaderProgram(rhs.shaderProgram)
+{
+	rhs.shaderProgram = 0;
 }
 
 unsigned int Shader::Get() const
@@ -125,32 +147,34 @@ std::string Shader::FromFile(std::string path)
 		//Close file
 		file.close();
 	}
-	catch (std::ifstream::failure e)
+	catch (std::ifstream::failure& e)
 	{
 		std::string errorMessage = "Failed to load shader: ";
 		errorMessage.append(path);
+		errorMessage.append("\n\n");
+		errorMessage.append(e.what());
 		throw std::exception(errorMessage.c_str());
 	}
 	//return contents as string
 	return content.str();
 }
 
-unsigned int Shader::CreateShader(const char* source, unsigned int type)
+unsigned int Shader::CreateShader(std::string name, const char* source, unsigned int type)
 {
 	//Create and compile shader
 	GLuint shader = glCreateShader(type);
 	glShaderSource(shader, 1, &source, nullptr);
 	glCompileShader(shader);
+	int  success;
+	char infoLog[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success)
 	{
-		int  success;
-		char infoLog[512];
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-		if (!success)
-		{
-			glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-			std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
-			throw;
-		}
+		glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+		std::string errorMessage = name;
+		errorMessage.append(" could not be compiled:\n");
+		errorMessage.append(infoLog);
+		throw std::exception(errorMessage.c_str());
 	}
 	return shader;
 }

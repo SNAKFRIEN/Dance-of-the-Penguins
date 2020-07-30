@@ -108,7 +108,7 @@ Triangle::Triangle()
 
 
 
-	//Set shader units
+	//Set shader uniforms
 	shader.Use();
 	shader.SetUniformInt("texture0", 0);
 	shader.SetUniformInt("texture1", 1);

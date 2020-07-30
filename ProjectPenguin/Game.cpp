@@ -10,7 +10,8 @@ Game::Game(Window& window)
 	:
 	window(window),
 	player(glm::vec3(0.0f, 0.0f, 0.0f)),
-	input(window)
+	input(window),
+	pauseMenu(window, 1.0f)
 {
 	window.SetMainCamera(&camera);
 	camera.SetPos(glm::vec3(0.0f, 10.0f, 1.0f));
@@ -18,47 +19,68 @@ Game::Game(Window& window)
 	//Seed randomness for penguin spawns, REPLACE if there's a better way
 	srand(std::random_device()());
 
-	for (int i = 0; i < 500; i++)
+	//penguins.reserve(100);
+	for (int x = 0; x < 10; x++)
 	{
-		penguins.emplace_back(glm::vec3(2.0f, 0.0f, 0.0f));
+		for (int y = 0; y < 10; y++)
+		{
+			penguins.emplace_back(glm::vec3(x - 5, 0, y - 5));
+		}
 	}
 
 	ft.Mark();
+
+	SetUpPauseMenu();
 }
 
 void Game::Update()
 {
-	const float frameTime = ft.Mark();
-	accumulator += frameTime;
-	accumulator = std::min(accumulator, 0.1f);
-	while (accumulator > deltaTime)
+	if (state == State::Playing)
 	{
-		//For debugging purposes, fine tune camera altitude
-		if (window.KeyIsPressed(GLFW_KEY_X))
+		const float frameTime = ft.Mark();
+		accumulator += frameTime;
+		accumulator = std::min(accumulator, 0.02f);
+		while (accumulator > deltaTime)
 		{
-			camera.SetPos(camera.GetPos() + glm::vec3(0.0f, 0.01f, 0.0f));
-		}
-		if (window.KeyIsPressed(GLFW_KEY_Z))
-		{
-			camera.SetPos(camera.GetPos() + glm::vec3(0.0f, -0.01f, 0.0f));
-		}
-		if (window.KeyIsPressed(GLFW_KEY_C))
-		{
-			std::cout << camera.GetPos().y << std::endl;
+			player.Update(deltaTime, input);
+			for (Penguin& penguin : penguins)
+			{
+				penguin.Update(deltaTime);
+			}
+			for (int i = 0; i < penguins.size(); i++)
+			{
+				penguins[i].Collide(i, penguins);
+			}
+			camera.Follow(player.GetPos());
+
+			accumulator -= deltaTime;
 		}
 
-		player.Update(deltaTime, input);
-		for (int i = 0; i < penguins.size(); i++)
-		{
-			penguins[i].Update(deltaTime);
-			penguins[i].Collide(i, penguins);
-		}
-		camera.Follow(player.GetPos());
+		//REMOVE output fps and player pos
+		std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
+		//std::cout << "Player x: " << std::fixed << std::setprecision(2) << player.GetPos().x << " y: " << player.GetPos().z << std::endl;
 
-		accumulator -= deltaTime;
+		if(input.IsPressed(InputAction::Pause))
+		{
+			state = State::Paused;
+		}
 	}
-	//REMOVE output fps
-	std::cout << "fps: " << std::fixed << std::setprecision(5) << (1.0f / frameTime) << std::endl;
+	else //State = Paused
+	{
+		pauseMenu.Update();
+		if (input.IsPressed(InputAction::Pause))
+		{
+			state = State::Playing;
+		}
+		if (pauseMenu.GetButton("Resume").UpdateAndCheckClick(input))
+		{
+			state = State::Playing;
+		}
+		if (pauseMenu.GetButton("Quit").UpdateAndCheckClick(input))
+		{
+			quit = true;
+		}
+	}
 }
 
 void Game::Draw()
@@ -70,4 +92,19 @@ void Game::Draw()
 	}
 	AnimatedModel::DrawAllInstances();
 	iceRink.Draw(camera);
+	if (state == State::Paused)
+	{
+		pauseMenu.Draw();
+	}
+}
+
+bool Game::ReadyToQuit() const
+{
+	return quit;
+}
+
+void Game::SetUpPauseMenu()
+{
+	pauseMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Resume");
+	pauseMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit");
 }

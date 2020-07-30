@@ -17,13 +17,13 @@ int main()
 		{
 			window.BeginFrame();
 
-			if (window.KeyIsPressed(GLFW_KEY_ESCAPE))
+			game.Update();
+			game.Draw();
+
+			if (game.ReadyToQuit())
 			{
 				window.Close();
 			}
-
-			game.Update();
-			game.Draw();
 
 			window.EndFrame();
 		}

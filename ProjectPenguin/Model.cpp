@@ -39,7 +39,7 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 			errorMessage.append("\n\n");
 			errorMessage.append("Received the following error(s): ");
 			errorMessage.append(err);
-			throw std::exception(errorMessage.c_str());
+			throw std::invalid_argument(errorMessage.c_str());
 		}
 		if (!warn.empty())
 		{
@@ -48,7 +48,7 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 			errorMessage.append("\n\n");
 			errorMessage.append("Received the following warning(s): ");
 			errorMessage.append(err);
-			throw std::exception(errorMessage.c_str());
+			throw std::invalid_argument(errorMessage.c_str());
 		}
 	}
 

@@ -1,20 +1,21 @@
 #pragma once
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 #include "AnimatedModel.h"
 #include <random>
 
 class Camera;
 
-enum class State
-{
-	Walking,
-	Thinking
-};
-
 class Penguin
 {
+private:
+	enum class State
+	{
+		Walking,
+		Thinking
+	};
 public:
+	//REPLACE: Add destructor?
 	Penguin(glm::vec3 pos);
 	Penguin(const Penguin& rhs);
 	Penguin operator=(const Penguin& rhs) = delete;
@@ -26,6 +27,7 @@ public:
 	void Draw(Camera& camera);
 private:
 	void SetState(State newState);
+	void ResolveCollision(Penguin& other, float distanceSquared, glm::vec3 difference);
 private:
 	glm::vec3 pos;
 
@@ -45,4 +47,6 @@ private:
 	float stateCountDown;
 
 	static constexpr float personalSpaceRadius = 0.25f;	//Makes sure penguins don't collide
+	static constexpr float minPenguinDistance = personalSpaceRadius * 2.0f;	//Minimum distance between two penguins
+	static constexpr float minPenguinDistanceSquared = minPenguinDistance * minPenguinDistance;
 };

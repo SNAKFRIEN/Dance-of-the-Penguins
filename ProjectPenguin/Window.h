@@ -25,13 +25,17 @@ public:
 	void Close();
 	bool IsClosing() const;
 	bool KeyIsPressed(int key) const;
+	bool MouseButtonIsPressed(int button) const;
 	glm::vec2 GetCursorPos() const;
+	glm::vec2 GetDimensions() const;
 
 	//Custom functionality
 	void SetMainCamera(Camera* camera);
-
 private:
 	GLFWwindow* window = nullptr;
 	
 	Camera* mainCamera;
+
+	int currentWidth;
+	int currentHeight;
 };

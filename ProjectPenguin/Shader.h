@@ -12,6 +12,12 @@ class Shader
 {
 public:
 	Shader(std::string vertexPath, std::string fragmentPath);
+	~Shader();
+	Shader(const Shader&) = delete;
+	Shader operator=(const Shader&) = delete;
+	Shader(Shader&& rhs) noexcept;
+	Shader operator=(Shader&& rhs) = delete;
+
 	
 	unsigned int Get() const;
 
@@ -32,7 +38,7 @@ public:
 	void SetUniformMat4Array(const std::string& name, const std::vector<glm::mat4>& values) const;
 private:
 	std::string FromFile(std::string path);
-	unsigned int CreateShader(const char* source, unsigned int type);
+	unsigned int CreateShader(std::string name, const char* source, unsigned int type);
 private:
-	unsigned int shaderProgram;
+	unsigned int shaderProgram = 0;
 };

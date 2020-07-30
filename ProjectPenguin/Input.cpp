@@ -2,6 +2,9 @@
 
 #include "Window.h"
 
+//REMOVE
+#include <iostream>
+
 Input::Input(const Window& window)
 	:
 	window(window)
@@ -12,6 +15,7 @@ Input::Input(const Window& window)
 	BindKey(InputAction::Backward, GLFW_KEY_S);
 	BindKey(InputAction::Left, GLFW_KEY_A);
 	BindKey(InputAction::Right, GLFW_KEY_D);
+	BindKey(InputAction::Pause, GLFW_KEY_ESCAPE);
 }
 
 bool Input::IsPressed(const InputAction& action) const
@@ -37,4 +41,23 @@ void Input::BindKey(InputAction action, int key)
 {
 	//REPLACE: warn the user when binding a key that's already being used elsewhere?
 	buttonBindings[action] = key;
+}
+
+bool Input::LMBPressed() const
+{
+	return window.MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT);
+}
+
+glm::vec2 Input::GetMousePos() const
+{
+	return window.GetCursorPos();
+}
+
+glm::vec2 Input::GetMouseUV() const
+{
+	glm::vec2 result = window.GetCursorPos() / window.GetDimensions();
+	result -= glm::vec2(0.5f);
+	result.y *= -1.0f;
+	result *= 2.0f;
+	return result;
 }
