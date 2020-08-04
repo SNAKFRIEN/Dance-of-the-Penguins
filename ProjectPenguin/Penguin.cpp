@@ -61,8 +61,17 @@ void Penguin::Collide(int index, std::vector<Penguin>& penguins)
 	{
 		glm::vec3 difference = pos - penguins[i].pos;
 		float distanceSquared = glm::length2(difference);
-		
-		if (distanceSquared < minPenguinDistanceSquared)
+
+		if (distanceSquared == 0.0f)
+		{
+			//Position of the two penguins is exactly the same
+			//Randomly select a direction to split the two penguins
+			glm::vec2 newDir = glm::circularRand(1.0f);
+			glm::vec3 splitDirection = glm::vec3(newDir.x, 0.0f, newDir.y);
+			pos += splitDirection * personalSpaceRadius;
+			penguins[i].pos -= splitDirection * personalSpaceRadius;
+		}
+		else if (distanceSquared < minPenguinDistanceSquared)
 		{
 			if (state == State::Walking)
 			{
@@ -164,24 +173,12 @@ void Penguin::SetState(State newState)
 
 void Penguin::ResolveCollision(Penguin& other, float distanceSquared, glm::vec3 difference)
 {
-	//If two penguins are in exactly the same position, separate them in a random direction
-	if (pos == other.pos)
-	{
-		//Randomly select a direction split the two penguins
-		glm::vec2 newDir = glm::circularRand(1.0f);
-		glm::vec3 splitDirection = glm::vec3(newDir.x, 0.0f, newDir.y);
-		pos += splitDirection * (personalSpaceRadius * 0.5f);
-		other.pos -= splitDirection * (personalSpaceRadius * 0.5f);
-	}
-	else
-	{
-		//Calculate distance between the penguins
-		float distance = sqrt(distanceSquared);
-		//Calculate the collision normal by normalizing the difference
-		glm::vec3 collisionNormal = difference / distance;
-		//Put some space between those penguins
-		pos += collisionNormal * (minPenguinDistance - distance + 0.001f);
-		//Set state to thinking
-		SetState(State::Thinking);
-	}
+	//Calculate distance between the penguins
+	float distance = sqrt(distanceSquared);
+	//Calculate the collision normal by normalizing the difference
+	glm::vec3 collisionNormal = difference / distance;
+	//Put some space between those penguins
+	pos += collisionNormal * (minPenguinDistance - distance + 0.001f);
+	//Set state to thinking
+	SetState(State::Thinking);
 }

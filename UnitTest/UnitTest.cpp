@@ -102,12 +102,12 @@ namespace UnitTest
 			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
 			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
 			
-			for (int i = 0; i < penguins.size(); i++)
-			{
-				penguins[i].Collide(i, penguins);
-			}
+			//We should only need to call collide for one of the two penguins to fully resolve the collision for both
+			penguins[0].Collide(0, penguins);
+			
+			Logger::WriteMessage(std::to_string(glm::length(penguins[0].GetPos() - penguins[1].GetPos())).c_str());
 
-			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) > Penguin::minPenguinDistance);
+			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
 		}
 		TEST_METHOD(ResolvePartialPenguinOverlap)
 		{
@@ -121,7 +121,7 @@ namespace UnitTest
 				penguins[i].Collide(i, penguins);
 			}
 
-			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) > Penguin::minPenguinDistance);
+			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
 		}
 	};
 }

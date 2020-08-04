@@ -24,6 +24,16 @@ Game::Game(Window& window)
 
 	SetUpMainMenu();
 	SetUpPauseMenu();
+
+	std::vector<Penguin> penguini;
+	penguini.reserve(2);
+	penguini.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
+	penguini.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
+
+	for (int i = 0; i < penguini.size(); i++)
+	{
+		penguini[i].Collide(i, penguini);
+	}
 }
 
 void Game::Update()
