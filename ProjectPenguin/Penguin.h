@@ -16,7 +16,7 @@ private:
 	};
 public:
 	//REPLACE: Add destructor?
-	Penguin(glm::vec3 pos);
+	Penguin(glm::vec3 pos, bool initModel = true);
 	Penguin(const Penguin& rhs);
 	Penguin operator=(const Penguin& rhs) = delete;
 	Penguin(Penguin&& rhs) noexcept;
@@ -25,7 +25,14 @@ public:
 	void Collide(int index, std::vector<Penguin>& penguins);	//Loop through all penguins that come after this one
 	void Update(float dt);
 	void Draw(Camera& camera);
+
+	glm::vec3 GetPos() const;
+
+	static constexpr float personalSpaceRadius = 0.25f;	//Makes sure penguins don't collide
+	static constexpr float minPenguinDistance = personalSpaceRadius * 2.0f;	//Minimum distance between two penguins
+	static constexpr float minPenguinDistanceSquared = minPenguinDistance * minPenguinDistance;
 private:
+	void InitModel();
 	void SetState(State newState);
 	void ResolveCollision(Penguin& other, float distanceSquared, glm::vec3 difference);
 private:
@@ -33,7 +40,7 @@ private:
 
 	glm::mat4 transform;
 
-	AnimatedModel model;
+	std::unique_ptr<AnimatedModel> model;
 
 	//Gameplay
 	glm::vec3 direction;	//Must be normalized at all times
@@ -45,8 +52,4 @@ private:
 	const std::uniform_real_distribution<float> minMaxWalkTime;
 	const std::uniform_real_distribution<float> minMaxThinktime;
 	float stateCountDown;
-
-	static constexpr float personalSpaceRadius = 0.25f;	//Makes sure penguins don't collide
-	static constexpr float minPenguinDistance = personalSpaceRadius * 2.0f;	//Minimum distance between two penguins
-	static constexpr float minPenguinDistanceSquared = minPenguinDistance * minPenguinDistance;
 };

@@ -90,6 +90,9 @@
     <ClCompile Include="GLTFData.cpp">
       <Filter>Source Files\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="IceSkaterCollider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface.h">
       <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="IceSkaterCollider.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

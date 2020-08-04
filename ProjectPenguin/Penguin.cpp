@@ -5,15 +5,20 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/norm.hpp>
 
-Penguin::Penguin(glm::vec3 pos)
+Penguin::Penguin(glm::vec3 pos, bool initModel)
 	:
 	pos(pos),
-	model("Goopie.gltf", transform),
+	
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
 	stateCountDown(minMaxWalkTime(rng))
 {
+	if (initModel)
+	{
+		InitModel();
+	}
+
 	glm::vec2 newDir = glm::circularRand(1.0f);
 	direction = glm::vec3(newDir.x, 0.0, newDir.y);
 	SetState(State::Walking);
@@ -21,11 +26,11 @@ Penguin::Penguin(glm::vec3 pos)
 
 Penguin::Penguin(const Penguin& rhs)
 	:
-	model("Goopie.gltf", transform),
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f)
 {
+	InitModel();
 	pos = rhs.pos;
 	transform = rhs.transform;
 	direction = rhs.direction;
@@ -36,7 +41,7 @@ Penguin::Penguin(const Penguin& rhs)
 
 Penguin::Penguin(Penguin&& rhs) noexcept
 	:
-	model("Goopie.gltf", transform),
+	model(std::move(rhs.model)),
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f)
@@ -121,25 +126,39 @@ void Penguin::Update(float dt)
 	transform = glm::translate(glm::mat4(1.0f), pos) * glm::orientation(direction, glm::vec3(0.0f, 0.0f, -1.0f));
 
 	//Update animation
-	model.Update(dt);
+	model->Update(dt);
 }
 
 void Penguin::Draw(Camera& camera)
 {
-	model.AddToRenderQueue(camera);
+	model->AddToRenderQueue(camera);
+}
+
+glm::vec3 Penguin::GetPos() const
+{
+	return pos;
+}
+
+void Penguin::InitModel()
+{
+	model = std::make_unique<AnimatedModel>("Goopie.gltf", transform);
 }
 
 void Penguin::SetState(State newState)
 {
 	state = newState;
-	switch (state)
+	//REMOVE model is only optional thanks to unit testing. This if statement is actually redundant
+	if (model)
 	{
-	case State::Thinking:
-		model.SetAnimation("Idle");
-		break;
-	case State::Walking:
-		model.SetAnimation("Waddle");
-		break;
+		switch (state)
+		{
+		case State::Thinking:
+			model->SetAnimation("Idle");
+			break;
+		case State::Walking:
+			model->SetAnimation("Waddle");
+			break;
+		}
 	}
 }
 

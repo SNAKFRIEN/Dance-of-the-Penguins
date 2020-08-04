@@ -9,17 +9,20 @@ class Camera;
 class IceRink
 {
 public:
-	IceRink();
+	IceRink(bool initModels = true);
 	void Draw(Camera& camera);
 private:
+	void InitModels();
+private:
 	//Dimensions
-	float top = 16.205f;
-	float bottom = -12.293f;
-	float left = -24.005f;
-	float right = 24.005f;
+	float top = 15.0f;
+	float bottom = -15.0f;
+	float left = -26.0f;
+	float right = 26.0f;
+	float cornerRadius = 6.0f;
 
 	glm::mat4 transform;
 
-	Model stadiumModel;
-	Model iceModel;
+	std::unique_ptr<Model> stadiumModel;
+	std::unique_ptr<Model> iceModel;
 };
