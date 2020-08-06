@@ -101,9 +101,12 @@ namespace UnitTest
 			penguins.reserve(2);
 			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
 			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
-			
-			//We should only need to call collide for one of the two penguins to fully resolve the collision for both
-			penguins[0].Collide(0, penguins);
+
+			//It may have been better to separate the ice rink collision detection from the penguin collision detection, but this should not affect the test
+			IceRink dummyRink(false);
+
+			//It should only be necessary to call collide for one of the two penguins to fully resolve the collision for both
+			penguins[0].Collide(0, penguins, dummyRink);
 			
 			Logger::WriteMessage(std::to_string(glm::length(penguins[0].GetPos() - penguins[1].GetPos())).c_str());
 
@@ -116,9 +119,12 @@ namespace UnitTest
 			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
 			penguins.emplace_back(glm::vec3(1.1f, 0.0f, 2.0f), false);
 
+			//It may have been better to separate the ice rink collision detection from the penguin collision detection, but this should not affect the test
+			IceRink dummyRink(false);
+
 			for (int i = 0; i < penguins.size(); i++)
 			{
-				penguins[i].Collide(i, penguins);
+				penguins[i].Collide(i, penguins, dummyRink);
 			}
 
 			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
