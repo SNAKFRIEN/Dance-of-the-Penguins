@@ -66,13 +66,9 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	//glGenBuffers(1, &vbo);
-
-	unsigned ebo;
 	glGenBuffers(1, &ebo);
 
 	//Rettrieve attribute data and fill VBO, set up
-	std::map<int, unsigned int> vbos;
 	for (int i = 0; i < data.bufferViews.size(); ++i)
 	{
 		const tinygltf::BufferView& bufferView = data.bufferViews[i];
@@ -238,6 +234,17 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, format, type, &image.image.at(0));
 
 	GL_ERROR_CHECK()
+}
+
+Model::~Model()
+{
+	glDeleteVertexArrays(1, &vao);
+	for (auto& vbo : vbos)
+	{
+		glDeleteBuffers(1, &vbo.second);
+	}
+	glDeleteBuffers(1, &ebo);
+	glDeleteTextures(1, &texture);
 }
 
 void Model::Draw(Camera& camera)

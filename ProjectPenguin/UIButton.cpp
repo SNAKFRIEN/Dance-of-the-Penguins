@@ -94,6 +94,10 @@ UIButton::~UIButton()
 		glDeleteBuffers(1, &vbo);
 		glDeleteBuffers(1, &ebo);
 	}
+	if (texture > 0)
+	{
+		glDeleteTextures(1, &texture);
+	}
 }
 
 UIButton::UIButton(UIButton&& rhs) noexcept
