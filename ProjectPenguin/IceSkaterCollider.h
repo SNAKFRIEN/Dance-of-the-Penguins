@@ -4,8 +4,9 @@
 
 #include "glm/glm.hpp"
 
+#include "Penguin.h"
+
 class IceRink;
-class Penguin;
 
 class IceSkaterCollider
 {
@@ -16,4 +17,6 @@ public:
 private:
 	const glm::mat4& ownerTransform;
 	static constexpr float collisionRadius = 0.15f;
+	static constexpr float minPenguinDistance = collisionRadius + Penguin::personalSpaceRadius;
+	static constexpr float minPenguinDistanceSquared = minPenguinDistance * minPenguinDistance;
 };

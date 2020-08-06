@@ -1,7 +1,8 @@
 #include "IceSkaterCollider.h"
 
+#include <glm/gtx/norm.hpp>
+
 #include "IceRink.h"
-#include "Penguin.h"
 
 IceSkaterCollider::IceSkaterCollider(const glm::mat4& ownerTransform)
 	:
@@ -26,5 +27,13 @@ bool IceSkaterCollider::IsInRink(const IceRink& rink) const
 
 bool IceSkaterCollider::IsCollidingWithPenguin(const std::vector<Penguin>& penguins) const
 {
+	glm::vec3 pos(ownerTransform[3]);
+	for (const Penguin& p : penguins)
+	{
+		if (glm::length2(p.GetPos() - pos) < minPenguinDistanceSquared)
+		{
+			return true;
+		}
+	}
 	return false;
 }
