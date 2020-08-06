@@ -5,25 +5,14 @@
 
 #include <unordered_map>
 
-/*REPLACE/REMOVE this comment
-The intention of the MenuCanvas is to create a single menu canvas and add buttons as they are required by the game.
-
-The canvas needs to be repopulated every frame, and automatically clears all the buttons when it's rendered.
-
-It's also very important that SetAspectRatio is called every frame to ensure that the menu has the correct size regardless of
-the size of the actual window.
-
-The buttons on the canvas can be accessed and interacted with by name.
-*/
+/*This class is a container for UI elements. Calling its Update function makes sure that buttons maintain their aspect ratio no matter the size of the window*/
 
 class MenuCanvas
 {
 public:
 	MenuCanvas(const Window& window, float aspectRatio);
 
-	//REPLACE: Add functionality to select a texture for the button
-	//REPLACE: Make sure textures are stored so they aren't re-imported every single frame
-	void AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name);
+	void AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName = "DefaultButton.png");
 
 	UIButton& GetButton(std::string name);
 

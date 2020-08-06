@@ -44,6 +44,9 @@ Window::Window(int width, int height, std::string name)
 
 	//REPLACE: enable multisampling
 	glEnable(GL_MULTISAMPLE);
+
+	//Set blend function for transparency
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Window::~Window()

@@ -7,8 +7,7 @@ class Input;
 class UIButton
 {
 public:
-	//REPLACE: rule of 5
-	UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight);
+	UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight, std::string textureName);
 	~UIButton();
 	UIButton(const UIButton&) = delete;
 	UIButton operator=(const UIButton&) = delete;
@@ -31,7 +30,7 @@ private:
 	Shader shader;
 
 	//Texture
-	unsigned int* texture = 0;	//only supports models with single textures for now
+	unsigned int texture = 0;
 
 	//Dimensions
 	const glm::vec2 relativeTopLeft;	//Relative to MenuCanvas

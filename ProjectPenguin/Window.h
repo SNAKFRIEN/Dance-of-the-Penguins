@@ -34,7 +34,7 @@ public:
 private:
 	GLFWwindow* window = nullptr;
 	
-	Camera* mainCamera;
+	Camera* mainCamera = nullptr;
 
 	int currentWidth;
 	int currentHeight;

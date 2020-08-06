@@ -9,14 +9,14 @@ MenuCanvas::MenuCanvas(const Window& window, float aspectRatio)
 {
 }
 
-void MenuCanvas::AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name)
+void MenuCanvas::AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName)
 {
 	assert(buttons.count(name) == 0);
 	float buttonLeft = topLeft.x * width * 0.5f;
 	float buttonRight = bottomRight.x * width * 0.5f;
 	float buttonTop = topLeft.y * height * 0.5f;
 	float buttonBottom = bottomRight.y * height * 0.5f;
-	buttons.emplace(name, std::move(UIButton(buttonLeft, buttonTop, buttonRight, buttonBottom, topLeft, bottomRight)));
+	buttons.emplace(name, std::move(UIButton(buttonLeft, buttonTop, buttonRight, buttonBottom, topLeft, bottomRight, textureName)));
 }
 
 UIButton& MenuCanvas::GetButton(std::string name)

@@ -3,7 +3,7 @@
 #include "Input.h"
 #include "stb_image.h"
 
-UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight)
+UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight, std::string textureName)
 	:
 	shader("UIShader.vert", "UIShader.frag"),
 	left(left),
@@ -48,8 +48,6 @@ UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 r
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-
-	/*
 	//Generate texture
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -61,20 +59,24 @@ UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 r
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	//Load image data into texture
-	//REPLACE: use actual texture instead of container.jpg
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+	std::string texturePath = "UI/";
+	texturePath.append(textureName);
+	unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
-		//REPLACE :)
-		throw;
+		std::string errorMessage = "The UI texture ";
+		errorMessage.append(texturePath);
+		errorMessage.append(" could not be loaded");
+		throw std::exception(errorMessage.c_str());
 	}
+	stbi_set_flip_vertically_on_load(false);
 	stbi_image_free(data);
 
 
@@ -82,7 +84,6 @@ UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 r
 	//Set shader uniforms
 	shader.Use();
 	shader.SetUniformInt("texture0", 0);
-	*/
 }
 
 UIButton::~UIButton()
@@ -111,7 +112,7 @@ UIButton::UIButton(UIButton&& rhs) noexcept
 	color(rhs.color)
 {
 	rhs.vao = 0;
-	rhs.texture = nullptr;
+	rhs.texture = 0;
 }
 
 void UIButton::UpdateSize(float newLeft, float newTop, float newRight, float newBottom)
@@ -141,7 +142,7 @@ bool UIButton::UpdateAndCheckClick(const Input& input)
 		&& mouseY < top
 		&& mouseY > bottom)
 	{
-		color = glm::vec3(0.0f, 1.0f, 0.0f);
+		color = glm::vec3(1.0f);
 		if (input.LMBShortPressed())
 		{
 			return true;
@@ -149,15 +150,15 @@ bool UIButton::UpdateAndCheckClick(const Input& input)
 	}
 	else
 	{
-		color = glm::vec3(1.0f, 0.0f, 0.0f);
+		color = glm::vec3(0.0f);
 	}
 	return false;
 }
 
 void UIButton::Draw()
 {
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	shader.Use();
 	shader.SetUniformVec3("color", color);

@@ -74,20 +74,20 @@ bool Game::ReadyToQuit() const
 
 void Game::SetUpMainMenu()
 {
-	mainMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Start");
-	mainMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit");
+	mainMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Start", "Start.png");
+	mainMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit", "Quit.png");
 }
 
 void Game::SetUpPauseMenu()
 {
-	pauseMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Resume");
-	pauseMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit");
+	pauseMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Resume", "Resume.png");
+	pauseMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit", "Quit.png");
 }
 
 void Game::SetUpGameOverMenu()
 {
-	gameOverMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Retry");
-	gameOverMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit");
+	gameOverMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Retry", "Retry.png");
+	gameOverMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit", "Quit.png");
 }
 
 void Game::StartPlaying()
@@ -208,15 +208,21 @@ void Game::DrawPlaying()
 
 void Game::DrawPauseMenu()
 {
+	glEnable(GL_BLEND);
 	pauseMenu.Draw();
+	glDisable(GL_BLEND);
 }
 
 void Game::DrawMainMenu()
 {
+	glEnable(GL_BLEND);
 	mainMenu.Draw();
+	glDisable(GL_BLEND);
 }
 
 void Game::DrawGameOverMenu()
 {
+	glEnable(GL_BLEND);
 	gameOverMenu.Draw();
+	glDisable(GL_BLEND);
 }

@@ -36,8 +36,6 @@ void AnimatedModel::Update(float dt)
 	}
 
 	//Find previous and next frame
-	//REPLACE: Move this assertion to wherever the animation is set
-	assert(modelData.animations.count(currentAnimation) != 0);
 	const std::vector<KeyFrame>& frames = modelData.animations[currentAnimation].frames;
 	KeyFrame prevFrame = frames[0];
 	KeyFrame nextFrame = frames[1];
@@ -137,14 +135,14 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 	//WARNING: THIS MAKES IT SO THAT ALL INSTANCES OF THE SAME MODEL USE THE SAME SHADER!
 	if (existingModels.count(name) == 0)
 	{
-		//-------------------------Step -1: Add model data-------------------------------------------------
+		//-------------------------Step 0: Add model data-------------------------------------------------
 		auto& newModelData = existingModels[name];
 
-		//-------------------------Step 0: Make the shader-------------------------------------------------
+		//-------------------------Step 1: Make the shader-------------------------------------------------
 		newModelData.shader = std::make_unique<Shader>("AnimationCelShader.vert", "AnimationCelShader.frag");
 
 
-		//-------------------------Step 1: Load the model using tinyGLTF-------------------------------------------------
+		//-------------------------Step 2: Load the model using tinyGLTF-------------------------------------------------
 		//Import the model and check errors
 		tinygltf::TinyGLTF loader;
 		tinygltf::Model data;
@@ -176,7 +174,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 			}
 		}
 
-		//-------------------------Step 2: Step down the gltf hierarchy to get to a primitive-------------------------------------------------
+		//-------------------------Step 3: Step down the gltf hierarchy to get to a primitive-------------------------------------------------
 		//Step down the GLTF structure to reach the primitive (REPLACE: test just getting data.primitives[0] to skip this step)
 		const tinygltf::Scene& scene = data.scenes[0];
 		const tinygltf::Node& node = data.nodes[scene.nodes[0]];
@@ -186,7 +184,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 		GL_ERROR_CHECK();
 
 
-		//-------------------------Step 3: Set up vao,vbo,ebo and set up vertex attrib pointers-------------------------------------------------
+		//-------------------------Step 4: Set up vao,vbo,ebo and set up vertex attrib pointers-------------------------------------------------
 		//Generate VAO, VBO and EBO
 		glGenVertexArrays(1, &newModelData.vao);
 		glBindVertexArray(newModelData.vao);
@@ -298,7 +296,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 		}
 		GL_ERROR_CHECK();
 
-		//-------------------------Step 4: Load animation and joint data-------------------------------------------------
+		//-------------------------Step 5: Load animation and joint data-------------------------------------------------
 
 		//Load joints
 		//First loop loads id, name and inverseBindTransform
@@ -431,7 +429,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 							}
 							else
 							{
-								//REMOVE / REPLACE with exception???
+								//REMOVE or REPLACE with exception???
 								//It's not actually dangerous to the program if this happens,
 								//but may give unexpected results
 								std::cout << "WARNING: channel stores unexpected data: " << channel.target_path << std::endl;
@@ -459,7 +457,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 			newModelData.animations[tinyAnimation.name] = animation;
 		}
 
-		//-------------------------Step 5: Set up the texture-------------------------------------------------
+		//-------------------------Step 6: Set up the texture-------------------------------------------------
 		//Gain access to the gltf data
 		const tinygltf::Material& material = data.materials[primitiveData.material];
 		tinygltf::Texture& textureData = data.textures[material.pbrMetallicRoughness.baseColorTexture.index];
@@ -513,7 +511,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		//Load data into texture (REPLACE: might want to use GL_RGBA instead of GL_RGB to support transparent textures, or vice versa to save space)
+		//Load data into texture
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, format, type, &image.image.at(0));
 
 		GL_ERROR_CHECK();
