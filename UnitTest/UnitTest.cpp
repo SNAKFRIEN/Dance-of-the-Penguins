@@ -67,7 +67,7 @@ namespace UnitTest
 		TEST_METHOD(IceSkaterDetectsOutOfRinkOnEdge)
 		{
 			//Check that the ice skater detects that it has left the ice skater when it's just across the edge
-			glm::vec3 iceSkaterPos(0.0f, 0.0f, 14.5f);
+			glm::vec3 iceSkaterPos(0.0f, 0.0f, 13.6f);
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 
@@ -76,7 +76,7 @@ namespace UnitTest
 		TEST_METHOD(IceSkaterDetectsInRinkInCurve)
 		{
 			//Check that the ice skater still correctly detects that it's within the ice rink when it's just inside one of the corners
-			glm::vec3 iceSkaterPos(22.0f, 0.0f, 11.0f);
+			glm::vec3 iceSkaterPos(21.0f, 0.0f, 10.0f);
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 
@@ -85,7 +85,7 @@ namespace UnitTest
 		TEST_METHOD(IceSkaterDetectsOutOfRinkInCurve)
 		{
 			//Check that the ice skater still correctly detects that it's outside the ice rink when it's just outside one of the corners
-			glm::vec3 iceSkaterPos(26.0f, 0.0f, 15.0f);
+			glm::vec3 iceSkaterPos(24.0f, 0.0f, 13.0f);
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 

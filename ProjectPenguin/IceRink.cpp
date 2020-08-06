@@ -15,6 +15,21 @@ void IceRink::Draw(Camera& camera)
 	iceModel->Draw(camera);
 }
 
+float IceRink::GetRight() const
+{
+	return right;
+}
+
+float IceRink::GetTop() const
+{
+	return top;
+}
+
+float IceRink::GetCornerRadius() const
+{
+	return cornerRadius;
+}
+
 void IceRink::InitModels()
 {
 	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "SmoothShader.frag");

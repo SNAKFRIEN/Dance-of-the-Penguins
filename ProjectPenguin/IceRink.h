@@ -6,20 +6,25 @@
 
 class Camera;
 
+//This class represents the physical and visual properties of the ice rink.
+//The rink will always be located exactly at the center
 class IceRink
 {
 public:
 	IceRink(bool initModels = true);
+	
 	void Draw(Camera& camera);
+
+	float GetRight() const;
+	float GetTop() const;
+	float GetCornerRadius() const;
 private:
 	void InitModels();
 private:
 	//Dimensions
-	float top = 15.0f;
-	float bottom = -15.0f;
-	float left = -26.0f;
-	float right = 26.0f;
-	float cornerRadius = 6.0f;
+	static constexpr float right = 24.6f;
+	static constexpr float top = 13.7f;
+	static constexpr float cornerRadius = 5.5f;
 
 	glm::mat4 transform;
 

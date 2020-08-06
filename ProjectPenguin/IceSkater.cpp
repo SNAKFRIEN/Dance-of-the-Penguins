@@ -12,10 +12,16 @@
 IceSkater::IceSkater(glm::vec3 pos)
 	:
 	pos(pos),
-	model("IceSkater.gltf", transform)
+	model("IceSkater.gltf", transform),
+	collider(transform)
 {
 	rotation = glm::mat4(1.0f);
 	model.SetAnimation("Skating");
+}
+
+bool IceSkater::IsColliding(const std::vector<Penguin>& penguins, const IceRink& rink) const
+{
+	return !collider.IsInRink(rink) || collider.IsCollidingWithPenguin(penguins);
 }
 
 void IceSkater::Update(float dt, const Input& input)
