@@ -17,7 +17,8 @@ private:
 	{
 		MainMenu,
 		Playing,
-		Paused
+		Paused,
+		GameOver
 	};
 public:
 	Game(Window& window);
@@ -29,18 +30,21 @@ public:
 private:
 	void SetUpMainMenu();
 	void SetUpPauseMenu();
+	void SetUpGameOverMenu();
 
 	void StartPlaying();
 
 	void UpdatePlaying();
 	void UpdatePauseMenu();
 	void UpdateMainMenu();
+	void UpdateGameOver();
 
 	void EndPlaying();
 
 	void DrawPlaying();
 	void DrawPauseMenu();
 	void DrawMainMenu();
+	void DrawGameOverMenu();
 private:
 	Window& window;
 	Camera camera;
@@ -60,4 +64,5 @@ private:
 
 	MenuCanvas mainMenu;
 	MenuCanvas pauseMenu;
+	MenuCanvas gameOverMenu;
 };

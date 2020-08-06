@@ -12,7 +12,8 @@ Game::Game(Window& window)
 	player(glm::vec3(0.0f, 0.0f, 0.0f)),
 	input(window),
 	mainMenu(window, 1.0f),
-	pauseMenu(window, 1.0f)
+	pauseMenu(window, 1.0f),
+	gameOverMenu(window, 1.0f)
 {
 	window.SetMainCamera(&camera);
 	camera.SetPos(glm::vec3(0.0f, 10.0f, 1.0f));
@@ -24,6 +25,7 @@ Game::Game(Window& window)
 
 	SetUpMainMenu();
 	SetUpPauseMenu();
+	SetUpGameOverMenu();
 }
 
 void Game::Update()
@@ -38,6 +40,9 @@ void Game::Update()
 		break;
 	case State::MainMenu:
 		UpdateMainMenu();
+		break;
+	case State::GameOver:
+		UpdateGameOver();
 		break;
 	}
 }
@@ -56,6 +61,9 @@ void Game::Draw()
 	case State::MainMenu:
 		DrawMainMenu();
 		break;
+	case State::GameOver:
+		DrawPlaying();	//Still show paused gameplay in the background
+		DrawGameOverMenu();
 	}
 }
 
@@ -76,6 +84,12 @@ void Game::SetUpPauseMenu()
 	pauseMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit");
 }
 
+void Game::SetUpGameOverMenu()
+{
+	gameOverMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Retry");
+	gameOverMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit");
+}
+
 void Game::StartPlaying()
 {
 	player.Reset();
@@ -85,7 +99,7 @@ void Game::StartPlaying()
 	{
 		for (int y = 0; y < 10; y++)
 		{
-			penguins.emplace_back(glm::vec3(x - 5, 0, y - 5));
+			penguins.emplace_back(glm::vec3(x - 11, 0, y - 5));
 		}
 	}
 
@@ -103,7 +117,6 @@ void Game::UpdatePlaying()
 	while (accumulator > deltaTime)
 	{
 		player.Update(deltaTime, input);
-		player.IsColliding(penguins, iceRink);
 		for (Penguin& penguin : penguins)
 		{
 			penguin.Update(deltaTime);
@@ -113,6 +126,11 @@ void Game::UpdatePlaying()
 			penguins[i].Collide(i, penguins);
 		}
 		camera.Follow(player.GetPos());
+
+		if (player.IsColliding(penguins, iceRink))
+		{
+			state = State::GameOver;
+		}
 
 		accumulator -= deltaTime;
 	}
@@ -157,6 +175,20 @@ void Game::UpdateMainMenu()
 	}
 }
 
+void Game::UpdateGameOver()
+{
+	gameOverMenu.Update();
+	if (gameOverMenu.GetButton("Retry").UpdateAndCheckClick(input))
+	{
+		EndPlaying();
+		StartPlaying();
+	}
+	if (gameOverMenu.GetButton("Quit").UpdateAndCheckClick(input))
+	{
+		EndPlaying();
+	}
+}
+
 void Game::EndPlaying()
 {
 	penguins.clear();
@@ -182,4 +214,9 @@ void Game::DrawPauseMenu()
 void Game::DrawMainMenu()
 {
 	mainMenu.Draw();
+}
+
+void Game::DrawGameOverMenu()
+{
+	gameOverMenu.Draw();
 }
