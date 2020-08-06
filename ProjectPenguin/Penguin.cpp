@@ -148,6 +148,11 @@ glm::vec3 Penguin::GetPos() const
 	return pos;
 }
 
+const AnimatedModel& Penguin::GetModel() const
+{
+	return *model;
+}
+
 void Penguin::InitModel()
 {
 	model = std::make_unique<AnimatedModel>("Goopie.gltf", transform);

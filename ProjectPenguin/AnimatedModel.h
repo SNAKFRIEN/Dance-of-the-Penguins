@@ -49,6 +49,10 @@ public:
 	void AddToRenderQueue(Camera& camera);
 	static void DrawAllInstances();
 	void SetAnimation(std::string name);
+	//Functionality for joint attachments
+	int GetJointIndex(std::string jointName) const;
+	const std::vector<glm::mat4>& GetPose() const;
+	const glm::mat4& GetTransform() const;
 private:
 	ModelData& ConstructModelData(std::string name);
 

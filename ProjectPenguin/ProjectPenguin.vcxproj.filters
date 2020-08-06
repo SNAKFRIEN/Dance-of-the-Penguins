@@ -93,6 +93,9 @@
     <ClCompile Include="IceSkaterCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JointAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -165,6 +168,9 @@
       <Filter>Header Files\UserInterface</Filter>
     </ClInclude>
     <ClInclude Include="IceSkaterCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JointAttachment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

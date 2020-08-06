@@ -129,6 +129,29 @@ void AnimatedModel::SetAnimation(std::string name)
 	currentAnimation = name;
 }
 
+int AnimatedModel::GetJointIndex(std::string jointName) const
+{
+	for (Joint j : modelData.joints)
+	{
+		if (j.name == jointName)
+		{
+			return j.id;
+		}
+	}
+	assert(false);	//jointName could not be found
+	return -1;
+}
+
+const std::vector<glm::mat4>& AnimatedModel::GetPose() const
+{
+	return pose;
+}
+
+const glm::mat4& AnimatedModel::GetTransform() const
+{
+	return ownerTransform;
+}
+
 AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 {
 	//Check if model has been previously loaded

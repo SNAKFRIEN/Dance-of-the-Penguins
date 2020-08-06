@@ -27,6 +27,7 @@ public:
 	void Draw(Camera& camera);
 
 	glm::vec3 GetPos() const;
+	const AnimatedModel& GetModel() const;
 
 	static constexpr float personalSpaceRadius = 0.25f;	//Makes sure penguins don't collide
 	static constexpr float minPenguinDistance = personalSpaceRadius * 2.0f;	//Minimum distance between two penguins

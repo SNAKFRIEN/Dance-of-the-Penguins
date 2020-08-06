@@ -7,6 +7,7 @@
 #include "IceRink.h"
 #include "FrameTimer.h"
 #include "UserInterface.h"
+#include "JointAttachment.h"
 
 class Window;
 
@@ -52,6 +53,7 @@ private:
 
 	IceSkater player;
 	std::vector<Penguin> penguins;
+	std::unique_ptr<JointAttachment> test;
 
 	IceRink iceRink;
 

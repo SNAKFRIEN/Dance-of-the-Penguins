@@ -103,6 +103,8 @@ void Game::StartPlaying()
 		}
 	}
 
+	test = std::make_unique<JointAttachment>(penguins[50].GetModel(), "head");
+
 	state = State::Playing;
 
 	//Ensure at least one physics update takes place before rendering the first frame of gameplay
@@ -191,6 +193,7 @@ void Game::UpdateGameOver()
 
 void Game::EndPlaying()
 {
+	test.reset();
 	penguins.clear();
 	state = State::MainMenu;
 }
@@ -202,6 +205,7 @@ void Game::DrawPlaying()
 	{
 		p.Draw(camera);
 	}
+	test->Draw(camera);
 	AnimatedModel::DrawAllInstances();
 	iceRink.Draw(camera);
 }
