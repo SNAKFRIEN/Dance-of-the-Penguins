@@ -12,10 +12,10 @@ IceSkaterCollider::IceSkaterCollider(const glm::mat4& ownerTransform)
 
 bool IceSkaterCollider::IsInRink(const IceRink& rink) const
 {
+	//calculation is reduced to only one corner of the rink by using absolute position
 	glm::vec3 v3Pos(ownerTransform[3]);
 	glm::vec2 absPos(abs(v3Pos.x), abs(v3Pos.z));
 	//Rink consists of two rectangles and 4 circles making up the corners
-	//calculation is reduced to only one corner by using absolute position
 	glm::vec2 topRight0(rink.GetRight(), rink.GetTop() - rink.GetCornerRadius());
 	glm::vec2 topRight1(rink.GetRight() - rink.GetCornerRadius(), rink.GetTop());
 

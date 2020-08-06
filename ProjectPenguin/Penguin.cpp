@@ -5,6 +5,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/norm.hpp>
 
+#include "IceRink.h"
+
 Penguin::Penguin(glm::vec3 pos, bool initModel)
 	:
 	pos(pos),
@@ -54,7 +56,7 @@ Penguin::Penguin(Penguin&& rhs) noexcept
 	stateCountDown = rhs.stateCountDown;
 }
 
-void Penguin::Collide(int index, std::vector<Penguin>& penguins)
+void Penguin::Collide(int index, std::vector<Penguin>& penguins, const IceRink& rink)
 {
 	//Collide with other penguins
 	for (int i = index + 1; i < penguins.size(); i++)
@@ -84,27 +86,78 @@ void Penguin::Collide(int index, std::vector<Penguin>& penguins)
 		}
 	}
 
-	//Collide with boundaries
-	//REPLACE: boundaries shouldn't be hardcoded
-	if (pos.x + personalSpaceRadius >= 26.0f)
+
+	//Stay within the rink
+
+	//calculation is reduced to only one corner of the rink by using absolute position
+	glm::vec2 absPos(abs(pos.x), abs(pos.z));
+	//Rink consists of two rectangles and 4 circles making up the corners
+	glm::vec2 topRight0(rink.GetRight(), rink.GetTop() - rink.GetCornerRadius());
+	glm::vec2 topRight1(rink.GetRight() - rink.GetCornerRadius(), rink.GetTop());
+
+	//REPLACE: Room for further optimization by skipping the circle check if the penguin is within one of the rectangles
+	bool inRect = false;
+	if (absPos.y <= topRight0.y)
 	{
-		pos.x = 26.0f - personalSpaceRadius - 0.001f;
-		SetState(State::Thinking);
+		if (absPos.x + minDistanceFromRinkEdges > topRight0.x)
+		{
+			//Too far right, resolve for rect0
+			if (pos.x < 0.0f)
+			{
+				pos.x = -topRight0.x + minDistanceFromRinkEdges;
+			}
+			else
+			{
+				pos.x = topRight0.x - minDistanceFromRinkEdges;
+			}
+			SetState(State::Thinking);
+		}
+		inRect = true;
 	}
-	else if (pos.x - personalSpaceRadius <= -26.0f)
+	else if (absPos.x <= topRight1.x)
 	{
-		pos.x = -26.0f + personalSpaceRadius + 0.001f;
-		SetState(State::Thinking);
+		if (absPos.y + minDistanceFromRinkEdges > topRight1.y)
+		{
+			//Too far up, resolve for rect1
+			if (pos.z < 0.0f)
+			{
+				pos.z = -topRight1.y + minDistanceFromRinkEdges;
+			}
+			else
+			{
+				pos.z = topRight1.y - minDistanceFromRinkEdges;
+			}
+			SetState(State::Thinking);
+		}
+		inRect = true;
 	}
-	if (pos.z + personalSpaceRadius >= 15.0f)
+	if(!inRect)
 	{
-		pos.z = 15.0f - personalSpaceRadius - 0.001f;
-		SetState(State::Thinking);
-	}
-	else if (pos.z - personalSpaceRadius <= -15.0f)
-	{
-		pos.z = -15.0f + personalSpaceRadius + 0.001f;
-		SetState(State::Thinking);
+		glm::vec2 difference = absPos - glm::vec2(rink.GetRight() - rink.GetCornerRadius(), rink.GetTop() - rink.GetCornerRadius());
+		float bigDeal = glm::length2(difference) - ((rink.GetCornerRadius() - minDistanceFromRinkEdges) * (rink.GetCornerRadius() - minDistanceFromRinkEdges));
+		if (glm::length2(difference) > ((rink.GetCornerRadius() - minDistanceFromRinkEdges) * (rink.GetCornerRadius() - minDistanceFromRinkEdges)))
+		{
+			//Left rink via corner, resolve for circle
+
+			//Store signs of original pos to make sure collision is resolved for the correct corner
+			glm::vec2 signMultiplier(1.0f);
+			if (pos.x < 0.0f)
+			{
+				signMultiplier.x = -1.0f;
+			}
+			if (pos.z < 0.0f)
+			{
+				signMultiplier.y = -1.0f;
+			}
+
+			glm::vec2 resolveDirection = glm::normalize(difference);
+			glm::vec2 circleCenter = glm::vec2(rink.GetRight() - rink.GetCornerRadius(), rink.GetTop() - rink.GetCornerRadius());
+			absPos = circleCenter + (resolveDirection * (rink.GetCornerRadius() - minDistanceFromRinkEdges - 0.001f));
+
+			pos = glm::vec3(absPos.x * signMultiplier.x, 0.0f, absPos.y * signMultiplier.y);
+
+			SetState(State::Thinking);
+		}
 	}
 }
 

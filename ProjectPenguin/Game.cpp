@@ -99,7 +99,7 @@ void Game::StartPlaying()
 	{
 		for (int y = 0; y < 10; y++)
 		{
-			penguins.emplace_back(glm::vec3(x - 11, 0, y - 5));
+			penguins.emplace_back(glm::vec3(x - 15, 0, y - 8));
 		}
 	}
 
@@ -125,7 +125,7 @@ void Game::UpdatePlaying()
 		}
 		for (int i = 0; i < penguins.size(); i++)
 		{
-			penguins[i].Collide(i, penguins);
+			penguins[i].Collide(i, penguins, iceRink);
 		}
 		camera.Follow(player.GetPos());
 

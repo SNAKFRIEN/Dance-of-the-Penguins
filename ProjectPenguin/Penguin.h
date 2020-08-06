@@ -5,6 +5,7 @@
 #include <random>
 
 class Camera;
+class IceRink;
 
 class Penguin
 {
@@ -22,7 +23,7 @@ public:
 	Penguin(Penguin&& rhs) noexcept;
 	Penguin operator=(Penguin&& rhs) = delete;
 	
-	void Collide(int index, std::vector<Penguin>& penguins);	//Loop through all penguins that come after this one
+	void Collide(int index, std::vector<Penguin>& penguins, const IceRink& rink);
 	void Update(float dt);
 	void Draw(Camera& camera);
 
@@ -32,6 +33,7 @@ public:
 	static constexpr float personalSpaceRadius = 0.25f;	//Makes sure penguins don't collide
 	static constexpr float minPenguinDistance = personalSpaceRadius * 2.0f;	//Minimum distance between two penguins
 	static constexpr float minPenguinDistanceSquared = minPenguinDistance * minPenguinDistance;
+	static constexpr float minDistanceFromRinkEdges = 0.5f;
 private:
 	void InitModel();
 	void SetState(State newState);
