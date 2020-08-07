@@ -43,7 +43,7 @@ namespace UnitTest
 			Assert::IsTrue(errorMessage.find("Failed to load model: asdf.gltf") != std::string::npos);
 		}
 	};
-	TEST_CLASS(IceSkaterCollision)
+	TEST_CLASS(IceSkaterRinkDetection)
 	{
 	public:
 		TEST_METHOD(IceSkaterDetectsInRink)
@@ -90,6 +90,31 @@ namespace UnitTest
 			IceRink rink(false);
 
 			Assert::IsFalse(collider.IsInRink(rink));
+		}
+	};
+	TEST_CLASS(IceSkaterPenguinCollision)
+	{
+		TEST_METHOD(IceSkaterDetectsPenguinCollision)
+		{
+			glm::vec3 iceSkaterPos(-3.0f, 0.0f, 4.0f);
+			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
+			std::vector<Penguin> penguins;
+			penguins.reserve(1);
+			penguins.emplace_back(glm::vec3(-3.1f, 0.0f, 4.1f), false);
+
+			Assert::IsTrue(collider.IsCollidingWithPenguin(penguins));
+		}
+		TEST_METHOD(IceSkaterDetectsNoPenguinCollision)
+		{
+			glm::vec3 iceSkaterPos(5.0f, 0.0f, -4.0f);
+			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
+			std::vector<Penguin> penguins;
+			penguins.reserve(3);
+			penguins.emplace_back(glm::vec3(-3.1f, 0.0f, 4.1f), false);
+			penguins.emplace_back(glm::vec3(5.0f, 0.0f, 4.0f), false);
+			penguins.emplace_back(glm::vec3(-5.0f, 0.0f, 4.0f), false);
+
+			Assert::IsFalse(collider.IsCollidingWithPenguin(penguins));
 		}
 	};
 	TEST_CLASS(PenguinCollision)
