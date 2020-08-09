@@ -2,7 +2,7 @@
 
 #include "EliMath.h"
 
-glm::vec3 Spawner::GetAvailablePosition(glm::vec3 cameraPos, glm::vec3 cameraLookAtPoint, float fov) const
+glm::vec3 Spawner::FindOffScreenSpawnPoint(glm::vec3 cameraPos, glm::vec3 cameraLookAtPoint, float fov, float zOffset, float xOffset) const
 {
     //Find the furthest point vertically that's visible on the screen
     

@@ -7,6 +7,7 @@
 #include "../ProjectPenguin/IceRink.h"
 #include "../ProjectPenguin/Penguin.h"
 #include "../ProjectPenguin/EliMath.h"
+#include "../ProjectPenguin/Spawner.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -168,6 +169,28 @@ namespace UnitTest
 			Assert::AreEqual(target.x, result.x);
 			Assert::AreEqual(target.y, result.y);
 			Assert::AreEqual(target.z, result.z);
+		}
+	};
+	TEST_CLASS(Spawns)
+	{
+	public:
+		TEST_METHOD(SpawnOffScreen)
+		{
+			Spawner spawner;
+			glm::vec3 cameraPos(0.0f, 10.0f, 10.0f);
+			glm::vec3 cameraLookAtPoint(0.0f);
+			float fov = 45.0f;
+			int seed = 123;
+			glm::vec3 spawnPosition = spawner.FindOffScreenSpawnPoint(cameraPos, cameraLookAtPoint, fov);
+			//Check that point is not in view
+			glm::vec4 pClip = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 200.0f)
+				* glm::lookAt(cameraPos, cameraLookAtPoint, glm::vec3(0.0f, 1.0f, 0.0f))
+				* glm::vec4(spawnPosition, 1.0f);
+			Assert::IsTrue(
+				abs(pClip.x) < pClip.w &&
+				abs(pClip.y) < pClip.w &&
+				abs(pClip.z) < pClip.w
+			);
 		}
 	};
 }
