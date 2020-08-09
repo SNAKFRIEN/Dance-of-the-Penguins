@@ -238,13 +238,31 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 
 Model::~Model()
 {
-	glDeleteVertexArrays(1, &vao);
-	for (auto& vbo : vbos)
+	if (vao > 0)
 	{
-		glDeleteBuffers(1, &vbo.second);
+		glDeleteVertexArrays(1, &vao);
+		for (auto& vbo : vbos)
+		{
+			glDeleteBuffers(1, &vbo.second);
+		}
+		glDeleteBuffers(1, &ebo);
+		glDeleteTextures(1, &texture);
 	}
-	glDeleteBuffers(1, &ebo);
-	glDeleteTextures(1, &texture);
+}
+
+Model::Model(Model&& rhs) noexcept
+	:
+	vao(rhs.vao),
+	vbos(std::move(rhs.vbos)),
+	ebo(rhs.ebo),
+	nIndices(rhs.nIndices),
+	shader(std::move(rhs.shader)),
+	texture(rhs.texture),
+	ownerTransform(rhs.ownerTransform)
+{
+	rhs.vao = 0;
+	rhs.ebo = 0;
+	rhs.texture = 0;
 }
 
 void Model::Draw(Camera& camera)

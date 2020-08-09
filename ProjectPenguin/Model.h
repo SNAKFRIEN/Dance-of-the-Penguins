@@ -18,11 +18,10 @@ public:
 	~Model();
 	Model(const Model&) = delete;
 	Model operator=(const Model&) = delete;
-	Model(Model&& rhs) = delete;
+	Model(Model&& rhs) noexcept;
 	Model operator=(Model&& rhs) = delete;
 
 	void Draw(Camera& camera);
-	static constexpr int test = 5;
 private:
 	//Geometry
 	unsigned int vao = 0;

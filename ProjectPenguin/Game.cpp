@@ -102,7 +102,6 @@ void Game::StartPlaying()
 			penguins.emplace_back(glm::vec3(x - 15, 0, y - 8));
 		}
 	}
-
 	test = std::make_unique<JointAttachment>(penguins[50].GetModel(), "head");
 
 	state = State::Playing;

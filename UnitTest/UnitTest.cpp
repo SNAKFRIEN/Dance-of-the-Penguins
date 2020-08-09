@@ -6,6 +6,7 @@
 #include "../ProjectPenguin/IceSkaterCollider.h"
 #include "../ProjectPenguin/IceRink.h"
 #include "../ProjectPenguin/Penguin.h"
+#include "../ProjectPenguin/EliMath.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -94,6 +95,7 @@ namespace UnitTest
 	};
 	TEST_CLASS(IceSkaterPenguinCollision)
 	{
+	public:
 		TEST_METHOD(IceSkaterDetectsPenguinCollision)
 		{
 			glm::vec3 iceSkaterPos(-3.0f, 0.0f, 4.0f);
@@ -153,6 +155,19 @@ namespace UnitTest
 			}
 
 			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
+		}
+	};
+	TEST_CLASS(Math)
+	{
+	public:
+		TEST_METHOD(RayCastToFloor)
+		{
+			glm::vec3 origin(17.0f, 38.0f, -11.0f);
+			glm::vec3 target(29.0f, 0.0f, -11.0f);
+			glm::vec3 result = EliMath::IntersectFloor(origin, target - origin);
+			Assert::AreEqual(target.x, result.x);
+			Assert::AreEqual(target.y, result.y);
+			Assert::AreEqual(target.z, result.z);
 		}
 	};
 }
