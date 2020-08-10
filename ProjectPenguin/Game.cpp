@@ -94,15 +94,8 @@ void Game::StartPlaying()
 {
 	player.Reset();
 
-	penguins.reserve(100);
-	for (int x = 0; x < 10; x++)
-	{
-		for (int y = 0; y < 10; y++)
-		{
-			penguins.emplace_back(glm::vec3(x - 15, 0, y - 8));
-		}
-	}
-	test = std::make_unique<JointAttachment>(penguins[50].GetModel(), "head");
+	penguins.reserve(maxPenguins);
+	penguinSpawnTimer = 0.0f;
 
 	state = State::Playing;
 
@@ -113,6 +106,23 @@ void Game::StartPlaying()
 void Game::UpdatePlaying()
 {
 	const float frameTime = ft.Mark();
+
+	//Spawn new penguins
+	if (penguins.size() < maxPenguins)
+	{
+		penguinSpawnTimer += frameTime;
+		if (penguinSpawnTimer > penguinSpawnInterval)
+		{
+			penguins.emplace_back(penguinSpawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f));
+			penguinSpawnTimer = 0.0f;
+			if (penguins.size() == 1)
+			{
+				test = std::make_unique<JointAttachment>(penguins[0].GetModel(), "head");
+			}
+		}
+	}
+
+	//Update entities
 	accumulator += frameTime;
 	accumulator = std::min(accumulator, 0.02f);
 	while (accumulator > deltaTime)
@@ -204,7 +214,10 @@ void Game::DrawPlaying()
 	{
 		p.Draw(camera);
 	}
-	test->Draw(camera);
+	if (test)
+	{
+		test->Draw(camera);
+	}
 	AnimatedModel::DrawAllInstances();
 	iceRink.Draw(camera);
 }

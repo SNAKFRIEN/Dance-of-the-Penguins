@@ -13,6 +13,7 @@ public:
 	void SetAspectRatio(float ratio); //This function will automatically be called whenever the window is resized
 
 	glm::mat4 GetVPMatrix() const;
+	float GetFOVRadians() const;
 private:
 	glm::mat4 view;
 	glm::mat4 projection;

@@ -29,3 +29,8 @@ glm::mat4 Camera::GetVPMatrix() const
 {
 	return projection * view;
 }
+
+float Camera::GetFOVRadians() const
+{
+	return fov;
+}

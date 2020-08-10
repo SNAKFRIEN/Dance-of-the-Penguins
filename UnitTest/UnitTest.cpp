@@ -181,12 +181,12 @@ namespace UnitTest
 			glm::vec3 cameraLookAtPoint(0.0f);
 			float fov = 45.0f;
 			int seed = 123;
-			glm::vec3 spawnPosition = spawner.FindOffScreenSpawnPoint(cameraPos, cameraLookAtPoint, fov);
+			glm::vec3 spawnPosition = spawner.FindOffScreenSpawnPoint(cameraPos, cameraLookAtPoint, fov, 0.001f);
 			//Check that point is not in view
 			glm::vec4 pClip = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 200.0f)
 				* glm::lookAt(cameraPos, cameraLookAtPoint, glm::vec3(0.0f, 1.0f, 0.0f))
 				* glm::vec4(spawnPosition, 1.0f);
-			Assert::IsTrue(
+			Assert::IsFalse(
 				abs(pClip.x) < pClip.w &&
 				abs(pClip.y) < pClip.w &&
 				abs(pClip.z) < pClip.w

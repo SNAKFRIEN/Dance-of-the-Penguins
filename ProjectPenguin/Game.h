@@ -8,6 +8,7 @@
 #include "FrameTimer.h"
 #include "UserInterface.h"
 #include "JointAttachment.h"
+#include "Spawner.h"
 
 class Window;
 
@@ -56,6 +57,12 @@ private:
 	std::unique_ptr<JointAttachment> test;
 
 	IceRink iceRink;
+
+	Spawner penguinSpawner;
+	static constexpr float penguinSpawnInterval = 7.0f;
+	float penguinSpawnTimer = 0.0f;
+	static constexpr int maxPenguins = 100;
+
 
 	FrameTimer ft;
 	float accumulator = 0.01f;
