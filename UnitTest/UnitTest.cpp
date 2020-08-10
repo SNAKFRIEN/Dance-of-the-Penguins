@@ -120,7 +120,7 @@ namespace UnitTest
 			Assert::IsFalse(collider.IsCollidingWithPenguin(penguins));
 		}
 	};
-	TEST_CLASS(PenguinCollision)
+	TEST_CLASS(PenguinToPenguinCollision)
 	{
 	public:
 		TEST_METHOD(ResolvePenguinsInSamePosition)
@@ -135,8 +135,6 @@ namespace UnitTest
 
 			//It should only be necessary to call collide for one of the two penguins to fully resolve the collision for both
 			penguins[0].Collide(0, penguins, dummyRink);
-			
-			Logger::WriteMessage(std::to_string(glm::length(penguins[0].GetPos() - penguins[1].GetPos())).c_str());
 
 			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
 		}
@@ -156,6 +154,42 @@ namespace UnitTest
 			}
 
 			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
+		}
+	};
+	TEST_CLASS(PenguinToRinkCollision)
+	{
+		TEST_METHOD(PenguinAboveRink)
+		{
+			std::vector<Penguin> penguins;
+			penguins.reserve(1);
+			penguins.emplace_back(glm::vec3(-6.0f, 0.0f, -40.0f), false);
+
+			IceRink rink(false);
+
+			penguins[0].Collide(0, penguins, rink);
+
+			glm::vec3 expectedPosition = glm::vec3(-6.0f, 0.0f, -rink.GetTop() + Penguin::minDistanceFromRinkEdges);
+
+			Assert::AreEqual(expectedPosition.x, penguins[0].GetPos().x);
+			Assert::AreEqual(expectedPosition.y, penguins[0].GetPos().y);
+			Assert::AreEqual(expectedPosition.z, penguins[0].GetPos().z);
+		}
+		TEST_METHOD(PenguinOutsideBottomLeft)
+		{
+			std::vector<Penguin> penguins;
+			penguins.reserve(1);
+			penguins.emplace_back(glm::vec3(-90.0f, 0.0f, 50.0f), false);
+
+			IceRink rink(false);
+
+			const glm::vec3 circleCenter = glm::vec3(-(rink.GetRight() - rink.GetCornerRadius()), 0.0f, rink.GetTop() - rink.GetCornerRadius());
+			const glm::vec3 expectedPosition = glm::normalize(penguins[0].GetPos() - circleCenter) * (rink.GetCornerRadius() - Penguin::minDistanceFromRinkEdges - 0.001f) + circleCenter;
+
+			penguins[0].Collide(0, penguins, rink);
+
+			Assert::AreEqual(expectedPosition.x, penguins[0].GetPos().x);
+			Assert::AreEqual(expectedPosition.y, penguins[0].GetPos().y);
+			Assert::AreEqual(expectedPosition.z, penguins[0].GetPos().z);
 		}
 	};
 	TEST_CLASS(Math)
