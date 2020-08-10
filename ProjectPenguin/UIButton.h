@@ -20,6 +20,10 @@ public:
 
 	glm::vec2 GetRelativeTopLeft() const;
 	glm::vec2 GetRelativeBottomRight() const;
+	float GetLeft() const;
+	float GetRight() const;
+	float GetTop() const;
+	float GetBottom() const;
 private:
 	//Geometry
 	unsigned int vao = 0;

@@ -8,6 +8,7 @@
 #include "../ProjectPenguin/Penguin.h"
 #include "../ProjectPenguin/EliMath.h"
 #include "../ProjectPenguin/Spawner.h"
+#include "../ProjectPenguin/UserInterface.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -225,6 +226,29 @@ namespace UnitTest
 				abs(pClip.y) < pClip.w &&
 				abs(pClip.z) < pClip.w
 			);
+		}
+	};
+	TEST_CLASS(UIScaling)
+	{
+	public:
+		TEST_METHOD(CorrectlyScaleUIToAspectRatio)
+		{
+			//Create window with 4:3 aspect ratio
+			Window dummyWindow(800, 600);
+			//Create menu with 1:1 aspect ratio
+			MenuCanvas testMenu(dummyWindow, 1.0f);
+			//Create button just above the center of the screen
+			testMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.5f, 0.1f), "MrButton");
+			
+			//Allow the menu to resize to the window
+			testMenu.Update();
+
+			//Check if the button has the correct size
+			const UIButton& mrButton = testMenu.GetButton("MrButton");
+			Assert::AreEqual(-0.3f, mrButton.GetLeft());
+			Assert::AreEqual(0.375f, mrButton.GetRight());
+			Assert::AreEqual(0.1f, mrButton.GetBottom());
+			Assert::AreEqual(0.4f, mrButton.GetTop());
 		}
 	};
 }

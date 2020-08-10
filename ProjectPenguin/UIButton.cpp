@@ -181,3 +181,23 @@ glm::vec2 UIButton::GetRelativeBottomRight() const
 {
 	return relativeBottomRight;
 }
+
+float UIButton::GetLeft() const
+{
+    return left;
+}
+
+float UIButton::GetRight() const
+{
+	return right;
+}
+
+float UIButton::GetTop() const
+{
+	return top;
+}
+
+float UIButton::GetBottom() const
+{
+	return bottom;
+}
