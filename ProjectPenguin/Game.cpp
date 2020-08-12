@@ -14,7 +14,7 @@ Game::Game(Window& window)
 	mainMenu(window, 1.0f),
 	pauseMenu(window, 1.0f),
 	gameOverMenu(window, 1.0f),
-	numberDisplayTest(glm::vec2(0.0f, 0.9f), glm::vec2(0.02f, 0.05f), Anchor::Center, glm::vec2(0.0f), glm::vec2(0.0f))
+	gameplayUI(window, 1.0f)
 {
 	window.SetMainCamera(&camera);
 	camera.SetPos(glm::vec3(0.0f, 10.0f, 1.0f));
@@ -22,11 +22,11 @@ Game::Game(Window& window)
 	//Seed randomness for penguin spawns, REPLACE if there's a better way
 	srand(std::random_device()());
 
-	ft.Mark();
-
 	SetUpMainMenu();
 	SetUpPauseMenu();
 	SetUpGameOverMenu();
+
+	SetUpGameplayUI();
 }
 
 void Game::Update()
@@ -91,6 +91,12 @@ void Game::SetUpGameOverMenu()
 	gameOverMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit", "Quit.png");
 }
 
+void Game::SetUpGameplayUI()
+{
+	gameplayUI.AddNumberDisplay(glm::vec2(0.0f, 0.9f), glm::vec2(0.03f, 0.06f), Anchor::Center, "Score");
+	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
+}
+
 void Game::StartPlaying()
 {
 	player.Reset();
@@ -100,18 +106,18 @@ void Game::StartPlaying()
 
 	state = State::Playing;
 
+	score = 0;
+	scoreTimer = 0.0f;
+	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
+
+	ft.Mark();
+
 	//Ensure at least one physics update takes place before rendering the first frame of gameplay
 	UpdatePlaying();
 }
 
 void Game::UpdatePlaying()
 {
-	if (input.IsPressed(GLFW_KEY_K))
-	{
-		numberDisplayTestNumber += 5;
-		numberDisplayTest.SetNumber(numberDisplayTestNumber);
-	}
-
 	const float frameTime = ft.Mark();
 
 	//Spawn new penguins
@@ -153,6 +159,16 @@ void Game::UpdatePlaying()
 		accumulator -= deltaTime;
 	}
 
+	//Update score
+	scoreTimer += frameTime;
+	while (scoreTimer > scoreInterval)
+	{
+		score++;
+		gameplayUI.GetNumberDisplay("Score").SetNumber(score);
+		scoreTimer -= 1.0f;
+	}
+	gameplayUI.Update();
+
 	//REMOVE output fps and player pos
 	std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
 	//std::cout << "Player x: " << std::fixed << std::setprecision(2) << player.GetPos().x << " y: " << player.GetPos().z << std::endl;
@@ -172,6 +188,7 @@ void Game::UpdatePauseMenu()
 	}
 	if (pauseMenu.GetButton("Resume").UpdateAndCheckClick(input))
 	{
+		ft.Mark();
 		state = State::Playing;
 	}
 	if (pauseMenu.GetButton("Quit").UpdateAndCheckClick(input))
@@ -209,6 +226,8 @@ void Game::UpdateGameOver()
 
 void Game::EndPlaying()
 {
+	score = 0;
+	scoreTimer = 0.0f;
 	test.reset();
 	penguins.clear();
 	state = State::MainMenu;
@@ -227,8 +246,9 @@ void Game::DrawPlaying()
 	}
 	AnimatedModel::DrawAllInstances();
 	iceRink.Draw(camera);
+	
 	glEnable(GL_BLEND);
-	numberDisplayTest.Draw();
+	gameplayUI.Draw();
 	glDisable(GL_BLEND);
 }
 

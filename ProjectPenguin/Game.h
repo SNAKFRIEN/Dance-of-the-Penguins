@@ -33,6 +33,7 @@ private:
 	void SetUpMainMenu();
 	void SetUpPauseMenu();
 	void SetUpGameOverMenu();
+	void SetUpGameplayUI();
 
 	void StartPlaying();
 
@@ -56,6 +57,10 @@ private:
 	std::vector<Penguin> penguins;
 	std::unique_ptr<JointAttachment> test;
 
+	int score = 0;
+	static constexpr float scoreInterval = 1.0f;
+	float scoreTimer = 0.0f;
+
 	IceRink iceRink;
 
 	Spawner penguinSpawner;
@@ -75,6 +80,5 @@ private:
 	UICanvas pauseMenu;
 	UICanvas gameOverMenu;
 
-	UINumberDisplay numberDisplayTest;
-	int numberDisplayTestNumber = 1;
+	UICanvas gameplayUI;
 };

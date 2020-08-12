@@ -25,8 +25,8 @@ public:
 	void SetNumber(unsigned int value);
 	void Draw();
 
-	glm::vec3 GetRelativePos() const;
-	float GetRelativeScale() const;
+	glm::vec2 GetRelativePos() const;
+	glm::vec2 GetRelativeScale() const;
 private:
 	//Geometry
 	unsigned int vao = 0;

@@ -3,7 +3,7 @@
 #include "Input.h"
 #include "stb_image.h"
 
-UINumberDisplay::UINumberDisplay(glm::vec2 pos, glm::vec2 letterScale, Anchor anchor, glm::vec2 relativePos, glm::vec2 relativeScale, std::string textureName)
+UINumberDisplay::UINumberDisplay(glm::vec2 pos, glm::vec2 letterScale, Anchor anchor, glm::vec2 relativePos, glm::vec2 relativeLetterScale, std::string textureName)
 	:
 	shader("NumberShader.vert", "NumberShader.frag"),
 	relativePos(relativePos),
@@ -126,13 +126,19 @@ void UINumberDisplay::SetNumber(unsigned int value)
 {
 	displayValue.clear();
 
-	while (value > 0)
+	if (value == 0)
 	{
-		displayValue.push_back(value % 10);
-		value /= 10;
+		displayValue.push_back(0);
 	}
-
-	std::reverse(displayValue.begin(), displayValue.end());
+	else
+	{
+		while (value > 0)
+		{
+			displayValue.push_back(value % 10);
+			value /= 10;
+		}
+		std::reverse(displayValue.begin(), displayValue.end());
+	}
 }
 
 void UINumberDisplay::Draw()
@@ -173,4 +179,14 @@ void UINumberDisplay::Draw()
 	}
 
 	glBindVertexArray(0);
+}
+
+glm::vec2 UINumberDisplay::GetRelativePos() const
+{
+	return relativePos;
+}
+
+glm::vec2 UINumberDisplay::GetRelativeScale() const
+{
+	return relativeLetterScale;
 }

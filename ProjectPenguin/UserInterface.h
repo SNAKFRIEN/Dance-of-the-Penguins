@@ -14,8 +14,10 @@ public:
 	UICanvas(const Window& window, float aspectRatio);
 
 	void AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName = "DefaultButton.png");
+	void AddNumberDisplay(glm::vec2 pos, glm::vec2 scale, Anchor anchor, std::string name);
 
 	UIButton& GetButton(std::string name);
+	UINumberDisplay& GetNumberDisplay(std::string name);
 
 	//Recalculate dimensions based on window aspect ratio
 	void Update();
@@ -27,6 +29,7 @@ private:
 
 	//UI elements
 	std::unordered_map<std::string, UIButton> buttons;
+	std::unordered_map<std::string, UINumberDisplay> numberDisplays;
 
 	//Menu dimensions
 	const float aspectRatio;
