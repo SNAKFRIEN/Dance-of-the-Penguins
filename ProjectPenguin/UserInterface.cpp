@@ -1,6 +1,6 @@
 #include "UserInterface.h"
 
-MenuCanvas::MenuCanvas(const Window& window, float aspectRatio)
+UICanvas::UICanvas(const Window& window, float aspectRatio)
 	:
 	window(window),
 	aspectRatio(aspectRatio),
@@ -9,7 +9,7 @@ MenuCanvas::MenuCanvas(const Window& window, float aspectRatio)
 {
 }
 
-void MenuCanvas::AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName)
+void UICanvas::AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName)
 {
 	assert(buttons.count(name) == 0);
 	float buttonLeft = topLeft.x * width * 0.5f;
@@ -19,13 +19,13 @@ void MenuCanvas::AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string
 	buttons.emplace(name, std::move(UIButton(buttonLeft, buttonTop, buttonRight, buttonBottom, topLeft, bottomRight, textureName)));
 }
 
-UIButton& MenuCanvas::GetButton(std::string name)
+UIButton& UICanvas::GetButton(std::string name)
 {
 	assert(buttons.count(name) != 0);
 	return buttons.at(name);
 }
 
-void MenuCanvas::Update()
+void UICanvas::Update()
 {
 	//Update MenuCanvas size
 	width = 2.0f;
@@ -60,7 +60,7 @@ void MenuCanvas::Update()
 	}
 }
 
-void MenuCanvas::Draw()
+void UICanvas::Draw()
 {
 	//Loop through all UI elements and draw
 	for (std::pair<const std::string, UIButton>& button : buttons)

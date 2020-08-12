@@ -102,6 +102,9 @@
     <ClCompile Include="EliMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UINumberDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -185,6 +188,9 @@
     <ClInclude Include="EliMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UINumberDisplay.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\NoShader.frag">
@@ -227,6 +233,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\UIShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NumberShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NumberShader.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

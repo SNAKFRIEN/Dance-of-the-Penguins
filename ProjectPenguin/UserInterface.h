@@ -1,16 +1,17 @@
 #pragma once
 
 #include "UIButton.h"
+#include "UINumberDisplay.h"
 #include "Window.h"
 
 #include <unordered_map>
 
 /*This class is a container for UI elements. Calling its Update function makes sure that buttons maintain their aspect ratio no matter the size of the window*/
 
-class MenuCanvas
+class UICanvas
 {
 public:
-	MenuCanvas(const Window& window, float aspectRatio);
+	UICanvas(const Window& window, float aspectRatio);
 
 	void AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName = "DefaultButton.png");
 

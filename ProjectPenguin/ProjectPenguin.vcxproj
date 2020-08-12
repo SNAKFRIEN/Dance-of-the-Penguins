@@ -161,6 +161,7 @@
     <ClCompile Include="JointAttachment.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Spawner.cpp" />
+    <ClCompile Include="UINumberDisplay.cpp" />
     <ClCompile Include="UserInterface.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelNoTexture.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="KeyFrame.h" />
     <ClInclude Include="EliMath.h" />
     <ClInclude Include="Spawner.h" />
+    <ClInclude Include="UINumberDisplay.h" />
     <ClInclude Include="UserInterface.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelNoTexture.h" />
@@ -210,6 +212,8 @@
     <None Include="Shaders\CelShader.vert" />
     <None Include="Shaders\NoShader.frag" />
     <None Include="Shaders\NoShader.vert" />
+    <None Include="Shaders\NumberShader.frag" />
+    <None Include="Shaders\NumberShader.vert" />
     <None Include="Shaders\Shader.frag" />
     <None Include="Shaders\Shader.vert" />
     <None Include="Shaders\UIShader.frag" />

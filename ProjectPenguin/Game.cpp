@@ -13,7 +13,8 @@ Game::Game(Window& window)
 	input(window),
 	mainMenu(window, 1.0f),
 	pauseMenu(window, 1.0f),
-	gameOverMenu(window, 1.0f)
+	gameOverMenu(window, 1.0f),
+	numberDisplayTest(glm::vec2(0.0f, 0.9f), glm::vec2(0.02f, 0.05f), Anchor::Center, glm::vec2(0.0f), glm::vec2(0.0f))
 {
 	window.SetMainCamera(&camera);
 	camera.SetPos(glm::vec3(0.0f, 10.0f, 1.0f));
@@ -105,6 +106,12 @@ void Game::StartPlaying()
 
 void Game::UpdatePlaying()
 {
+	if (input.IsPressed(GLFW_KEY_K))
+	{
+		numberDisplayTestNumber += 5;
+		numberDisplayTest.SetNumber(numberDisplayTestNumber);
+	}
+
 	const float frameTime = ft.Mark();
 
 	//Spawn new penguins
@@ -220,6 +227,9 @@ void Game::DrawPlaying()
 	}
 	AnimatedModel::DrawAllInstances();
 	iceRink.Draw(camera);
+	glEnable(GL_BLEND);
+	numberDisplayTest.Draw();
+	glDisable(GL_BLEND);
 }
 
 void Game::DrawPauseMenu()

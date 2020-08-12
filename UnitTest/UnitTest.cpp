@@ -236,7 +236,7 @@ namespace UnitTest
 			//Create window with 4:3 aspect ratio
 			Window dummyWindow(800, 600);
 			//Create menu with 1:1 aspect ratio
-			MenuCanvas testMenu(dummyWindow, 1.0f);
+			UICanvas testMenu(dummyWindow, 1.0f);
 			//Create button just above the center of the screen
 			testMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.5f, 0.1f), "MrButton");
 			

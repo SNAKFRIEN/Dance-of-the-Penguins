@@ -71,7 +71,10 @@ private:
 	State state = State::MainMenu;
 	bool quit = false;
 
-	MenuCanvas mainMenu;
-	MenuCanvas pauseMenu;
-	MenuCanvas gameOverMenu;
+	UICanvas mainMenu;
+	UICanvas pauseMenu;
+	UICanvas gameOverMenu;
+
+	UINumberDisplay numberDisplayTest;
+	int numberDisplayTestNumber = 1;
 };

@@ -1,30 +1,29 @@
-#include "UIButton.h"
+#include "UINumberDisplay.h"
 
 #include "Input.h"
 #include "stb_image.h"
 
-UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight, std::string textureName)
+UINumberDisplay::UINumberDisplay(glm::vec2 pos, glm::vec2 letterScale, Anchor anchor, glm::vec2 relativePos, glm::vec2 relativeScale, std::string textureName)
 	:
-	shader("UIShader.vert", "UIShader.frag"),
-	left(left),
-	top(top),
-	right(right),
-	bottom(bottom),
-	relativeTopLeft(relativeTopLeft),
-	relativeBottomRight(relativeBottomRight)
+	shader("NumberShader.vert", "NumberShader.frag"),
+	relativePos(relativePos),
+	relativeLetterScale(relativeLetterScale),
+	pos(pos),
+	letterScale(letterScale),
+	anchor(anchor)
 {
 	float vertices[] = {
-		right, top,		1.0f, 1.0f,		//Top right
-		right, bottom,	1.0f, 0.0f,		//Bottom right
-		left, bottom,	0.0f, 0.0f,		//Bottom left
-		left, top,		0.0f, 1.0f		//Top left 
+		0.5f, 0.5f,		0.1f, 1.0f,		//Top right
+		0.5f, -0.5f,	0.1f, 0.0f,		//Bottom right
+		-0.5f, -0.5f,	0.0f, 0.0f,		//Bottom left
+		-0.5f, 0.5f,	0.0f, 1.0f		//Top left 
 	};
 	unsigned int indices[] = {
 		0, 1, 3,   // first triangle
 		1, 2, 3    // second triangle
 	};
 
-	
+
 
 	//Generate VAO
 	glGenVertexArrays(1, &vao);
@@ -86,7 +85,7 @@ UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 r
 	shader.SetUniformInt("texture0", 0);
 }
 
-UIButton::~UIButton()
+UINumberDisplay::~UINumberDisplay()
 {
 	if (vao > 0)
 	{
@@ -100,104 +99,78 @@ UIButton::~UIButton()
 	}
 }
 
-UIButton::UIButton(UIButton&& rhs) noexcept
+UINumberDisplay::UINumberDisplay(UINumberDisplay&& rhs) noexcept
 	:
 	vao(rhs.vao),
 	vbo(rhs.vbo),
 	ebo(rhs.ebo),
 	shader(std::move(rhs.shader)),
 	texture(rhs.texture),
-	left(rhs.left),
-	right(rhs.right),
-	top(rhs.top),
-	bottom(rhs.bottom),
-	relativeTopLeft(rhs.relativeTopLeft),
-	relativeBottomRight(rhs.relativeBottomRight),
-	color(rhs.color)
+	relativePos(rhs.relativePos),
+	relativeLetterScale(rhs.relativeLetterScale),
+	pos(rhs.pos),
+	letterScale(rhs.letterScale),
+	anchor(rhs.anchor)
 {
 	rhs.vao = 0;
 	rhs.texture = 0;
 }
 
-void UIButton::UpdateSize(float newLeft, float newTop, float newRight, float newBottom)
+void UINumberDisplay::UpdateSize(glm::vec2 newPos, glm::vec2 newScale)
 {
-	left = newLeft;
-	top = newTop;
-	right = newRight;
-	bottom = newBottom;
-
-	float vertices[] = {
-		right, top,		1.0f, 1.0f,		//Top right
-		right, bottom,	1.0f, 0.0f,	//Bottom right
-		left, bottom,	0.0f, 0.0f,	//Bottom left
-		left, top,		0.0f, 1.0f		//Top left 
-	};
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+	pos = newPos;
+	letterScale = newScale;
 }
 
-bool UIButton::UpdateAndCheckClick(const Input& input)
+void UINumberDisplay::SetNumber(unsigned int value)
 {
-	float mouseX = input.GetMouseUV().x;
-	float mouseY = input.GetMouseUV().y;
-	if (mouseX < right
-		&& mouseX > left
-		&& mouseY < top
-		&& mouseY > bottom)
+	displayValue.clear();
+
+	while (value > 0)
 	{
-		color = glm::vec3(1.0f);
-		if (input.LMBShortPressed())
-		{
-			return true;
-		}
+		displayValue.push_back(value % 10);
+		value /= 10;
 	}
-	else
-	{
-		color = glm::vec3(0.0f);
-	}
-	return false;
+
+	std::reverse(displayValue.begin(), displayValue.end());
 }
 
-void UIButton::Draw()
+void UINumberDisplay::Draw()
 {
+	//Bind graphics stuff
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	shader.Use();
-	shader.SetUniformVec3("color", color);
 
 	glBindVertexArray(vao);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	//Calculate position.x of leftmost letter
+	float left;
+	switch (anchor)
+	{
+	case Anchor::Left:
+		left = pos.x;
+		break;
+	case Anchor::Center:
+		left = pos.x - letterScale.x * (float)displayValue.size() / 2.0f;
+		break;
+	case Anchor::Right:
+		left = pos.x - (float)displayValue.size() * letterScale.x;
+		break;
+	}
+	left += letterScale.x * 0.5f;
+
+	//Render letters one by one
+	for (int i = 0; i < displayValue.size(); i++)
+	{
+		glm::vec2 letterPos = pos;
+		letterPos.x = left + letterScale.x * (float)i;
+		shader.SetUniformVec2("pos", letterPos);
+		shader.SetUniformVec2("scale", letterScale);
+		shader.SetUniformInt("value", displayValue[i]);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+
 	glBindVertexArray(0);
-}
-
-glm::vec2 UIButton::GetRelativeTopLeft() const
-{
-	return relativeTopLeft;
-}
-
-glm::vec2 UIButton::GetRelativeBottomRight() const
-{
-	return relativeBottomRight;
-}
-
-float UIButton::GetLeft() const
-{
-    return left;
-}
-
-float UIButton::GetRight() const
-{
-	return right;
-}
-
-float UIButton::GetTop() const
-{
-	return top;
-}
-
-float UIButton::GetBottom() const
-{
-	return bottom;
 }
