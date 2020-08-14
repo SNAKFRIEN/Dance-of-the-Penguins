@@ -61,11 +61,12 @@ private:
 	int score = 0;
 	static constexpr float scoreInterval = 1.0f;
 	float scoreTimer = 0.0f;
+	int highScore = 0;
 
 	IceRink iceRink;
 
 	Spawner penguinSpawner;
-	static constexpr float penguinSpawnInterval = 7.0f;
+	static constexpr float penguinSpawnInterval = 4.0f;
 	float penguinSpawnTimer = 0.0f;
 	static constexpr int maxPenguins = 100;
 

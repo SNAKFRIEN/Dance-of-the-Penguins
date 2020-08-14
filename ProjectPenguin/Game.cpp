@@ -27,6 +27,9 @@ Game::Game(Window& window)
 	SetUpGameOverMenu();
 
 	SetUpGameplayUI();
+
+	saveFile.LoadData("SaveData.json");
+	highScore = saveFile.GetHighScore();
 }
 
 void Game::Update()
@@ -89,6 +92,8 @@ void Game::SetUpGameOverMenu()
 {
 	gameOverMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Retry", "Retry.png");
 	gameOverMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit", "Quit.png");
+	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.7f), glm::vec2(0.1f, 0.2f), Anchor::Center, "Score");
+	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.55f), glm::vec2(0.05f, 0.1f), Anchor::Center, "HighScore");
 }
 
 void Game::SetUpGameplayUI()
@@ -159,6 +164,11 @@ void Game::UpdatePlaying()
 		accumulator -= deltaTime;
 	}
 
+	if (state == State::GameOver)
+	{
+		EndPlaying();
+	}
+
 	//Update score
 	scoreTimer += frameTime;
 	while (scoreTimer > scoreInterval)
@@ -194,6 +204,7 @@ void Game::UpdatePauseMenu()
 	if (pauseMenu.GetButton("Quit").UpdateAndCheckClick(input))
 	{
 		EndPlaying();
+		state = State::MainMenu;
 	}
 }
 
@@ -215,22 +226,31 @@ void Game::UpdateGameOver()
 	gameOverMenu.Update();
 	if (gameOverMenu.GetButton("Retry").UpdateAndCheckClick(input))
 	{
-		EndPlaying();
 		StartPlaying();
 	}
 	if (gameOverMenu.GetButton("Quit").UpdateAndCheckClick(input))
 	{
-		EndPlaying();
+		state = State::MainMenu;
 	}
 }
 
 void Game::EndPlaying()
 {
+	if (score > highScore)
+	{
+		highScore = score;
+	}
+
+	gameOverMenu.GetNumberDisplay("Score").SetNumber(score);
+	gameOverMenu.GetNumberDisplay("HighScore").SetNumber(highScore);
+
+	saveFile.SetHighScore(highScore);
+	saveFile.SaveData("SaveData.json");
+
 	score = 0;
 	scoreTimer = 0.0f;
 	test.reset();
 	penguins.clear();
-	state = State::MainMenu;
 }
 
 void Game::DrawPlaying()
