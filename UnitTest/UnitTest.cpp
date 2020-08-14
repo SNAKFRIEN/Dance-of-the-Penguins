@@ -9,6 +9,7 @@
 #include "../ProjectPenguin/EliMath.h"
 #include "../ProjectPenguin/Spawner.h"
 #include "../ProjectPenguin/UserInterface.h"
+#include "../ProjectPenguin/SaveFile.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -249,6 +250,48 @@ namespace UnitTest
 			Assert::AreEqual(0.375f, mrButton.GetRight());
 			Assert::AreEqual(0.1f, mrButton.GetBottom());
 			Assert::AreEqual(0.4f, mrButton.GetTop());
+		}
+	};
+	TEST_CLASS(SaveFiles)
+	{
+	public:
+		TEST_METHOD(CreateAndDeleteFile)
+		{
+			std::string fileName = "test0.json";
+
+			//Create file
+			SaveFile save;
+			save.SaveData(fileName);
+			Assert::IsTrue(SaveFile::FileExists(fileName), L"test0.json was likely not created");
+
+			//Remove file
+			SaveFile::RemoveFile(fileName);
+			Assert::IsFalse(SaveFile::FileExists(fileName), L"test0.json was likely not deleted");
+		}
+		TEST_METHOD(SaveAndLoadData)
+		{
+			std::string fileName = "test1.json";
+			int highScore = 123;
+			bool tutorialFinished = true;
+
+			//Make sure the test file doesn't exist yet
+			Assert::IsFalse(SaveFile::FileExists(fileName), L"test1.json already exists");
+
+			//Create and save file
+			SaveFile save;
+			save.SetHighScore(highScore);
+			save.SetTutorialCompleted(tutorialFinished);
+			save.SaveData(fileName);
+
+			//Load data into different object to be safe
+			SaveFile load;
+			load.SetHighScore(0);
+			load.SetTutorialCompleted(false);
+			load.LoadData(fileName);
+
+			//Check that data was correctly stored and loaded
+			Assert::AreEqual(highScore, load.GetHighScore(), L"high scores don't match");
+			Assert::AreEqual(tutorialFinished, load.GetTutorialCompleted(), L"tutorial completed does not match");
 		}
 	};
 }
