@@ -234,22 +234,30 @@ namespace UnitTest
 	public:
 		TEST_METHOD(CorrectlyScaleUIToAspectRatio)
 		{
-			//Create window with 4:3 aspect ratio
-			Window dummyWindow(800, 600);
-			//Create menu with 1:1 aspect ratio
-			UICanvas testMenu(dummyWindow, 1.0f);
-			//Create button just above the center of the screen
-			testMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.5f, 0.1f), "MrButton");
-			
-			//Allow the menu to resize to the window
-			testMenu.Update();
+			try
+			{
+				//Create window with 4:3 aspect ratio
+				Window dummyWindow(800, 600);
+				//Create menu with 1:1 aspect ratio
+				UICanvas testMenu(dummyWindow, 1.0f);
+				//Create button just above the center of the screen
+				testMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.5f, 0.1f), "MrButton");
 
-			//Check if the button has the correct size
-			const UIButton& mrButton = testMenu.GetButton("MrButton");
-			Assert::AreEqual(-0.3f, mrButton.GetLeft());
-			Assert::AreEqual(0.375f, mrButton.GetRight());
-			Assert::AreEqual(0.1f, mrButton.GetBottom());
-			Assert::AreEqual(0.4f, mrButton.GetTop());
+				//Allow the menu to resize to the window
+				testMenu.Update();
+
+				//Check if the button has the correct size
+				const UIButton& mrButton = testMenu.GetButton("MrButton");
+				Assert::AreEqual(-0.3f, mrButton.GetLeft());
+				Assert::AreEqual(0.375f, mrButton.GetRight());
+				Assert::AreEqual(0.1f, mrButton.GetBottom());
+				Assert::AreEqual(0.4f, mrButton.GetTop());
+			}
+			catch (std::exception& e)
+			{
+				Logger::WriteMessage(e.what());
+				throw;	//Can't let this test pass if there's an exception
+			}
 		}
 	};
 	TEST_CLASS(SaveFiles)
@@ -257,41 +265,55 @@ namespace UnitTest
 	public:
 		TEST_METHOD(CreateAndDeleteFile)
 		{
-			std::string fileName = "test0.json";
+			try
+			{
+				std::string fileName = "test0.json";
 
-			//Create file
-			SaveFile save;
-			save.SaveData(fileName);
-			Assert::IsTrue(SaveFile::FileExists(fileName), L"test0.json was likely not created");
+				//Create file
+				SaveFile save;
+				save.SaveData(fileName);
+				Assert::IsTrue(SaveFile::FileExists(fileName), L"test0.json was likely not created");
 
-			//Remove file
-			SaveFile::RemoveFile(fileName);
-			Assert::IsFalse(SaveFile::FileExists(fileName), L"test0.json was likely not deleted");
+				//Remove file
+				SaveFile::RemoveFile(fileName);
+				Assert::IsFalse(SaveFile::FileExists(fileName), L"test0.json was likely not deleted");
+			}
+			catch (std::ofstream::failure& e)
+			{
+				Logger::WriteMessage(e.what());
+			}
 		}
 		TEST_METHOD(SaveAndLoadData)
 		{
-			std::string fileName = "test1.json";
-			int highScore = 123;
-			bool tutorialFinished = true;
+			try
+			{
+				std::string fileName = "test1.json";
+				int highScore = 123;
+				bool tutorialFinished = true;
 
-			//Make sure the test file doesn't exist yet
-			Assert::IsFalse(SaveFile::FileExists(fileName), L"test1.json already exists");
+				//Create and save file
+				SaveFile save;
+				save.SetHighScore(highScore);
+				save.SetTutorialCompleted(tutorialFinished);
+				save.SaveData(fileName);
 
-			//Create and save file
-			SaveFile save;
-			save.SetHighScore(highScore);
-			save.SetTutorialCompleted(tutorialFinished);
-			save.SaveData(fileName);
+				//Load data into different object to be safe
+				SaveFile load;
+				load.SetHighScore(0);
+				load.SetTutorialCompleted(false);
+				load.LoadData(fileName);
 
-			//Load data into different object to be safe
-			SaveFile load;
-			load.SetHighScore(0);
-			load.SetTutorialCompleted(false);
-			load.LoadData(fileName);
+				//Cleanup
+				SaveFile::RemoveFile("test1.json");
 
-			//Check that data was correctly stored and loaded
-			Assert::AreEqual(highScore, load.GetHighScore(), L"high scores don't match");
-			Assert::AreEqual(tutorialFinished, load.GetTutorialCompleted(), L"tutorial completed does not match");
+				//Check that data was correctly stored and loaded
+				Assert::AreEqual(highScore, load.GetHighScore(), L"high scores don't match");
+				Assert::AreEqual(tutorialFinished, load.GetTutorialCompleted(), L"tutorial completed does not match");
+			}
+			catch (std::ofstream::failure& e)
+			{
+				Logger::WriteMessage(e.what());
+			}
 		}
 	};
 }

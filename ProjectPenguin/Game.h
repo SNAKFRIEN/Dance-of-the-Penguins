@@ -9,6 +9,7 @@
 #include "UserInterface.h"
 #include "JointAttachment.h"
 #include "Spawner.h"
+#include "SaveFile.h"
 
 class Window;
 
@@ -81,4 +82,6 @@ private:
 	UICanvas gameOverMenu;
 
 	UICanvas gameplayUI;
+
+	SaveFile saveFile;
 };

@@ -109,6 +109,12 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Libraries\GLFW</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Models" "$(OutDir)Models" /e /i /y
+xcopy "$(ProjectDir)Shaders" "$(OutDir)Shaders" /e /i /y
+xcopy "$(ProjectDir)UI" "$(OutDir)UI" /e /i /y
+if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -146,6 +152,12 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Libraries\GLFW</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Models" "$(OutDir)Models" /e /i /y
+xcopy "$(ProjectDir)Shaders" "$(OutDir)Shaders" /e /i /y
+xcopy "$(ProjectDir)UI" "$(OutDir)UI" /e /i /y
+if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedModel.cpp" />

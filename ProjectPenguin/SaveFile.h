@@ -13,8 +13,8 @@ public:
 	int GetHighScore() const;
 	bool GetTutorialCompleted() const;
 
-	void SetHighScore(int score);
-	void SetTutorialCompleted(bool tutorialFinished);
+	void SetHighScore(int inScore);
+	void SetTutorialCompleted(bool inTutorialCompleted);
 private:
 	int highScore = 0;
 	bool tutorialCompleted = false;
