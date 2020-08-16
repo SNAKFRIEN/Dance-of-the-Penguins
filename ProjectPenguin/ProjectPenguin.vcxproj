@@ -115,6 +115,9 @@ xcopy "$(ProjectDir)Shaders" "$(OutDir)Shaders" /e /i /y
 xcopy "$(ProjectDir)UI" "$(OutDir)UI" /e /i /y
 if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if not exist "$(ProjectDir)UserData" md "$(ProjectDir)UserData"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -158,6 +161,9 @@ xcopy "$(ProjectDir)Shaders" "$(OutDir)Shaders" /e /i /y
 xcopy "$(ProjectDir)UI" "$(OutDir)UI" /e /i /y
 if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if not exist "$(ProjectDir)UserData" md "$(ProjectDir)UserData"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedModel.cpp" />
