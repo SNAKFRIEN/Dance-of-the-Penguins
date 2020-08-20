@@ -17,6 +17,7 @@ public:
 
 	bool IsColliding(const std::vector<Penguin>& penguins, const IceRink& rink) const;
 	void Update(float dt, const Input& input);
+	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
 
 	void Reset();	//Sets the player back to the starting location

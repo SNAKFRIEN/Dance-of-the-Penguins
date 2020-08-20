@@ -71,7 +71,10 @@ void IceSkater::Update(float dt, const Input& input)
 	}
 
 	transform = glm::translate(glm::mat4(1.0f), pos) * rotation;
+}
 
+void IceSkater::UpdateAnimation(float dt)
+{
 	model.Update(dt);
 }
 

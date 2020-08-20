@@ -25,6 +25,7 @@ public:
 	
 	void Collide(int index, std::vector<Penguin>& penguins, const IceRink& rink);
 	void Update(float dt);
+	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
 
 	glm::vec3 GetPos() const;

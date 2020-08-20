@@ -164,6 +164,13 @@ void Game::UpdatePlaying()
 		accumulator -= deltaTime;
 	}
 
+	//Update animations
+	player.UpdateAnimation(frameTime);
+	for (Penguin& penguin : penguins)
+	{
+		penguin.UpdateAnimation(frameTime);
+	}
+
 	if (state == State::GameOver)
 	{
 		EndPlaying();
