@@ -10,6 +10,7 @@
 #include "JointAttachment.h"
 #include "Spawner.h"
 #include "SaveFile.h"
+#include "AudioManager.h"
 
 class Window;
 
@@ -85,4 +86,6 @@ private:
 	UICanvas gameplayUI;
 
 	SaveFile saveFile;
+
+	AudioManager audioManager;
 };
