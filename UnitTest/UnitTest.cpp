@@ -44,7 +44,7 @@ namespace UnitTest
 			}
 
 			//Assert that the correct exception was thrown
-			Assert::IsTrue(errorMessage.find("Failed to load model: asdf.gltf") != std::string::npos);
+			Assert::IsTrue(errorMessage.find("Failed to load model: asdf.gltf") != std::string::npos, L"The expected exception was not thrown");
 		}
 	};
 	TEST_CLASS(IceSkaterRinkDetection)
@@ -57,7 +57,7 @@ namespace UnitTest
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 			
-			Assert::IsTrue(collider.IsInRink(rink));
+			Assert::IsTrue(collider.IsInRink(rink), L"The ice skater collider incorrectly detected that it was outside the rink");
 		}
 		TEST_METHOD(IceSkaterDetectsOutOfRink)
 		{
@@ -66,7 +66,7 @@ namespace UnitTest
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 
-			Assert::IsFalse(collider.IsInRink(rink));
+			Assert::IsFalse(collider.IsInRink(rink), L"The ice skater collider incorrectly detected that it was inside the rink");
 		}
 		TEST_METHOD(IceSkaterDetectsOutOfRinkOnEdge)
 		{
@@ -75,7 +75,7 @@ namespace UnitTest
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 
-			Assert::IsFalse(collider.IsInRink(rink));
+			Assert::IsFalse(collider.IsInRink(rink), L"The ice skater collider incorrectly detected that it was inside the rink");
 		}
 		TEST_METHOD(IceSkaterDetectsInRinkInCurve)
 		{
@@ -84,7 +84,7 @@ namespace UnitTest
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 
-			Assert::IsTrue(collider.IsInRink(rink));
+			Assert::IsTrue(collider.IsInRink(rink), L"The ice skater collider incorrectly detected that it was outside the rink");
 		}
 		TEST_METHOD(IceSkaterDetectsOutOfRinkInCurve)
 		{
@@ -93,7 +93,7 @@ namespace UnitTest
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			IceRink rink(false);
 
-			Assert::IsFalse(collider.IsInRink(rink));
+			Assert::IsFalse(collider.IsInRink(rink), L"The ice skater collider incorrectly detected that it was inside the rink");
 		}
 	};
 	TEST_CLASS(IceSkaterPenguinCollision)
@@ -109,7 +109,7 @@ namespace UnitTest
 			penguins.reserve(1);
 			penguins.emplace_back(glm::vec3(-3.1f, 0.0f, 4.1f), dummyAudioManager, false);
 
-			Assert::IsTrue(collider.IsCollidingWithPenguin(penguins));
+			Assert::IsTrue(collider.IsCollidingWithPenguin(penguins), L"The ice skater collider did not detect the penguin collision");
 		}
 		TEST_METHOD(IceSkaterDetectsNoPenguinCollision)
 		{
@@ -123,7 +123,7 @@ namespace UnitTest
 			penguins.emplace_back(glm::vec3(5.0f, 0.0f, 4.0f), dummyAudioManager, false);
 			penguins.emplace_back(glm::vec3(-5.0f, 0.0f, 4.0f), dummyAudioManager, false);
 
-			Assert::IsFalse(collider.IsCollidingWithPenguin(penguins));
+			Assert::IsFalse(collider.IsCollidingWithPenguin(penguins), L"The ice skater collider incorrectly detected a collision with a penguin");
 		}
 	};
 	TEST_CLASS(PenguinToPenguinCollision)
@@ -144,7 +144,7 @@ namespace UnitTest
 			//It should only be necessary to call collide for one of the two penguins to fully resolve the collision for both
 			penguins[0].Collide(0, penguins, dummyRink);
 
-			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
+			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance, L"The penguins were still colliding after the collision should have been resolved");
 		}
 		TEST_METHOD(ResolvePartialPenguinOverlap)
 		{
@@ -163,7 +163,7 @@ namespace UnitTest
 				penguins[i].Collide(i, penguins, dummyRink);
 			}
 
-			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance);
+			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance, L"The penguins were still colliding after the collision should have been resolved");
 		}
 	};
 	TEST_CLASS(PenguinToRinkCollision)
@@ -182,9 +182,9 @@ namespace UnitTest
 
 			glm::vec3 expectedPosition = glm::vec3(-6.0f, 0.0f, -rink.GetTop() + Penguin::minDistanceFromRinkEdges);
 
-			Assert::AreEqual(expectedPosition.x, penguins[0].GetPos().x);
-			Assert::AreEqual(expectedPosition.y, penguins[0].GetPos().y);
-			Assert::AreEqual(expectedPosition.z, penguins[0].GetPos().z);
+			Assert::AreEqual(expectedPosition.x, penguins[0].GetPos().x, L"The penguin did not resolve its collision to move to the expected position");
+			Assert::AreEqual(expectedPosition.y, penguins[0].GetPos().y, L"The penguin did not resolve its collision to move to the expected position");
+			Assert::AreEqual(expectedPosition.z, penguins[0].GetPos().z, L"The penguin did not resolve its collision to move to the expected position");
 		}
 		TEST_METHOD(PenguinOutsideBottomLeft)
 		{
@@ -201,9 +201,9 @@ namespace UnitTest
 
 			penguins[0].Collide(0, penguins, rink);
 
-			Assert::AreEqual(expectedPosition.x, penguins[0].GetPos().x);
-			Assert::AreEqual(expectedPosition.y, penguins[0].GetPos().y);
-			Assert::AreEqual(expectedPosition.z, penguins[0].GetPos().z);
+			Assert::AreEqual(expectedPosition.x, penguins[0].GetPos().x, L"The penguin did not resolve its collision to move to the expected position");
+			Assert::AreEqual(expectedPosition.y, penguins[0].GetPos().y, L"The penguin did not resolve its collision to move to the expected position");
+			Assert::AreEqual(expectedPosition.z, penguins[0].GetPos().z, L"The penguin did not resolve its collision to move to the expected position");
 		}
 	};
 	TEST_CLASS(Math)
@@ -214,9 +214,9 @@ namespace UnitTest
 			glm::vec3 origin(17.0f, 38.0f, -11.0f);
 			glm::vec3 target(29.0f, 0.0f, -11.0f);
 			glm::vec3 result = EliMath::IntersectFloor(origin, target - origin);
-			Assert::AreEqual(target.x, result.x);
-			Assert::AreEqual(target.y, result.y);
-			Assert::AreEqual(target.z, result.z);
+			Assert::AreEqual(target.x, result.x, L"The raycast returned an incorrect result");
+			Assert::AreEqual(target.y, result.y, L"The raycast returned an incorrect result");
+			Assert::AreEqual(target.z, result.z, L"The raycast returned an incorrect result");
 		}
 	};
 	TEST_CLASS(Spawns)
@@ -237,7 +237,8 @@ namespace UnitTest
 			Assert::IsFalse(
 				abs(pClip.x) < pClip.w &&
 				abs(pClip.y) < pClip.w &&
-				abs(pClip.z) < pClip.w
+				abs(pClip.z) < pClip.w,
+				L"The chosen spawn point was still visible on screen"
 			);
 		}
 	};
@@ -246,30 +247,22 @@ namespace UnitTest
 	public:
 		TEST_METHOD(CorrectlyScaleUIToAspectRatio)
 		{
-			try
-			{
-				//Create window with 4:3 aspect ratio
-				Window dummyWindow(800, 600);
-				//Create menu with 1:1 aspect ratio
-				UICanvas testMenu(dummyWindow, 1.0f);
-				//Create button just above the center of the screen
-				testMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.5f, 0.1f), "MrButton");
+			//Create window with 4:3 aspect ratio
+			Window dummyWindow(800, 600);
+			//Create menu with 1:1 aspect ratio
+			UICanvas testMenu(dummyWindow, 1.0f);
+			//Create button just above the center of the screen
+			testMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.5f, 0.1f), "MrButton");
 
-				//Allow the menu to resize to the window
-				testMenu.Update();
+			//Allow the menu to resize to the window
+			testMenu.Update();
 
-				//Check if the button has the correct size
-				const UIButton& mrButton = testMenu.GetButton("MrButton");
-				Assert::AreEqual(-0.3f, mrButton.GetLeft());
-				Assert::AreEqual(0.375f, mrButton.GetRight());
-				Assert::AreEqual(0.1f, mrButton.GetBottom());
-				Assert::AreEqual(0.4f, mrButton.GetTop());
-			}
-			catch (std::exception& e)
-			{
-				Logger::WriteMessage(e.what());
-				throw;	//Can't let this test pass if there's an exception
-			}
+			//Check if the button has the correct size
+			const UIButton& mrButton = testMenu.GetButton("MrButton");
+			Assert::AreEqual(-0.3f, mrButton.GetLeft(), L"The button was not correctly scaled");
+			Assert::AreEqual(0.375f, mrButton.GetRight(), L"The button was not correctly scaled");
+			Assert::AreEqual(0.1f, mrButton.GetBottom(), L"The button was not correctly scaled");
+			Assert::AreEqual(0.4f, mrButton.GetTop(), L"The button was not correctly scaled");
 		}
 	};
 	TEST_CLASS(SaveFiles)
@@ -277,55 +270,41 @@ namespace UnitTest
 	public:
 		TEST_METHOD(CreateAndDeleteFile)
 		{
-			try
-			{
-				std::string fileName = "test0.json";
+			std::string fileName = "test0.json";
 
-				//Create file
-				SaveFile save;
-				save.SaveData(fileName);
-				Assert::IsTrue(SaveFile::FileExists(fileName), L"test0.json was likely not created");
+			//Create file
+			SaveFile save;
+			save.SaveData(fileName);
+			Assert::IsTrue(SaveFile::FileExists(fileName), L"test0.json was likely not created");
 
-				//Remove file
-				SaveFile::RemoveFile(fileName);
-				Assert::IsFalse(SaveFile::FileExists(fileName), L"test0.json was likely not deleted");
-			}
-			catch (std::ofstream::failure& e)
-			{
-				Logger::WriteMessage(e.what());
-			}
+			//Remove file
+			SaveFile::RemoveFile(fileName);
+			Assert::IsFalse(SaveFile::FileExists(fileName), L"test0.json was likely not deleted");
 		}
 		TEST_METHOD(SaveAndLoadData)
 		{
-			try
-			{
-				std::string fileName = "test1.json";
-				int highScore = 123;
-				bool tutorialFinished = true;
+			std::string fileName = "test1.json";
+			int highScore = 123;
+			bool tutorialFinished = true;
 
-				//Create and save file
-				SaveFile save;
-				save.SetHighScore(highScore);
-				save.SetTutorialCompleted(tutorialFinished);
-				save.SaveData(fileName);
+			//Create and save file
+			SaveFile save;
+			save.SetHighScore(highScore);
+			save.SetTutorialCompleted(tutorialFinished);
+			save.SaveData(fileName);
 
-				//Load data into different object to be safe
-				SaveFile load;
-				load.SetHighScore(0);
-				load.SetTutorialCompleted(false);
-				load.LoadData(fileName);
+			//Load data into different object to be safe
+			SaveFile load;
+			load.SetHighScore(0);
+			load.SetTutorialCompleted(false);
+			load.LoadData(fileName);
 
-				//Cleanup
-				SaveFile::RemoveFile("test1.json");
+			//Cleanup
+			SaveFile::RemoveFile("test1.json");
 
-				//Check that data was correctly stored and loaded
-				Assert::AreEqual(highScore, load.GetHighScore(), L"high scores don't match");
-				Assert::AreEqual(tutorialFinished, load.GetTutorialCompleted(), L"tutorial completed does not match");
-			}
-			catch (std::ofstream::failure& e)
-			{
-				Logger::WriteMessage(e.what());
-			}
+			//Check that data was correctly stored and loaded
+			Assert::AreEqual(highScore, load.GetHighScore(), L"high scores don't match");
+			Assert::AreEqual(tutorialFinished, load.GetTutorialCompleted(), L"tutorial completed does not match");
 		}
 	};
 }
