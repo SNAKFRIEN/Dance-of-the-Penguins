@@ -1,8 +1,12 @@
 #pragma once
 
 #include <glm/glm.hpp>
+
 #include "AnimatedModel.h"
+#include "AudioSource.h"
+
 #include <random>
+
 
 class Camera;
 class IceRink;
@@ -17,7 +21,7 @@ private:
 	};
 public:
 	//REPLACE: Add destructor?
-	Penguin(glm::vec3 pos, bool initModel = true);
+	Penguin(glm::vec3 pos, AudioManager& audioManager, bool initModel = true);
 	Penguin(const Penguin& rhs);
 	Penguin operator=(const Penguin& rhs) = delete;
 	Penguin(Penguin&& rhs) noexcept;
@@ -56,4 +60,8 @@ private:
 	const std::uniform_real_distribution<float> minMaxWalkTime;
 	const std::uniform_real_distribution<float> minMaxThinktime;
 	float stateCountDown;
+
+	//Audio
+	AudioManager& audioManager;
+	AudioSource quackSound;
 };

@@ -103,8 +103,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(SolutionDir)Dependencies\Libraries\GLFW;$(SolutionDir)ProjectPenguin\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;Model.obj;tiny_gltf.obj;Shader.obj;Camera.obj;glad.obj;stb_image.obj;Window.obj;IceSkaterCollider.obj;IceRink.obj;Penguin.obj;AnimatedModel.obj;GLTFData.obj;EliMath.obj;Spawner.obj;UserInterface.obj;UIButton.obj;UINumberDisplay.obj;Input.obj;SaveFile.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(SolutionDir)Dependencies\Libraries\GLFW;$(SolutionDir)Dependencies\Libraries\OpenAL;$(SolutionDir)ProjectPenguin\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;OpenAL32.lib;Model.obj;tiny_gltf.obj;Shader.obj;Camera.obj;glad.obj;stb_image.obj;Window.obj;IceSkaterCollider.obj;IceRink.obj;Penguin.obj;AnimatedModel.obj;GLTFData.obj;EliMath.obj;Spawner.obj;UserInterface.obj;UIButton.obj;UINumberDisplay.obj;Input.obj;SaveFile.obj;AudioSource.obj;AudioManager.obj;WAVLoader.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -134,8 +134,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(SolutionDir)Dependencies\Libraries\GLFW;$(SolutionDir)ProjectPenguin\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;Model.obj;tiny_gltf.obj;Shader.obj;Camera.obj;glad.obj;stb_image.obj;Window.obj;IceSkaterCollider.obj;IceRink.obj;Penguin.obj;AnimatedModel.obj;GLTFData.obj;EliMath.obj;Spawner.obj;UserInterface.obj;UIButton.obj;UINumberDisplay.obj;Input.obj;SaveFile.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(SolutionDir)Dependencies\Libraries\GLFW;$(SolutionDir)Dependencies\Libraries\OpenAL;$(SolutionDir)ProjectPenguin\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;OpenAL32.lib;Model.obj;tiny_gltf.obj;Shader.obj;Camera.obj;glad.obj;stb_image.obj;Window.obj;IceSkaterCollider.obj;IceRink.obj;Penguin.obj;AnimatedModel.obj;GLTFData.obj;EliMath.obj;Spawner.obj;UserInterface.obj;UIButton.obj;UINumberDisplay.obj;Input.obj;SaveFile.obj;AudioSource.obj;AudioManager.obj;WAVLoader.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

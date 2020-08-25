@@ -131,7 +131,7 @@ void Game::UpdatePlaying()
 		penguinSpawnTimer += frameTime;
 		if (penguinSpawnTimer > penguinSpawnInterval)
 		{
-			penguins.emplace_back(penguinSpawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f));
+			penguins.emplace_back(penguinSpawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f), audioManager);
 			penguinSpawnTimer = 0.0f;
 			if (penguins.size() == 1)
 			{
@@ -163,6 +163,10 @@ void Game::UpdatePlaying()
 
 		accumulator -= deltaTime;
 	}
+
+	//Update audio listener
+	audioManager.SetListenerPosition(camera.GetPos());
+	audioManager.SetListenerOrientation(glm::normalize(player.GetPos() - camera.GetPos()));
 
 	//Update animations
 	player.UpdateAnimation(frameTime);

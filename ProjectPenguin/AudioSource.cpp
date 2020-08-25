@@ -18,6 +18,13 @@ AudioSource::~AudioSource()
 	}
 }
 
+AudioSource::AudioSource(AudioSource&& rhs)
+	:
+	source(rhs.source)
+{
+	rhs.source = 0;
+}
+
 void AudioSource::Play()
 {
 	alSourcePlay(source);

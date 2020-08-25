@@ -101,23 +101,27 @@ namespace UnitTest
 	public:
 		TEST_METHOD(IceSkaterDetectsPenguinCollision)
 		{
+			AudioManager dummyAudioManager;
+
 			glm::vec3 iceSkaterPos(-3.0f, 0.0f, 4.0f);
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			std::vector<Penguin> penguins;
 			penguins.reserve(1);
-			penguins.emplace_back(glm::vec3(-3.1f, 0.0f, 4.1f), false);
+			penguins.emplace_back(glm::vec3(-3.1f, 0.0f, 4.1f), dummyAudioManager, false);
 
 			Assert::IsTrue(collider.IsCollidingWithPenguin(penguins));
 		}
 		TEST_METHOD(IceSkaterDetectsNoPenguinCollision)
 		{
+			AudioManager dummyAudioManager;
+
 			glm::vec3 iceSkaterPos(5.0f, 0.0f, -4.0f);
 			IceSkaterCollider collider(glm::translate(glm::mat4(1.0f), iceSkaterPos));
 			std::vector<Penguin> penguins;
 			penguins.reserve(3);
-			penguins.emplace_back(glm::vec3(-3.1f, 0.0f, 4.1f), false);
-			penguins.emplace_back(glm::vec3(5.0f, 0.0f, 4.0f), false);
-			penguins.emplace_back(glm::vec3(-5.0f, 0.0f, 4.0f), false);
+			penguins.emplace_back(glm::vec3(-3.1f, 0.0f, 4.1f), dummyAudioManager,  false);
+			penguins.emplace_back(glm::vec3(5.0f, 0.0f, 4.0f), dummyAudioManager, false);
+			penguins.emplace_back(glm::vec3(-5.0f, 0.0f, 4.0f), dummyAudioManager, false);
 
 			Assert::IsFalse(collider.IsCollidingWithPenguin(penguins));
 		}
@@ -127,10 +131,12 @@ namespace UnitTest
 	public:
 		TEST_METHOD(ResolvePenguinsInSamePosition)
 		{
+			AudioManager dummyAudioManager;
+
 			std::vector<Penguin> penguins;
 			penguins.reserve(2);
-			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
-			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
+			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), dummyAudioManager, false);
+			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), dummyAudioManager, false);
 
 			//It may have been better to separate the ice rink collision detection from the penguin collision detection, but this should not affect the test
 			IceRink dummyRink(false);
@@ -142,10 +148,12 @@ namespace UnitTest
 		}
 		TEST_METHOD(ResolvePartialPenguinOverlap)
 		{
+			AudioManager dummyAudioManager;
+
 			std::vector<Penguin> penguins;
 			penguins.reserve(2);
-			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), false);
-			penguins.emplace_back(glm::vec3(1.1f, 0.0f, 2.0f), false);
+			penguins.emplace_back(glm::vec3(1.0f, 0.0f, 2.0f), dummyAudioManager, false);
+			penguins.emplace_back(glm::vec3(1.1f, 0.0f, 2.0f), dummyAudioManager, false);
 
 			//It may have been better to separate the ice rink collision detection from the penguin collision detection, but this should not affect the test
 			IceRink dummyRink(false);
@@ -162,9 +170,11 @@ namespace UnitTest
 	{
 		TEST_METHOD(PenguinAboveRink)
 		{
+			AudioManager dummyAudioManager;
+
 			std::vector<Penguin> penguins;
 			penguins.reserve(1);
-			penguins.emplace_back(glm::vec3(-6.0f, 0.0f, -40.0f), false);
+			penguins.emplace_back(glm::vec3(-6.0f, 0.0f, -40.0f), dummyAudioManager, false);
 
 			IceRink rink(false);
 
@@ -178,9 +188,11 @@ namespace UnitTest
 		}
 		TEST_METHOD(PenguinOutsideBottomLeft)
 		{
+			AudioManager dummyAudioManager;
+
 			std::vector<Penguin> penguins;
 			penguins.reserve(1);
-			penguins.emplace_back(glm::vec3(-90.0f, 0.0f, 50.0f), false);
+			penguins.emplace_back(glm::vec3(-90.0f, 0.0f, 50.0f), dummyAudioManager, false);
 
 			IceRink rink(false);
 

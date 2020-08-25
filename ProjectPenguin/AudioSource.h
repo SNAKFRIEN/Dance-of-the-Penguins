@@ -10,7 +10,7 @@ public:
 	~AudioSource();
 	AudioSource(const AudioSource& rhs) = delete;
 	AudioSource operator=(const AudioSource& rhs) = delete;
-	AudioSource(AudioSource&& rhs) = delete;
+	AudioSource(AudioSource&& rhs);
 	AudioSource operator=(AudioSource&& rhs) = delete;
 
 	void Play();
