@@ -2,9 +2,6 @@
 
 #include "Window.h"
 
-//REMOVE
-#include <iostream>
-
 Input::Input(const Window& window)
 	:
 	window(window)

@@ -14,6 +14,5 @@ class Spawner
 {
 public:
 	//zOffset is used to place the spawn further away from the edge of the screen
-	//xOffset is used to move the spawn along the edge of the screen relative to its center
 	glm::vec3 FindOffScreenSpawnPoint(glm::vec3 cameraPos, glm::vec3 cameraLookAtPoint, float fovInRadians, float zOffset = 0.0f) const;
 };

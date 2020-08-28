@@ -12,8 +12,6 @@ layout (location = 4) in vec4 in_weights;
 out vec3 position;
 out vec3 normal;
 out vec2 texcoord;
-//REMOVE
-out ivec4 jointTransformIds;
 
 uniform mat4 jointTransforms[MAX_JOINTS];
 uniform mat4 model;
@@ -21,8 +19,6 @@ uniform mat4 mvp;
 
 void main()
 {
-	jointTransformIds = in_jointIndices;
-
 	//Animation is applied by taking weighted average of joints that affect this vertex
 
 	//Local position after animation has been applied

@@ -176,7 +176,6 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="AudioSource.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="EliMath.cpp" />
     <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -198,7 +197,6 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="tiny_gltf.cpp" />
-    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="WAVLoader.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -207,7 +205,6 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="AnimatedModel.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Cube.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GLTFData.h" />
@@ -232,7 +229,6 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_gltf.h" />
-    <ClInclude Include="Triangle.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="WAVLoader.h" />
     <ClInclude Include="Window.h" />
@@ -244,12 +240,8 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <None Include="Shaders\AnimationCelShader.vert" />
     <None Include="Shaders\CelShader.frag" />
     <None Include="Shaders\CelShader.vert" />
-    <None Include="Shaders\NoShader.frag" />
-    <None Include="Shaders\NoShader.vert" />
     <None Include="Shaders\NumberShader.frag" />
     <None Include="Shaders\NumberShader.vert" />
-    <None Include="Shaders\Shader.frag" />
-    <None Include="Shaders\Shader.vert" />
     <None Include="Shaders\UIShader.frag" />
     <None Include="Shaders\UIShader.vert" />
     <None Include="SmoothShader.frag" />

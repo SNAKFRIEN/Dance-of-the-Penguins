@@ -3,9 +3,6 @@
 #include "Window.h"
 #include <iomanip>
 
-//REMOVE
-#include <glm/gtc/matrix_transform.hpp>
-
 Game::Game(Window& window)
 	:
 	window(window),

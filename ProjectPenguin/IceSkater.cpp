@@ -6,7 +6,7 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
 
-//REMOVE, only used for debug brake
+//REMOVE, only used for debug brake (hold space to stand still)
 #include "GLFW/glfw3.h"
 
 IceSkater::IceSkater(glm::vec3 pos)

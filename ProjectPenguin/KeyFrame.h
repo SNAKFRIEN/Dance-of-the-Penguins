@@ -7,9 +7,7 @@
 
 struct KeyFrame
 {
-	//REMOVE: one of these two containers is redundant
 	std::vector<JointTransform> jointTransforms;	//Transformation is in relation to the parent joint!
-	//std::unordered_map<std::string, JointTransform> pose;		//Maps joint name to joint transform (joint transfom is in relation to parent joint)
 	float timeStamp;								//Timestamp of this keyframe
 
 	//Returns value between 0 and 1 to indicate the progression from frameA to frameB at the currentTime

@@ -1,5 +1,6 @@
 #pragma once
-#pragma once
+
+//REMOVE when game is finished
 
 #define TINYGLTF_NO_STB_IMAGE_WRITE
 #include "tiny_gltf.h"

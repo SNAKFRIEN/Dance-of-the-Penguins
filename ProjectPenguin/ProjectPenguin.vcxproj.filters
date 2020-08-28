@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Animation">
       <UniqueIdentifier>{80a8e286-581e-4491-aa79-97151b1c1687}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UserInterface">
+      <UniqueIdentifier>{bc358414-963c-4b6a-b4b3-aba8af46575c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -51,16 +54,10 @@
     <ClCompile Include="tiny_gltf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
@@ -76,12 +73,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FrameTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UIButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AnimatedModel.cpp">
@@ -102,9 +93,6 @@
     <ClCompile Include="EliMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UINumberDisplay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SaveFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -116,6 +104,15 @@
     </ClCompile>
     <ClCompile Include="WAVLoader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="UINumberDisplay.cpp">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,16 +128,10 @@
     <ClInclude Include="tiny_gltf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
@@ -217,18 +208,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\NoShader.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\NoShader.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\Shader.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\Shader.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\CelShader.frag">
       <Filter>Shaders</Filter>
     </None>
