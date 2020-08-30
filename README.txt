@@ -1,0 +1,1 @@
+WARNING: To run the application, it may be necessary to install OpenAL using the included installer (oalinst.exe), or by downloading it from https://openal.org/downloads/
