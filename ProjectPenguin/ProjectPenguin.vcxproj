@@ -183,6 +183,7 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClCompile Include="AudioSource.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EliMath.cpp" />
+    <ClCompile Include="FishingPenguin.cpp" />
     <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="glad.c" />
@@ -211,6 +212,7 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="AnimatedModel.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="FishingPenguin.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GLTFData.h" />

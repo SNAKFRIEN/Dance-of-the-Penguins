@@ -121,6 +121,7 @@ void Game::StartPlaying()
 void Game::UpdatePlaying()
 {
 	const float frameTime = ft.Mark();
+	totalPlayTime += frameTime;
 
 	//Spawn new penguins
 	if (penguins.size() < maxPenguins)
@@ -135,6 +136,18 @@ void Game::UpdatePlaying()
 				test = std::make_unique<JointAttachment>(penguins[0].GetModel(), "head");
 			}
 		}
+	}
+	//Spawn fishingPenguin
+	if (!fishingPenguinSpawned && totalPlayTime >= fishingPenguinSpawnTime)
+	{
+		auto spawn = penguinSpawner.FindDistancedSpawnPoint(player.GetPos(),
+			10.0f,
+			iceRink.GetRight() - iceRink.GetCornerRadius(),
+			iceRink.GetTop() - iceRink.GetCornerRadius());
+		float rotation = 0.0f;
+		iceRink.SetIcePos(spawn);
+		fishingPenguin = std::make_unique<FishingPenguin>(spawn, rotation, audioManager);
+		fishingPenguinSpawned = true;
 	}
 
 	//Update entities
@@ -170,6 +183,10 @@ void Game::UpdatePlaying()
 	for (Penguin& penguin : penguins)
 	{
 		penguin.UpdateAnimation(frameTime);
+	}
+	if (fishingPenguinSpawned)
+	{
+		fishingPenguin->UpdateAnimation(frameTime);
 	}
 
 	if (state == State::GameOver)
@@ -267,6 +284,10 @@ void Game::DrawPlaying()
 	for (Penguin& p : penguins)
 	{
 		p.Draw(camera);
+	}
+	if (fishingPenguinSpawned)
+	{
+		fishingPenguin->Draw(camera);
 	}
 	if (test)
 	{

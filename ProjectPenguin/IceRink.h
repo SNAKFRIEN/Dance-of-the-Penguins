@@ -21,6 +21,8 @@ public:
 	float GetRight() const;
 	float GetTop() const;
 	float GetCornerRadius() const;
+
+	void SetIcePos(glm::vec3 newPos);
 private:
 	void InitModels();
 private:
@@ -30,6 +32,7 @@ private:
 	static constexpr float cornerRadius = 5.5f;
 
 	glm::mat4 transform;
+	glm::mat4 iceTransform;
 
 	std::unique_ptr<Model> stadiumModel;
 	std::unique_ptr<Model> iceModel;

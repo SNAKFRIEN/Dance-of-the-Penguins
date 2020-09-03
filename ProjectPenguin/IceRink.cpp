@@ -10,6 +10,7 @@ IceRink::IceRink(bool initModels)
 		InitModels();
 	}
 	transform = glm::mat4(1.0f);
+	iceTransform = glm::mat4(1.0f);
 }
 
 void IceRink::Draw(Camera& camera, Input& input)
@@ -41,10 +42,15 @@ float IceRink::GetCornerRadius() const
 	return cornerRadius;
 }
 
+void IceRink::SetIcePos(glm::vec3 newPos)
+{
+	iceTransform = glm::translate(glm::mat4(1.0f), newPos);
+}
+
 void IceRink::InitModels()
 {
 	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "SmoothShader.frag");
-	iceModel = std::make_unique<Model>("Ice.gltf", transform);
+	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform);
 
 	//Load seats
 	//Gain access to the data

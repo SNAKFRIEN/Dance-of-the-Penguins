@@ -10,7 +10,6 @@
 Penguin::Penguin(glm::vec3 pos, AudioManager& audioManager, bool initModel)
 	:
 	pos(pos),
-	
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),

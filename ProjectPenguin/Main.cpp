@@ -6,7 +6,7 @@ int main()
 {
 	try
 	{
-		Window window(1920, 1080);
+		Window window(1280, 720);
 		Game game(window);
 
 

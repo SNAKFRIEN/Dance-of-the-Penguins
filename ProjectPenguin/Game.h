@@ -11,6 +11,7 @@
 #include "Spawner.h"
 #include "SaveFile.h"
 #include "AudioManager.h"
+#include "FishingPenguin.h"
 
 class Window;
 
@@ -57,6 +58,7 @@ private:
 
 	IceSkater player;
 	std::vector<Penguin> penguins;
+	std::unique_ptr<FishingPenguin> fishingPenguin;
 	std::unique_ptr<JointAttachment> test;
 
 	int score = 0;
@@ -67,14 +69,18 @@ private:
 	IceRink iceRink;
 
 	Spawner penguinSpawner;
+	//Regular penguins
 	static constexpr float penguinSpawnInterval = 4.0f;
 	float penguinSpawnTimer = 0.0f;
 	static constexpr int maxPenguins = 100;
-
+	//Fishing penguin
+	const float fishingPenguinSpawnTime = 3.0f;
+	bool fishingPenguinSpawned = false;
 
 	FrameTimer ft;
 	float accumulator = 0.01f;
 	static constexpr float deltaTime = 0.005f;	//Update physics 200 times per second
+	float totalPlayTime = 0.0f;
 
 	State state = State::MainMenu;
 	bool quit = false;

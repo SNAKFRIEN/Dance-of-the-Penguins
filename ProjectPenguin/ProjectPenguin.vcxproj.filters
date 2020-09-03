@@ -114,6 +114,9 @@
     <ClCompile Include="UserInterface.cpp">
       <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
+    <ClCompile Include="FishingPenguin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -204,6 +207,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WAVLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FishingPenguin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
