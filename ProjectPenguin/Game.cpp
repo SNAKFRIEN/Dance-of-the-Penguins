@@ -272,9 +272,11 @@ void Game::DrawPlaying()
 	{
 		test->Draw(camera);
 	}
-	AnimatedModel::DrawAllInstances();
-	iceRink.Draw(camera);
+	iceRink.Draw(camera, input);
 	
+	AnimatedModel::DrawAllInstances();
+	Model::DrawAllInstances();
+
 	glEnable(GL_BLEND);
 	gameplayUI.Draw();
 	glDisable(GL_BLEND);

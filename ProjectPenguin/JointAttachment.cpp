@@ -14,5 +14,5 @@ JointAttachment::JointAttachment(const AnimatedModel& parentModel, std::string j
 void JointAttachment::Draw(Camera& camera)
 {
 	transform = ownerModelTransform * pose[id];
-	model.Draw(camera);
+	model.AddToRenderQueue(camera);
 }

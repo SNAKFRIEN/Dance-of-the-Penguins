@@ -4,6 +4,9 @@
 #include "Model.h"
 #include "ModelNoTexture.h"
 
+//REMOVE, only used for debugging:
+#include "Input.h"
+
 class Camera;
 
 //This class represents the physical and visual properties of the ice rink.
@@ -13,7 +16,7 @@ class IceRink
 public:
 	IceRink(bool initModels = true);
 	
-	void Draw(Camera& camera);
+	void Draw(Camera& camera, Input& input);
 
 	float GetRight() const;
 	float GetTop() const;
@@ -30,4 +33,6 @@ private:
 
 	std::unique_ptr<Model> stadiumModel;
 	std::unique_ptr<Model> iceModel;
+	std::vector<Model> seats;
+	std::vector<glm::mat4> seatTransforms;
 };

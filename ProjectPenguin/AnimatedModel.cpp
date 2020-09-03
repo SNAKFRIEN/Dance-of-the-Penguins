@@ -212,7 +212,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 		glGenVertexArrays(1, &newModelData.vao);
 		glBindVertexArray(newModelData.vao);
 
-		unsigned ebo;
+		unsigned int ebo;
 		glGenBuffers(1, &ebo);
 
 		//Rettrieve attribute data and fill VBO
