@@ -10,7 +10,7 @@ IceRink::IceRink(bool initModels)
 		InitModels();
 	}
 	transform = glm::mat4(1.0f);
-	iceTransform = glm::mat4(1.0f);
+	Reset();
 }
 
 void IceRink::Draw(Camera& camera, Input& input)
@@ -25,6 +25,12 @@ void IceRink::Draw(Camera& camera, Input& input)
 	{
 		s.AddToRenderQueue(camera);
 	}
+}
+
+void IceRink::Reset()
+{
+	//Reset ice location
+	iceTransform = glm::translate(glm::mat4(1.0f), defaultIcePos);	//Make sure that hole in ice is off screen
 }
 
 float IceRink::GetRight() const

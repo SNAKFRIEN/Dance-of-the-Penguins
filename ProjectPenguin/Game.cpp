@@ -11,7 +11,9 @@ Game::Game(Window& window)
 	mainMenu(window, 1.0f),
 	pauseMenu(window, 1.0f),
 	gameOverMenu(window, 1.0f),
-	gameplayUI(window, 1.0f)
+	gameplayUI(window, 1.0f),
+	fishingPenguinRotationRange(1.57079f, 4.71238f),
+	rng(std::random_device()())
 {
 	window.SetMainCamera(&camera);
 	camera.SetPos(glm::vec3(0.0f, 10.0f, 1.0f));
@@ -101,6 +103,19 @@ void Game::SetUpGameplayUI()
 
 void Game::StartPlaying()
 {
+	//Clear previous run
+	penguins.clear();
+	
+	score = 0;
+	scoreTimer = 0.0f;
+	
+	totalPlayTime = 0.0f;
+
+	fishingPenguin.reset();
+	fishingPenguinSpawned = false;
+	iceRink.Reset();
+
+	//Set things up for new run
 	player.Reset();
 
 	penguins.reserve(maxPenguins);
@@ -108,8 +123,6 @@ void Game::StartPlaying()
 
 	state = State::Playing;
 
-	score = 0;
-	scoreTimer = 0.0f;
 	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
 
 	ft.Mark();
@@ -131,10 +144,6 @@ void Game::UpdatePlaying()
 		{
 			penguins.emplace_back(penguinSpawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f), audioManager);
 			penguinSpawnTimer = 0.0f;
-			if (penguins.size() == 1)
-			{
-				test = std::make_unique<JointAttachment>(penguins[0].GetModel(), "head");
-			}
 		}
 	}
 	//Spawn fishingPenguin
@@ -144,7 +153,7 @@ void Game::UpdatePlaying()
 			10.0f,
 			iceRink.GetRight() - iceRink.GetCornerRadius(),
 			iceRink.GetTop() - iceRink.GetCornerRadius());
-		float rotation = 0.0f;
+		float rotation = fishingPenguinRotationRange(rng);
 		iceRink.SetIcePos(spawn);
 		fishingPenguin = std::make_unique<FishingPenguin>(spawn, rotation, audioManager);
 		fishingPenguinSpawned = true;
@@ -274,8 +283,6 @@ void Game::EndPlaying()
 
 	score = 0;
 	scoreTimer = 0.0f;
-	test.reset();
-	penguins.clear();
 }
 
 void Game::DrawPlaying()
@@ -288,10 +295,6 @@ void Game::DrawPlaying()
 	if (fishingPenguinSpawned)
 	{
 		fishingPenguin->Draw(camera);
-	}
-	if (test)
-	{
-		test->Draw(camera);
 	}
 	iceRink.Draw(camera, input);
 	

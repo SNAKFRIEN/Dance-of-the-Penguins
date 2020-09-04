@@ -59,7 +59,6 @@ private:
 	IceSkater player;
 	std::vector<Penguin> penguins;
 	std::unique_ptr<FishingPenguin> fishingPenguin;
-	std::unique_ptr<JointAttachment> test;
 
 	int score = 0;
 	static constexpr float scoreInterval = 1.0f;
@@ -74,8 +73,9 @@ private:
 	float penguinSpawnTimer = 0.0f;
 	static constexpr int maxPenguins = 100;
 	//Fishing penguin
-	const float fishingPenguinSpawnTime = 3.0f;
+	const float fishingPenguinSpawnTime = 5.0f;
 	bool fishingPenguinSpawned = false;
+	std::uniform_real_distribution<float> fishingPenguinRotationRange;
 
 	FrameTimer ft;
 	float accumulator = 0.01f;
@@ -94,4 +94,6 @@ private:
 	SaveFile saveFile;
 
 	AudioManager audioManager;
+
+	std::mt19937 rng;
 };

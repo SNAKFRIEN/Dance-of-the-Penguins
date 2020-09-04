@@ -17,6 +17,7 @@ public:
 	IceRink(bool initModels = true);
 	
 	void Draw(Camera& camera, Input& input);
+	void Reset();
 
 	float GetRight() const;
 	float GetTop() const;
@@ -33,6 +34,7 @@ private:
 
 	glm::mat4 transform;
 	glm::mat4 iceTransform;
+	static constexpr glm::vec3 defaultIcePos = glm::vec3(0.0f, 0.0f, top + 5.0f);
 
 	std::unique_ptr<Model> stadiumModel;
 	std::unique_ptr<Model> iceModel;

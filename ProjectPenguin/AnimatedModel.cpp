@@ -20,10 +20,10 @@
 //Static members
 std::unordered_map<std::string, AnimatedModel::ModelData> AnimatedModel::existingModels;
 
-AnimatedModel::AnimatedModel(std::string name, const glm::mat4& ownerTransform)
+AnimatedModel::AnimatedModel(std::string name, const glm::mat4& ownerTransform, std::string vertexShader, std::string fragShader)
 	:
 	ownerTransform(ownerTransform),
-	modelData(ConstructModelData(name))
+	modelData(ConstructModelData(name, vertexShader, fragShader))
 {
 }
 
@@ -152,7 +152,7 @@ const glm::mat4& AnimatedModel::GetTransform() const
 	return ownerTransform;
 }
 
-AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
+AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name, std::string vertexShader, std::string fragShader)
 {
 	//Check if model has been previously loaded
 	//WARNING: THIS MAKES IT SO THAT ALL INSTANCES OF THE SAME MODEL USE THE SAME SHADER!
@@ -162,7 +162,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name)
 		auto& newModelData = existingModels[name];
 
 		//-------------------------Step 1: Make the shader-------------------------------------------------
-		newModelData.shader = std::make_unique<Shader>("AnimationCelShader.vert", "AnimationCelShader.frag");
+		newModelData.shader = std::make_unique<Shader>(vertexShader, fragShader);
 
 
 		//-------------------------Step 2: Load the model using tinyGLTF-------------------------------------------------

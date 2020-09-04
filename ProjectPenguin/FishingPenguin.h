@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 
 #include "AnimatedModel.h"
+#include "JointAttachment.h"
+#include "Model.h"
 #include "AudioSource.h"
 
 class Camera;
@@ -25,7 +27,10 @@ private:
 private:
 	glm::mat4 transform;
 
-	std::unique_ptr<AnimatedModel> model;
+	AnimatedModel model;
+	JointAttachment fishingRod;
+	JointAttachment bucket;
+	Model crate;
 
 	State state = State::Fishing;	//Always use SetState() to make sure the animation is changed too
 

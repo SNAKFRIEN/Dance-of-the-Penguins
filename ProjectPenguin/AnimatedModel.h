@@ -44,7 +44,10 @@ private:
 		std::vector<std::tuple<glm::mat4, glm::mat4,  std::vector<glm::mat4>>> renderQueue;
 	};
 public:
-	AnimatedModel(std::string name, const glm::mat4& ownerTransform);
+	AnimatedModel(std::string name,
+		const glm::mat4& ownerTransform,
+		std::string vertexShader = "AnimationCelShader.vert",
+		std::string fragShader = "AnimationCelShader.frag");
 	void Update(float dt);
 	void AddToRenderQueue(Camera& camera);
 	static void DrawAllInstances();
@@ -54,7 +57,7 @@ public:
 	const std::vector<glm::mat4>& GetPose() const;
 	const glm::mat4& GetTransform() const;
 private:
-	ModelData& ConstructModelData(std::string name);
+	ModelData& ConstructModelData(std::string name, std::string vertexShader, std::string fragShader);
 
 	std::vector<glm::mat4> GetJointTransforms() const;	//Retrieve transform per joint
 	void ApplyPoseToJointsRecursively(const std::vector<glm::mat4>& pose, Joint& headJoint, const glm::mat4& parentTransform);

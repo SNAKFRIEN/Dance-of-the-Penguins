@@ -8,7 +8,7 @@ class Camera;
 class JointAttachment
 {
 public:
-	JointAttachment(const AnimatedModel& parentModel, std::string joint);
+	JointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint);
 	void Draw(Camera& camera);
 private:
 	Model model;

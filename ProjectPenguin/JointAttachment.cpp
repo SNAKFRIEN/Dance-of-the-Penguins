@@ -2,9 +2,9 @@
 
 #include "AnimatedModel.h"
 
-JointAttachment::JointAttachment(const AnimatedModel& parentModel, std::string joint)
+JointAttachment::JointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint)
 	:
-	model("Bucket.gltf", transform),
+	model(name, transform),
 	pose(parentModel.GetPose()),
 	ownerModelTransform(parentModel.GetTransform())
 {
