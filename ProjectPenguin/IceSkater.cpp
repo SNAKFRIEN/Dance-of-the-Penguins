@@ -1,6 +1,8 @@
 #include "IceSkater.h"
 
 #include "Input.h"
+#include "Penguin.h"
+#include "FishingPenguin.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/rotate_vector.hpp"
@@ -9,19 +11,19 @@
 //REMOVE, only used for debug brake (hold space to stand still)
 #include "GLFW/glfw3.h"
 
-IceSkater::IceSkater(glm::vec3 pos)
+IceSkater::IceSkater(glm::vec3 inPos)
 	:
-	pos(pos),
+	pos(inPos),
 	model("IceSkater.gltf", transform),
-	collider(transform)
+	collider(pos, collisionRadius)
 {
 	rotation = glm::mat4(1.0f);
 	model.SetAnimation("Skating");
 }
 
-bool IceSkater::IsColliding(const std::vector<Penguin>& penguins, const IceRink& rink) const
+bool IceSkater::IsColliding(std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink)
 {
-	return !collider.IsInRink(rink) || collider.IsCollidingWithPenguin(penguins);
+	return IsOutOfRink(rink) || IsCollidingWithPenguin(penguins) || IsCollidingWithFishingPenguin(fishingPenguin);
 }
 
 void IceSkater::Update(float dt, const Input& input)
@@ -97,4 +99,48 @@ glm::vec3 IceSkater::GetPos() const
 glm::vec3 IceSkater::GetForward() const
 {
 	return rotation[2];
+}
+
+bool IceSkater::IsOutOfRink(const IceRink& rink)
+{
+	return !collider.IsInRink(rink);
+}
+
+bool IceSkater::IsCollidingWithPenguin(std::vector<Penguin>& penguins)
+{
+	for (Penguin& p : penguins)
+	{
+		auto collision = collider.CalculateCollision(p.GetCollider());
+		if (collision.isColliding)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IceSkater::IsCollidingWithFishingPenguin(std::unique_ptr<FishingPenguin>& fishingPenguin)
+{
+	//Check that the fishing penguin exists
+	if (!fishingPenguin)
+	{
+		return false;
+	}
+
+	//Check collisions with pond
+	auto pondCollision = collider.CalculateCollision(fishingPenguin->GetPondCollider());
+	if (pondCollision.isColliding)
+	{
+		return true;
+	}
+	
+	//Check collisions with penguin
+	auto penguinCollision = collider.CalculateCollision(fishingPenguin->GetPenguinCollider());
+	if (penguinCollision.isColliding)
+	{
+		return true;
+	}
+
+	//If no collisions found, return false
+	return false;
 }

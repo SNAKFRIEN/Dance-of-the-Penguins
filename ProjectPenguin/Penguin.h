@@ -4,12 +4,14 @@
 
 #include "AnimatedModel.h"
 #include "AudioSource.h"
+#include "CircleCollider.h"
 
 #include <random>
 
 
 class Camera;
 class IceRink;
+class FishingPenguin;
 
 class Penguin
 {
@@ -27,22 +29,20 @@ public:
 	Penguin(Penguin&& rhs) noexcept;
 	Penguin operator=(Penguin&& rhs) = delete;
 	
-	void Collide(int index, std::vector<Penguin>& penguins, const IceRink& rink);
+	void Collide(int index, std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink);
 	void Update(float dt);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
 
 	glm::vec3 GetPos() const;
 	const AnimatedModel& GetModel() const;
+	CircleCollider& GetCollider();
 
-	static constexpr float personalSpaceRadius = 0.25f;	//Makes sure penguins don't collide
-	static constexpr float minPenguinDistance = personalSpaceRadius * 2.0f;	//Minimum distance between two penguins
-	static constexpr float minPenguinDistanceSquared = minPenguinDistance * minPenguinDistance;
+	static constexpr float personalSpaceRadius = 0.25f;	//Collision radius
 	static constexpr float minDistanceFromRinkEdges = 0.5f;
 private:
 	void InitModel();
 	void SetState(State newState);
-	void ResolveCollision(Penguin& other, float distanceSquared, glm::vec3 difference);
 private:
 	glm::vec3 pos;
 
@@ -60,6 +60,8 @@ private:
 	const std::uniform_real_distribution<float> minMaxWalkTime;
 	const std::uniform_real_distribution<float> minMaxThinktime;
 	float stateCountDown;
+
+	CircleCollider collider;
 
 	//Audio
 	AudioManager& audioManager;

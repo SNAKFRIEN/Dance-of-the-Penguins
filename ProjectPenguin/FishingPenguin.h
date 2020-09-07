@@ -6,6 +6,7 @@
 #include "JointAttachment.h"
 #include "Model.h"
 #include "AudioSource.h"
+#include "CircleCollider.h"
 
 class Camera;
 
@@ -22,17 +23,33 @@ public:
 	
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
+
+	CircleCollider& GetPenguinCollider();
+	CircleCollider& GetPondCollider();
 private:
 	void SetState(State newState);
 private:
 	glm::mat4 transform;
 
+	//Visuals
 	AnimatedModel model;
 	JointAttachment fishingRod;
 	JointAttachment bucket;
 	Model crate;
 
+	//State
 	State state = State::Fishing;	//Always use SetState() to make sure the animation is changed too
 
+	//Audio
 	AudioManager& audioManager;
+
+	//Collisions
+	glm::vec3 pondPos;
+	glm::vec3 penguinPos;
+
+	static constexpr float pondRadius = 0.6f;
+	static constexpr float penguinRadius = 0.25f;
+
+	CircleCollider penguinCollider;
+	CircleCollider pondCollider;
 };

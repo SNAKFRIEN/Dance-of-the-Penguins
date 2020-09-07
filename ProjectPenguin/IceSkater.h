@@ -3,19 +3,20 @@
 #include "glm/glm.hpp"
 
 #include "AnimatedModel.h"
-#include "IceSkaterCollider.h"
+#include "CircleCollider.h"
 
 class Camera;
 class Input;
 class Penguin;
 class IceRink;
+class FishingPenguin;
 
 class IceSkater
 {
 public:
 	IceSkater(glm::vec3 pos);
 
-	bool IsColliding(const std::vector<Penguin>& penguins, const IceRink& rink) const;
+	bool IsColliding(std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink);
 	void Update(float dt, const Input& input);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
@@ -25,6 +26,10 @@ public:
 	glm::vec3 GetPos() const;
 	glm::vec3 GetForward() const;
 private:
+	bool IsOutOfRink(const IceRink& rink);
+	bool IsCollidingWithPenguin(std::vector<Penguin>& penguins);
+	bool IsCollidingWithFishingPenguin(std::unique_ptr<FishingPenguin>& fishingPenguin);
+private:
 	glm::vec3 pos;
 
 	static constexpr float speed = 7.5f;
@@ -32,7 +37,8 @@ private:
 
 	AnimatedModel model;
 
-	IceSkaterCollider collider;
+	static constexpr float collisionRadius = 0.15f;
+	CircleCollider collider;
 
 	glm::mat4 rotation;
 	glm::mat4 transform;

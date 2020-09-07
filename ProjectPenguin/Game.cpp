@@ -171,11 +171,11 @@ void Game::UpdatePlaying()
 		}
 		for (int i = 0; i < penguins.size(); i++)
 		{
-			penguins[i].Collide(i, penguins, iceRink);
+			penguins[i].Collide(i, penguins, fishingPenguin, iceRink);
 		}
 		camera.Follow(player.GetPos());
 
-		if (player.IsColliding(penguins, iceRink))
+		if (player.IsColliding(penguins, fishingPenguin, iceRink))
 		{
 			state = State::GameOver;
 		}

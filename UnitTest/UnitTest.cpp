@@ -10,6 +10,7 @@
 #include "../ProjectPenguin/Spawner.h"
 #include "../ProjectPenguin/UserInterface.h"
 #include "../ProjectPenguin/SaveFile.h"
+#include "../ProjectPenguin/FishingPenguin.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -132,6 +133,7 @@ namespace UnitTest
 		TEST_METHOD(ResolvePenguinsInSamePosition)
 		{
 			AudioManager dummyAudioManager;
+			std::unique_ptr<FishingPenguin> dummyFishingPenguin = nullptr;
 
 			std::vector<Penguin> penguins;
 			penguins.reserve(2);
@@ -142,13 +144,14 @@ namespace UnitTest
 			IceRink dummyRink(false);
 
 			//It should only be necessary to call collide for one of the two penguins to fully resolve the collision for both
-			penguins[0].Collide(0, penguins, dummyRink);
+			penguins[0].Collide(0, penguins, dummyFishingPenguin, dummyRink);
 
-			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance, L"The penguins were still colliding after the collision should have been resolved");
+			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= (Penguin::personalSpaceRadius * 2.0f), L"The penguins were still colliding after the collision should have been resolved");
 		}
 		TEST_METHOD(ResolvePartialPenguinOverlap)
 		{
 			AudioManager dummyAudioManager;
+			std::unique_ptr<FishingPenguin> dummyFishingPenguin = nullptr;
 
 			std::vector<Penguin> penguins;
 			penguins.reserve(2);
@@ -160,10 +163,10 @@ namespace UnitTest
 
 			for (int i = 0; i < penguins.size(); i++)
 			{
-				penguins[i].Collide(i, penguins, dummyRink);
+				penguins[i].Collide(i, penguins, dummyFishingPenguin, dummyRink);
 			}
 
-			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= Penguin::minPenguinDistance, L"The penguins were still colliding after the collision should have been resolved");
+			Assert::IsTrue(glm::length(penguins[0].GetPos() - penguins[1].GetPos()) >= (Penguin::personalSpaceRadius * 2.0f), L"The penguins were still colliding after the collision should have been resolved");
 		}
 	};
 	TEST_CLASS(PenguinToRinkCollision)
@@ -171,6 +174,7 @@ namespace UnitTest
 		TEST_METHOD(PenguinAboveRink)
 		{
 			AudioManager dummyAudioManager;
+			std::unique_ptr<FishingPenguin> dummyFishingPenguin = nullptr;
 
 			std::vector<Penguin> penguins;
 			penguins.reserve(1);
@@ -178,7 +182,7 @@ namespace UnitTest
 
 			IceRink rink(false);
 
-			penguins[0].Collide(0, penguins, rink);
+			penguins[0].Collide(0, penguins, dummyFishingPenguin, rink);
 
 			glm::vec3 expectedPosition = glm::vec3(-6.0f, 0.0f, -rink.GetTop() + Penguin::minDistanceFromRinkEdges);
 
@@ -189,6 +193,7 @@ namespace UnitTest
 		TEST_METHOD(PenguinOutsideBottomLeft)
 		{
 			AudioManager dummyAudioManager;
+			std::unique_ptr<FishingPenguin> dummyFishingPenguin = nullptr;
 
 			std::vector<Penguin> penguins;
 			penguins.reserve(1);
@@ -199,7 +204,7 @@ namespace UnitTest
 			const glm::vec3 circleCenter = glm::vec3(-(rink.GetRight() - rink.GetCornerRadius()), 0.0f, rink.GetTop() - rink.GetCornerRadius());
 			const glm::vec3 expectedPosition = glm::normalize(penguins[0].GetPos() - circleCenter) * (rink.GetCornerRadius() - Penguin::minDistanceFromRinkEdges - 0.001f) + circleCenter;
 
-			penguins[0].Collide(0, penguins, rink);
+			penguins[0].Collide(0, penguins, dummyFishingPenguin, rink);
 
 			Assert::AreEqual(expectedPosition.x, penguins[0].GetPos().x, L"The penguin did not resolve its collision to move to the expected position");
 			Assert::AreEqual(expectedPosition.y, penguins[0].GetPos().y, L"The penguin did not resolve its collision to move to the expected position");

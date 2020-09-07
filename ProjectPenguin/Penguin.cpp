@@ -6,16 +6,18 @@
 #include <glm/gtx/norm.hpp>
 
 #include "IceRink.h"
+#include "FishingPenguin.h"
 
-Penguin::Penguin(glm::vec3 pos, AudioManager& audioManager, bool initModel)
+Penguin::Penguin(glm::vec3 inPos, AudioManager& audioManager, bool initModel)
 	:
-	pos(pos),
+	pos(inPos),
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
 	stateCountDown(minMaxWalkTime(rng)),
 	audioManager(audioManager),
-	quackSound("Quack.wav", audioManager)
+	quackSound("Quack.wav", audioManager),
+	collider(pos, personalSpaceRadius)
 {
 	if (initModel)
 	{
@@ -33,7 +35,8 @@ Penguin::Penguin(const Penguin& rhs)
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
 	audioManager(rhs.audioManager),
-	quackSound("Quack.wav", audioManager)
+	quackSound("Quack.wav", audioManager),
+	collider(pos, personalSpaceRadius)
 {
 	InitModel();
 	pos = rhs.pos;
@@ -51,7 +54,8 @@ Penguin::Penguin(Penguin&& rhs) noexcept
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
 	audioManager(rhs.audioManager),
-	quackSound(std::move(rhs.quackSound))
+	quackSound(std::move(rhs.quackSound)),
+	collider(pos, personalSpaceRadius)
 {
 	pos = rhs.pos;
 	transform = rhs.transform;
@@ -61,36 +65,76 @@ Penguin::Penguin(Penguin&& rhs) noexcept
 	stateCountDown = rhs.stateCountDown;
 }
 
-void Penguin::Collide(int index, std::vector<Penguin>& penguins, const IceRink& rink)
+void Penguin::Collide(int index, std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink)
 {
 	//Collide with other penguins
 	for (int i = index + 1; i < penguins.size(); i++)
 	{
-		glm::vec3 difference = pos - penguins[i].pos;
-		float distanceSquared = glm::length2(difference);
-
-		if (distanceSquared == 0.0f)
+		auto collision = collider.CalculateCollision(penguins[i].collider);
+		if (collision.isColliding)
 		{
-			//Position of the two penguins is exactly the same
-			//Randomly select a direction to split the two penguins
-			glm::vec2 newDir = glm::circularRand(1.0f);
-			glm::vec3 splitDirection = glm::vec3(newDir.x, 0.0f, newDir.y);
-			pos += splitDirection * personalSpaceRadius;
-			penguins[i].pos -= splitDirection * personalSpaceRadius;
-		}
-		else if (distanceSquared < minPenguinDistanceSquared)
-		{
-			if (state == State::Walking)
+			if (collision.isSamePos)
 			{
-				ResolveCollision(penguins[i], distanceSquared, difference);
+				collider.ResolveSamePos(collision);
 			}
-			if (penguins[i].state == State::Walking)
+			else
 			{
-				penguins[i].ResolveCollision(*this, distanceSquared, -difference);
+				if (state == State::Walking)
+				{
+					SetState(State::Thinking);
+					collider.ResolveDifferentPos(collision);
+				}
+				if (penguins[i].state == State::Walking)
+				{
+					penguins[i].SetState(State::Thinking);
+					//Reverse collision data
+					auto collisionReversed = collision;
+					std::swap(collisionReversed.colliderA, collisionReversed.colliderB);
+					collisionReversed.difference *= -1.0f;
+					penguins[i].collider.ResolveDifferentPos(collisionReversed);
+				}
 			}
 		}
 	}
 
+	//Collide with fishingPenguin's pond
+	if (fishingPenguin)
+	{
+		{
+			auto collision = collider.CalculateCollision(fishingPenguin->GetPondCollider());
+			if (collision.isColliding)
+			{
+				if (collision.isSamePos)
+				{
+					//REMOVE by improving same pos collision resolving
+					throw std::exception("Congratulations! You've triggered the most unlikely error! (penguin was in same position as fishingPenguin pond, please notify Eli)");
+				}
+				else
+				{
+					SetState(State::Thinking);
+					collider.ResolveDifferentPos(collision);
+				}
+			}
+		}
+
+		//Collide with fishingPenguin
+		{
+			auto collision = collider.CalculateCollision(fishingPenguin->GetPenguinCollider());
+			if (collision.isColliding)
+			{
+				if (collision.isSamePos)
+				{
+					//REMOVE by improving same pos collision resolving
+					throw std::exception("Congratulations! You've triggered the most unlikely error! (penguin was in same position as fishingPenguin, please notify Eli)");
+				}
+				else
+				{
+					SetState(State::Thinking);
+					collider.ResolveDifferentPos(collision);
+				}
+			}
+		}
+	}
 
 	//Stay within the rink
 
@@ -100,7 +144,6 @@ void Penguin::Collide(int index, std::vector<Penguin>& penguins, const IceRink& 
 	glm::vec2 topRight0(rink.GetRight(), rink.GetTop() - rink.GetCornerRadius());
 	glm::vec2 topRight1(rink.GetRight() - rink.GetCornerRadius(), rink.GetTop());
 
-	//REPLACE: Room for further optimization by skipping the circle check if the penguin is within one of the rectangles
 	bool inRect = false;
 	if (absPos.y <= topRight0.y)
 	{
@@ -216,6 +259,11 @@ const AnimatedModel& Penguin::GetModel() const
 	return *model;
 }
 
+CircleCollider& Penguin::GetCollider()
+{
+	return collider;
+}
+
 void Penguin::InitModel()
 {
 	model = std::make_unique<AnimatedModel>("Goopie.gltf", transform);
@@ -237,16 +285,4 @@ void Penguin::SetState(State newState)
 			break;
 		}
 	}
-}
-
-void Penguin::ResolveCollision(Penguin& other, float distanceSquared, glm::vec3 difference)
-{
-	//Calculate distance between the penguins
-	float distance = sqrt(distanceSquared);
-	//Calculate the collision normal by normalizing the difference
-	glm::vec3 collisionNormal = difference / distance;
-	//Put some space between those penguins
-	pos += collisionNormal * (minPenguinDistance - distance + 0.001f);
-	//Set state to thinking
-	SetState(State::Thinking);
 }
