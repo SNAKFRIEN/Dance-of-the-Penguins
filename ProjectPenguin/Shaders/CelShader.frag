@@ -23,7 +23,7 @@ vec4 Cel()
 {
 	//Shadows
 	float nDotL = dot(lightDir, normalize(normal));
-	float lightIntensity = nDotL > 0 ? 1.0 : 0.2;
+	float lightIntensity = nDotL > 0 ? 1.0 : 0.7;
 
 	//Specular
 	vec3 reflectDir = reflect(lightDir, normalize(normal));

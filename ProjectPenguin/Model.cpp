@@ -26,6 +26,11 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 
 }
 
+void Model::Preload(std::string name, std::string vertexShader, std::string fragShader)
+{
+	ConstructModelData(name, vertexShader, fragShader);
+}
+
 void Model::AddToRenderQueue(Camera& camera)
 {
 	//Add model transform and MVP to renderqueue

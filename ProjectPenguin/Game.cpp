@@ -29,6 +29,12 @@ Game::Game(Window& window)
 
 	saveFile.LoadData("SaveData.json");
 	highScore = saveFile.GetHighScore();
+
+	//Preload some models to save time later
+	AnimatedModel::Preload("Goopie.gltf");
+	Model::Preload("Crate.gltf");
+	Model::Preload("FishingPole.gltf");
+	Model::Preload("Bucket.gltf");
 }
 
 void Game::Update()

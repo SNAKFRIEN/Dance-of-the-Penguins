@@ -48,16 +48,22 @@ public:
 		const glm::mat4& ownerTransform,
 		std::string vertexShader = "AnimationCelShader.vert",
 		std::string fragShader = "AnimationCelShader.frag");
+	
+	static void Preload(std::string name,
+		std::string vertexShader = "AnimationCelShader.vert",
+		std::string fragShader = "AnimationCelShader.frag");
+
 	void Update(float dt);
 	void AddToRenderQueue(Camera& camera);
 	static void DrawAllInstances();
 	void SetAnimation(std::string name);
+
 	//Functionality for joint attachments
 	int GetJointIndex(std::string jointName) const;
 	const std::vector<glm::mat4>& GetPose() const;
 	const glm::mat4& GetTransform() const;
 private:
-	ModelData& ConstructModelData(std::string name, std::string vertexShader, std::string fragShader);
+	static ModelData& ConstructModelData(std::string name, std::string vertexShader, std::string fragShader);
 
 	std::vector<glm::mat4> GetJointTransforms() const;	//Retrieve transform per joint
 	void ApplyPoseToJointsRecursively(const std::vector<glm::mat4>& pose, Joint& headJoint, const glm::mat4& parentTransform);

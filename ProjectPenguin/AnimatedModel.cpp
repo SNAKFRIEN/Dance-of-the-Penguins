@@ -27,6 +27,11 @@ AnimatedModel::AnimatedModel(std::string name, const glm::mat4& ownerTransform, 
 {
 }
 
+void AnimatedModel::Preload(std::string name, std::string vertexShader, std::string fragShader)
+{
+	ConstructModelData(name, vertexShader, fragShader);
+}
+
 void AnimatedModel::Update(float dt)
 {
 	animationTime += dt;

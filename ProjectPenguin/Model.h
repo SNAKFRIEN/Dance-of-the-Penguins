@@ -38,10 +38,15 @@ public:
 		const glm::mat4& ownerTransform,
 		std::string vertexShader = "CelShader.vert",
 		std::string fragShader = "CelShader.frag");
+
+	static void Preload(std::string name,
+		std::string vertexShader = "CelShader.vert",
+		std::string fragShader = "CelShader.frag");
+
 	void AddToRenderQueue(Camera& camera);
 	static void DrawAllInstances();
 private:
-	ModelData& ConstructModelData(std::string name, std::string vertexShader, std::string fragShader);
+	static ModelData& ConstructModelData(std::string name, std::string vertexShader, std::string fragShader);
 private:
 	//Reference to owner transform
 	const glm::mat4& ownerTransform;
