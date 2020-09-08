@@ -175,19 +175,22 @@ void Game::UpdatePlaying()
 		{
 			penguin.Update(deltaTime);
 		}
-		for (int i = 0; i < penguins.size(); i++)
-		{
-			penguins[i].Collide(i, penguins, fishingPenguin, iceRink);
-		}
 		camera.Follow(player.GetPos());
-
-		if (player.IsColliding(penguins, fishingPenguin, iceRink))
-		{
-			state = State::GameOver;
-		}
 
 		accumulator -= deltaTime;
 	}
+
+	//Check collisions
+	for (int i = 0; i < penguins.size(); i++)
+	{
+		penguins[i].Collide(i, penguins, fishingPenguin, iceRink);
+	}
+	
+	if (player.IsColliding(penguins, fishingPenguin, iceRink))
+	{
+		state = State::GameOver;
+	}
+
 
 	//Update audio listener
 	audioManager.SetListenerPosition(camera.GetPos());

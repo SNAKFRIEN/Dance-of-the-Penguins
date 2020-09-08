@@ -19,8 +19,8 @@ UINumberDisplay::UINumberDisplay(glm::vec2 pos, glm::vec2 letterScale, Anchor an
 		-0.5f, 0.5f,	0.0f, 1.0f		//Top left 
 	};
 	unsigned int indices[] = {
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
+		3, 1, 0,   // first triangle
+		3, 2, 1    // second triangle
 	};
 
 
