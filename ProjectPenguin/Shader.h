@@ -11,13 +11,13 @@
 class Shader
 {
 public:
-	Shader(std::string vertexPath, std::string fragmentPath);
+	Shader(std::string vertexName, std::string fragmentName);
+	Shader(std::string vertexName, std::string fragmentName, std::string geometryName);
 	~Shader();
 	Shader(const Shader&) = delete;
 	Shader operator=(const Shader&) = delete;
 	Shader(Shader&& rhs) noexcept;
 	Shader operator=(Shader&& rhs) = delete;
-
 	
 	unsigned int Get() const;
 

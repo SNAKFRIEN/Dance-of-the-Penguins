@@ -12,7 +12,7 @@
 	if (error != GL_NO_ERROR)\
 	{\
 		std::stringstream errorMessage;\
-		errorMessage << "GL error: 0x" << std::hex << error;\
+		errorMessage << "GL error: 0x" << std::hex << error << "\n" << __FILE__ << " " << std::dec <<__LINE__;\
 		throw std::exception(errorMessage.str().c_str());\
 	}\
 }
@@ -168,7 +168,6 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name, st
 
 		//-------------------------Step 1: Make the shader-------------------------------------------------
 		newModelData.shader = std::make_unique<Shader>(vertexShader, fragShader);
-
 
 		//-------------------------Step 2: Load the model using tinyGLTF-------------------------------------------------
 		//Import the model and check errors

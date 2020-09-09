@@ -1,26 +1,64 @@
 #include "Shader.h"
 
+//REMOVE use the proper error check method
+#define GL_ERROR_CHECK();\
+{\
+	int error = glGetError();\
+	if (error != GL_NO_ERROR)\
+	{\
+		std::stringstream errorMessage;\
+		errorMessage << "GL error: 0x" << std::hex << error << "\n" << __FILE__ << " " << __LINE__;\
+		throw std::exception(errorMessage.str().c_str());\
+	}\
+}
+
 Shader::Shader(std::string vertexName, std::string fragmentName)
+	:
+	Shader(vertexName, fragmentName, "")
 {
+}
+
+Shader::Shader(std::string vertexName, std::string fragmentName, std::string geometryName)
+{
+	bool useGeometryShader = !geometryName.empty();
+	GL_ERROR_CHECK();
+
 	std::string vertexPath = "Shaders/";
 	std::string fragmentPath = "Shaders/";
+	std::string geometryPath = "Shaders/";
 
 	vertexPath.append(vertexName);
 	fragmentPath.append(fragmentName);
+	geometryPath.append(geometryName);
 
 	//Load shader code from file
 	std::string vertexCode = FromFile(vertexPath);
 	std::string fragmentCode = FromFile(fragmentPath);
+	std::string geometryCode;
+	if (useGeometryShader)
+	{
+		geometryCode = FromFile(geometryPath);
+	}
 
 	//Compile shaders
 	unsigned int vertexShader = CreateShader(vertexName, vertexCode.c_str(), GL_VERTEX_SHADER);
 	unsigned int fragmentShader = CreateShader(fragmentName, fragmentCode.c_str(), GL_FRAGMENT_SHADER);
+	unsigned int geometryShader;
+	if (useGeometryShader)
+	{
+		geometryShader = CreateShader(geometryName, geometryCode.c_str(), GL_GEOMETRY_SHADER);
+	}
+	GL_ERROR_CHECK();
 
 	//Link shaders
 	shaderProgram = glCreateProgram();
 	assert(shaderProgram > 0);
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
+	if (useGeometryShader)
+	{
+		glAttachShader(shaderProgram, geometryShader);
+	}
 	glLinkProgram(shaderProgram);
 	{
 		int  success;
@@ -41,6 +79,11 @@ Shader::Shader(std::string vertexName, std::string fragmentName)
 	}
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	if (useGeometryShader)
+	{
+		glDeleteShader(geometryShader);
+	}
+	GL_ERROR_CHECK();
 }
 
 Shader::~Shader()
@@ -66,6 +109,7 @@ unsigned int Shader::Get() const
 void Shader::Use() const
 {
 	glUseProgram(shaderProgram);
+	GL_ERROR_CHECK();
 }
 
 void Shader::SetUniformBool(const std::string& name, bool value) const
