@@ -194,6 +194,7 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClCompile Include="IceSkaterCollider.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="JointAttachment.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SaveFile.cpp" />
     <ClCompile Include="Spawner.cpp" />
@@ -228,6 +229,7 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="json.hpp" />
     <ClInclude Include="KeyFrame.h" />
     <ClInclude Include="EliMath.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="SaveFile.h" />
     <ClInclude Include="AudioSource.h" />
     <ClInclude Include="Spawner.h" />
@@ -246,10 +248,12 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
   <ItemGroup>
     <None Include="NoTextureShader.frag" />
     <None Include="NoTextureShader.vert" />
-    <None Include="Shaders\AnimationCelShader.frag" />
     <None Include="Shaders\AnimationCelShader.vert" />
     <None Include="Shaders\CelShader.frag" />
     <None Include="Shaders\CelShader.vert" />
+    <None Include="Shaders\DepthOnly.frag" />
+    <None Include="Shaders\DepthOnly.vert" />
+    <None Include="Shaders\DepthOnlyAnimation.vert" />
     <None Include="Shaders\NumberShader.frag" />
     <None Include="Shaders\NumberShader.vert" />
     <None Include="Shaders\UIShader.frag" />

@@ -25,9 +25,14 @@ void Camera::SetAspectRatio(float ratio)
 	projection = glm::perspective(fov, ratio, nearPlane, farPlane);
 }
 
+void Camera::CalculateVPMatrix()
+{
+	viewProjection = projection * view;
+}
+
 glm::mat4 Camera::GetVPMatrix() const
 {
-	return projection * view;
+	return viewProjection;
 }
 
 float Camera::GetFOVRadians() const

@@ -120,6 +120,9 @@
     <ClCompile Include="CircleCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -218,15 +221,15 @@
     <ClInclude Include="CircleCollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CelShader.frag">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\CelShader.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\AnimationCelShader.frag">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\AnimationCelShader.vert">
@@ -254,6 +257,15 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\NumberShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DepthOnly.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DepthOnlyAnimation.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DepthOnly.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -13,7 +13,8 @@ Game::Game(Window& window)
 	gameOverMenu(window, 1.0f),
 	gameplayUI(window, 1.0f),
 	fishingPenguinRotationRange(1.57079f, 4.71238f),
-	rng(std::random_device()())
+	rng(std::random_device()()),
+	light(glm::vec3(0.0f, 10.0f, 0.0f))
 {
 	window.SetMainCamera(&camera);
 	camera.SetPos(glm::vec3(0.0f, 10.0f, 1.0f));
@@ -179,6 +180,7 @@ void Game::UpdatePlaying()
 
 		accumulator -= deltaTime;
 	}
+	camera.CalculateVPMatrix();
 
 	//Check collisions
 	for (int i = 0; i < penguins.size(); i++)
@@ -294,6 +296,23 @@ void Game::EndPlaying()
 	scoreTimer = 0.0f;
 }
 
+void Game::DrawShadows()
+{
+	//Prepare shadow FBO
+	glViewport(0, 0, light.GetShadowResolutionX(), light.GetShadowResolutionY());
+	glBindFramebuffer(GL_FRAMEBUFFER, light.GetFBO());
+	glClear(GL_DEPTH_BUFFER_BIT);
+	//Bind shader and draw shadows
+	light.UseAnimationShader();
+	AnimatedModel::DrawShadows(light);
+	light.UseNonAnimationShader();
+	Model::DrawShadows(light);
+	//Revert to default FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, (GLsizei)window.GetDimensions().x, (GLsizei)window.GetDimensions().y);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 void Game::DrawPlaying()
 {
 	player.Draw(camera);
@@ -306,9 +325,11 @@ void Game::DrawPlaying()
 		fishingPenguin->Draw(camera);
 	}
 	iceRink.Draw(camera, input);
-	
-	AnimatedModel::DrawAllInstances();
-	Model::DrawAllInstances();
+
+	DrawShadows();
+
+	AnimatedModel::DrawAllInstances(light);
+	Model::DrawAllInstances(light);
 
 	glEnable(GL_BLEND);
 	gameplayUI.Draw();

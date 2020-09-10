@@ -1,6 +1,6 @@
 #include "UINumberDisplay.h"
 
-#include "Input.h"
+#include <glad/glad.h>
 #include "stb_image.h"
 
 UINumberDisplay::UINumberDisplay(glm::vec2 pos, glm::vec2 letterScale, Anchor anchor, glm::vec2 relativePos, glm::vec2 relativeLetterScale, std::string textureName)

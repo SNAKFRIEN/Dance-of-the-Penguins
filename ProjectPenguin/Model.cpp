@@ -1,8 +1,10 @@
 #include "Model.h"
 
+#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Camera.h"
+#include "Light.h"
 
 //REMOVE use the proper error check method
 #define GL_ERROR_CHECK();\
@@ -38,22 +40,26 @@ void Model::AddToRenderQueue(Camera& camera)
 	modelData.renderQueue.push_back(std::make_pair(ownerTransform, camera.GetVPMatrix() * ownerTransform));
 }
 
-void Model::DrawAllInstances()
+void Model::DrawAllInstances(const Light& light)
 {
 	for (std::pair<const std::string, ModelData>& element : existingModels)
 	{
 		ModelData& model = element.second;
-
-		//Bind texture
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, model.texture);
-
-		GL_ERROR_CHECK()
 		
 		//Bind shader
 		model.shader->Use();
 		
-		GL_ERROR_CHECK()
+		GL_ERROR_CHECK();
+
+		//Bind texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, model.texture);
+		model.shader->SetUniformInt("tex", 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, light.GetShadowMapTexture());
+		model.shader->SetUniformInt("shadowMap", 1);
+
+		GL_ERROR_CHECK();
 
 		//Bind vao
 		glBindVertexArray(model.vao);
@@ -68,6 +74,7 @@ void Model::DrawAllInstances()
 
 			model.shader->SetUniformMat4("model", modelTransform);
 			model.shader->SetUniformMat4("mvp", transform);
+			model.shader->SetUniformMat4("lightTransform", light.GetLightTransform());
 
 			GL_ERROR_CHECK()
 
@@ -81,6 +88,39 @@ void Model::DrawAllInstances()
 
 		//Clear renderqueue
 		model.renderQueue.clear();
+
+		GL_ERROR_CHECK()
+	}
+}
+
+void Model::DrawShadows(const Light& light)
+{
+	for (std::pair<const std::string, ModelData>& element : existingModels)
+	{
+		ModelData& model = element.second;
+
+		//Bind vao
+		glBindVertexArray(model.vao);
+
+		GL_ERROR_CHECK();
+
+		//Draw instances
+		for (auto& instance : model.renderQueue)
+		{
+			const auto modelTransform = instance.first;
+			const auto transform = light.GetLightTransform() * modelTransform;
+
+			light.GetNonAnimationShader().SetUniformMat4("mvp", transform);
+
+			GL_ERROR_CHECK();
+
+			glDrawElements(GL_TRIANGLES, (GLsizei)model.nIndices, GL_UNSIGNED_SHORT, 0);
+
+			GL_ERROR_CHECK();
+		}
+
+		//Unbind vao
+		glBindVertexArray(0);
 
 		GL_ERROR_CHECK()
 	}

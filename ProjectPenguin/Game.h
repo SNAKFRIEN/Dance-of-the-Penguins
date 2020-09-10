@@ -12,6 +12,7 @@
 #include "SaveFile.h"
 #include "AudioManager.h"
 #include "FishingPenguin.h"
+#include "Light.h"
 
 class Window;
 
@@ -47,6 +48,7 @@ private:
 
 	void EndPlaying();
 
+	void DrawShadows();
 	void DrawPlaying();
 	void DrawPauseMenu();
 	void DrawMainMenu();
@@ -96,4 +98,6 @@ private:
 	AudioManager audioManager;
 
 	std::mt19937 rng;
+
+	Light light;
 };

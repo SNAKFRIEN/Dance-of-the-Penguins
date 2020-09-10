@@ -9,6 +9,7 @@
 #include "KeyFrame.h"
 
 class Camera;
+class Light;
 
 /*WARNING: This class will leak memory, but due to the predictable nature of the gameplay,
 it does not make a difference whether I implement the rule of 5 or not.*/
@@ -47,15 +48,16 @@ public:
 	AnimatedModel(std::string name,
 		const glm::mat4& ownerTransform,
 		std::string vertexShader = "AnimationCelShader.vert",
-		std::string fragShader = "AnimationCelShader.frag");
+		std::string fragShader = "CelShader.frag");
 	
 	static void Preload(std::string name,
 		std::string vertexShader = "AnimationCelShader.vert",
-		std::string fragShader = "AnimationCelShader.frag");
+		std::string fragShader = "CelShader.frag");
 
 	void Update(float dt);
 	void AddToRenderQueue(Camera& camera);
-	static void DrawAllInstances();
+	static void DrawAllInstances(const Light& light);
+	static void DrawShadows(const Light& light);
 	void SetAnimation(std::string name);
 
 	//Functionality for joint attachments

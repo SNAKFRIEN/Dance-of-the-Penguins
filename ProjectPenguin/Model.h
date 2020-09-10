@@ -9,6 +9,7 @@
 #include "Shader.h"
 
 class Camera;
+class Light;
 
 /*WARNING: This class will leak memory, but due to the predictable nature of the gameplay,
 it does not make a difference whether I implement the rule of 5 or not.*/
@@ -44,7 +45,8 @@ public:
 		std::string fragShader = "CelShader.frag");
 
 	void AddToRenderQueue(Camera& camera);
-	static void DrawAllInstances();
+	static void DrawAllInstances(const Light& light);
+	static void DrawShadows(const Light& light);
 private:
 	static ModelData& ConstructModelData(std::string name, std::string vertexShader, std::string fragShader);
 private:

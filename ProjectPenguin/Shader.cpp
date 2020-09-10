@@ -1,5 +1,7 @@
 #include "Shader.h"
 
+#include <glad/glad.h>
+
 //REMOVE use the proper error check method
 #define GL_ERROR_CHECK();\
 {\
@@ -72,7 +74,12 @@ Shader::Shader(std::string vertexName, std::string fragmentName, std::string geo
 			errorMessage.append(vertexName);
 			errorMessage.append(" and ");
 			errorMessage.append(fragmentName);
-			errorMessage.append("\n\ninfoLog: ");
+			if (useGeometryShader)
+			{
+				errorMessage.append("and");
+				errorMessage.append(geometryName);
+			}
+			errorMessage.append("\n\ninfoLog:\n");
 			errorMessage.append(infoLog);
 			throw std::exception(errorMessage.c_str());
 		}

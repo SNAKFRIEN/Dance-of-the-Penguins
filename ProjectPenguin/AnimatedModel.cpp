@@ -1,9 +1,11 @@
 #include "AnimatedModel.h"
 
+#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Camera.h"
 #include "GLTFData.h"
+#include "Light.h"
 
 //REMOVE use the proper error check method
 #define GL_ERROR_CHECK()\
@@ -72,31 +74,36 @@ void AnimatedModel::Update(float dt)
 void AnimatedModel::AddToRenderQueue(Camera& camera)
 {
 	//Store model matrix
-	const auto modelTransform = ownerTransform;
+	const auto& modelTransform = ownerTransform;
 
 	//Calculate MVP
-	const auto transform = camera.GetVPMatrix() * modelTransform;
+	const auto& transform = camera.GetVPMatrix() * modelTransform;
 
 	//Gather joint transforms
-	std::vector<glm::mat4> jointTransforms = pose;
+	std::vector<glm::mat4>& jointTransforms = pose;
 
 	modelData.renderQueue.push_back(std::make_tuple(modelTransform, transform, jointTransforms));
 }
 
-void AnimatedModel::DrawAllInstances()
+void AnimatedModel::DrawAllInstances(const Light& light)
 {
 	for (std::pair<const std::string, ModelData>& element : existingModels)
 	{
 		ModelData& model = element.second;
 
-		//Bind texture
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, model.texture);
+		//Bind shader
+		//REPLACE: literally all models use the same shader, might wanna reconsider this line of code
+		model.shader->Use();
 
 		GL_ERROR_CHECK();
 
-		//Bind shader
-		model.shader->Use();
+		//Bind texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, model.texture);
+		model.shader->SetUniformInt("tex", 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, light.GetShadowMapTexture());
+		model.shader->SetUniformInt("shadowMap", 1);
 
 		GL_ERROR_CHECK();
 
@@ -114,6 +121,7 @@ void AnimatedModel::DrawAllInstances()
 			model.shader->SetUniformMat4("model", modelTransform);
 			model.shader->SetUniformMat4("mvp", transform);
 			model.shader->SetUniformMat4Array("jointTransforms", jointTransforms);
+			model.shader->SetUniformMat4("lightTransform", light.GetLightTransform());
 
 			glDrawElements(GL_TRIANGLES, (GLsizei)model.nIndices, GL_UNSIGNED_SHORT, 0);
 		}
@@ -123,6 +131,44 @@ void AnimatedModel::DrawAllInstances()
 
 		//Clear renderqueue
 		model.renderQueue.clear();
+
+		GL_ERROR_CHECK();
+	}
+}
+
+void AnimatedModel::DrawShadows(const Light& light)
+{
+	for (std::pair<const std::string, ModelData>& element : existingModels)
+	{
+		ModelData& model = element.second;
+
+		//Bind vao
+		glBindVertexArray(model.vao);
+
+		GL_ERROR_CHECK();
+
+		//Draw instances
+		for (auto& instance : model.renderQueue)
+		{
+			glm::mat4 modelTransform;
+			glm::mat4 transform;
+			std::vector<glm::mat4> jointTransforms;
+			std::tie(modelTransform, transform, jointTransforms) = instance;
+
+			glm::mat4 mvp = light.GetLightTransform() * modelTransform;
+
+			light.GetAnimationShader().SetUniformMat4("mvp", mvp);
+			light.GetAnimationShader().SetUniformMat4Array("jointTransforms", jointTransforms);
+
+			GL_ERROR_CHECK();
+
+			glDrawElements(GL_TRIANGLES, (GLsizei)model.nIndices, GL_UNSIGNED_SHORT, 0);
+			
+			GL_ERROR_CHECK();
+		}
+
+		//Unbind vao
+		glBindVertexArray(0);
 
 		GL_ERROR_CHECK();
 	}
