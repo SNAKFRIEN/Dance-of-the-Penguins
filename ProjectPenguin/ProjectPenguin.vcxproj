@@ -246,20 +246,21 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NoTextureShader.frag" />
-    <None Include="NoTextureShader.vert" />
     <None Include="Shaders\AnimationCelShader.vert" />
     <None Include="Shaders\CelShader.frag" />
     <None Include="Shaders\CelShader.vert" />
     <None Include="Shaders\DepthOnly.frag" />
+    <None Include="Shaders\DepthOnly.geom" />
     <None Include="Shaders\DepthOnly.vert" />
     <None Include="Shaders\DepthOnlyAnimation.vert" />
+    <None Include="Shaders\NoTextureShader.frag" />
+    <None Include="Shaders\NoTextureShader.vert" />
     <None Include="Shaders\NumberShader.frag" />
     <None Include="Shaders\NumberShader.vert" />
+    <None Include="Shaders\SmoothShader.frag" />
+    <None Include="Shaders\SmoothShader.vert" />
     <None Include="Shaders\UIShader.frag" />
     <None Include="Shaders\UIShader.vert" />
-    <None Include="SmoothShader.frag" />
-    <None Include="SmoothShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

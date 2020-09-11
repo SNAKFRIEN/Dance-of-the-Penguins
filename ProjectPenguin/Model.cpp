@@ -56,8 +56,8 @@ void Model::DrawAllInstances(const Light& light)
 		glBindTexture(GL_TEXTURE_2D, model.texture);
 		model.shader->SetUniformInt("tex", 0);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, light.GetShadowMapTexture());
-		model.shader->SetUniformInt("shadowMap", 1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, light.GetShadowCubeMap());
+		model.shader->SetUniformInt("shadowCubeMap", 1);
 
 		GL_ERROR_CHECK();
 
@@ -74,7 +74,8 @@ void Model::DrawAllInstances(const Light& light)
 
 			model.shader->SetUniformMat4("model", modelTransform);
 			model.shader->SetUniformMat4("mvp", transform);
-			model.shader->SetUniformMat4("lightTransform", light.GetLightTransform());
+			model.shader->SetUniformFloat("lightFarPlane", light.GetFarPlane());
+			model.shader->SetUniformVec3("lightPos", light.GetPos());
 
 			GL_ERROR_CHECK()
 
@@ -108,9 +109,11 @@ void Model::DrawShadows(const Light& light)
 		for (auto& instance : model.renderQueue)
 		{
 			const auto modelTransform = instance.first;
-			const auto transform = light.GetLightTransform() * modelTransform;
 
-			light.GetNonAnimationShader().SetUniformMat4("mvp", transform);
+			light.GetNonAnimationShader().SetUniformMat4("modelTransform", modelTransform);
+			light.GetNonAnimationShader().SetUniformMat4Array("shadowMatrices", light.GetShadowMatrices());
+			light.GetNonAnimationShader().SetUniformVec3("lightPos", light.GetPos());
+			light.GetNonAnimationShader().SetUniformFloat("farPlane", light.GetFarPlane());
 
 			GL_ERROR_CHECK();
 

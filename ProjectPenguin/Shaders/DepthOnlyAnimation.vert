@@ -10,7 +10,7 @@ layout (location = 2) in vec2 in_texcoord;
 layout (location = 3) in ivec4 in_jointIndices;
 layout (location = 4) in vec4 in_weights;
 
-uniform mat4 mvp;
+uniform mat4 modelTransform;
 uniform mat4 jointTransforms[MAX_JOINTS];
 
 void main()
@@ -26,5 +26,5 @@ void main()
 		vec4 localPosition = jointTransforms[in_jointIndices[i]] * vec4(in_position, 1.0);
 		totalLocalPos += localPosition * in_weights[i];
 	}
-	gl_Position = mvp * totalLocalPos;
+	gl_Position = modelTransform * totalLocalPos;
 }  

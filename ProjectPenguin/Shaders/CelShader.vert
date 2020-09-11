@@ -6,11 +6,9 @@ layout (location = 2) in vec2 in_texcoord;
 out vec3 position;
 out vec3 normal;
 out vec2 texcoord;
-out vec4 lightSpacePosition;
 
 uniform mat4 model;
 uniform mat4 mvp;
-uniform mat4 lightTransform;
 
 void main()
 {
@@ -18,5 +16,4 @@ void main()
 	normal = normalize(mat3(model) * in_normal);
 	position = vec3(model * vec4(in_position, 1.0));
 	texcoord = in_texcoord;
-	lightSpacePosition = lightTransform * vec4(position, 1.0f);
 }

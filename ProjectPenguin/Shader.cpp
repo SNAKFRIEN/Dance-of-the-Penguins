@@ -115,6 +115,7 @@ unsigned int Shader::Get() const
 
 void Shader::Use() const
 {
+	GL_ERROR_CHECK();
 	glUseProgram(shaderProgram);
 	GL_ERROR_CHECK();
 }

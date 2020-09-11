@@ -4,18 +4,20 @@ out vec4 FragColor;
 in vec3 position;
 in vec3 normal;
 in vec2 texcoord;
-in vec4 lightSpacePosition;
 
 uniform sampler2D tex;
-uniform sampler2D shadowMap;
+uniform samplerCube shadowCubeMap;
 
-//REPLACE hard coded view pos and light pos
-vec3 lightPos = vec3(0, 10, 0);
-vec3 lightDir = normalize(lightPos - position);
+uniform float lightFarPlane;
+uniform vec3 lightPos;
+
+//REPLACE hard coded view pos
 vec3 viewPos = vec3(0.0, 0.5, -1.0);
+
+vec3 lightDir = normalize(lightPos - position);
 vec3 viewDir = normalize(viewPos - position);
 
-float glossiness = 32;
+float glossiness = 32.0;
 
 vec4 Smooth()
 {
@@ -24,17 +26,17 @@ vec4 Smooth()
 
 float Shadow()
 {
-	//Perspective divide
-	vec3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
-	//transform NDC to range [0, 1]
-	projCoords = projCoords * 0.5f + 0.5f;
-	//Sample shadow texture
-	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	//Sample cube map
+	vec3 fromLight = position - lightPos;
+	float closestDepth = texture(shadowCubeMap, fromLight).r;
+	closestDepth *= lightFarPlane;
+	//Calculate current depth to compare
+	float currrentDepth = length(fromLight);
 	//Check if fragment is in Shadow
-	float minBias = 0.00005;
-	float maxBias = 0.0005;
+	float minBias = 0.005;
+	float maxBias = 0.05;
 	float bias = max(maxBias * (1.0 - dot(normal, lightDir)), minBias);
-	return projCoords.z - bias > closestDepth ? 0.3 : 0.0;
+	return currrentDepth - bias > closestDepth ? 0.3 : 0.0;
 }
 
 float Cel()

@@ -3,6 +3,18 @@
 #include "Window.h"
 #include <iomanip>
 
+//REMOVE use the proper error check method
+#define GL_ERROR_CHECK();\
+{\
+	int error = glGetError();\
+	if (error != GL_NO_ERROR)\
+	{\
+		std::stringstream errorMessage;\
+		errorMessage << "GL error: 0x" << std::hex << error << "\n" << __FILE__ << " " << __LINE__;\
+		throw std::exception(errorMessage.str().c_str());\
+	}\
+}
+
 Game::Game(Window& window)
 	:
 	window(window),
@@ -302,11 +314,15 @@ void Game::DrawShadows()
 	glViewport(0, 0, light.GetShadowResolutionX(), light.GetShadowResolutionY());
 	glBindFramebuffer(GL_FRAMEBUFFER, light.GetFBO());
 	glClear(GL_DEPTH_BUFFER_BIT);
+	GL_ERROR_CHECK();
 	//Bind shader and draw shadows
-	light.UseAnimationShader();
-	AnimatedModel::DrawShadows(light);
-	light.UseNonAnimationShader();
-	Model::DrawShadows(light);
+	if (!input.IsPressed(GLFW_KEY_G))
+	{
+		light.UseAnimationShader();
+		AnimatedModel::DrawShadows(light);
+		light.UseNonAnimationShader();
+		Model::DrawShadows(light);
+	}
 	//Revert to default FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, (GLsizei)window.GetDimensions().x, (GLsizei)window.GetDimensions().y);

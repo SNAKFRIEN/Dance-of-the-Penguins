@@ -12,12 +12,10 @@ layout (location = 4) in vec4 in_weights;
 out vec3 position;
 out vec3 normal;
 out vec2 texcoord;
-out vec4 lightSpacePosition;
 
 uniform mat4 jointTransforms[MAX_JOINTS];
 uniform mat4 model;
 uniform mat4 mvp;
-uniform mat4 lightTransform;
 
 void main()
 {
@@ -42,5 +40,4 @@ void main()
 	normal = (model * totalNormal).xyz;
 	position = vec3(model * totalLocalPos);
 	texcoord = in_texcoord;
-	lightSpacePosition = lightTransform * vec4(position, 1.0f);
 }
