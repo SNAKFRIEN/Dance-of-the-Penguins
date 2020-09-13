@@ -27,4 +27,4 @@ void main()
 		totalLocalPos += localPosition * in_weights[i];
 	}
 	gl_Position = modelTransform * totalLocalPos;
-}  
+}

@@ -3,6 +3,8 @@
 #include "Window.h"
 #include <iomanip>
 
+#include "glm/gtc/random.hpp"
+
 #include "GlGetError.h"
 
 Game::Game(Window& window)
@@ -17,7 +19,6 @@ Game::Game(Window& window)
 	fishingPenguinRotationRange(1.57079f, 4.71238f),
 	rng(std::random_device()()),
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
-	flashEffect("PassToFragBackground.vert", "PassToScreen.frag"),
 	screenQuad(window, saveFile)
 {
 	window.SetMainCamera(&camera);
@@ -50,16 +51,20 @@ Game::Game(Window& window)
 
 void Game::Update()
 {
+	const float frameTime = ft.Mark();
 	switch (state)
 	{
 	case State::Playing:
-		UpdatePlaying();
+		UpdatePlaying(frameTime);
 		break;
 	case State::Paused:
 		UpdatePauseMenu();
 		break;
 	case State::MainMenu:
 		UpdateMainMenu();
+		break;
+	case State::GameOverCam:
+		UpdateGameOverCam(frameTime);
 		break;
 	case State::GameOver:
 		UpdateGameOver();
@@ -82,9 +87,13 @@ void Game::Draw()
 	case State::MainMenu:
 		DrawMainMenu();
 		break;
+	case State::GameOverCam:
+		DrawPlaying();
+		break;
 	case State::GameOver:
 		DrawPlaying();	//Still show paused gameplay in the background
 		DrawGameOverMenu();
+		break;
 	}
 }
 
@@ -125,7 +134,9 @@ void Game::SetUpBakedShadows()
 	iceRink.DrawStatic(camera, input);
 
 	light.UseBakeTexture();
-	
+
+	glCullFace(GL_FRONT);
+
 	//Prepare shadow FBO
 	glViewport(0, 0, light.GetShadowResolutionX(), light.GetShadowResolutionY());
 	glBindFramebuffer(GL_FRAMEBUFFER, light.GetFBO());
@@ -138,6 +149,8 @@ void Game::SetUpBakedShadows()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, window.GetWidth(), window.GetHeight());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glCullFace(GL_BACK);
 
 	light.UseNonBakeTexture();
 }
@@ -169,12 +182,11 @@ void Game::StartPlaying()
 	ft.Mark();
 
 	//Ensure at least one physics update takes place before rendering the first frame of gameplay
-	UpdatePlaying();
+	UpdatePlaying(0.01f);
 }
 
-void Game::UpdatePlaying()
+void Game::UpdatePlaying(float frameTime)
 {
-	const float frameTime = ft.Mark();
 	totalPlayTime += frameTime;
 
 	//Spawn new penguins
@@ -200,19 +212,20 @@ void Game::UpdatePlaying()
 		fishingPenguinSpawned = true;
 	}
 
-	//Update entities
+	//Update entities (Fixed deltaTime)
 	accumulator += frameTime;
 	accumulator = std::min(accumulator, 0.02f);
 	while (accumulator > deltaTime)
 	{
 		player.Update(deltaTime, input);
-		for (Penguin& penguin : penguins)
-		{
-			penguin.Update(deltaTime);
-		}
 		camera.Follow(player.GetPos());
 
 		accumulator -= deltaTime;
+	}
+	//Update entities (Dynamic deltaTime)
+	for (Penguin& penguin : penguins)
+	{
+		penguin.Update(frameTime);
 	}
 	camera.CalculateVPMatrix();
 
@@ -222,11 +235,11 @@ void Game::UpdatePlaying()
 		penguins[i].Collide(i, penguins, fishingPenguin, iceRink);
 	}
 	
+	bool gameOver = false;
 	if (player.IsColliding(penguins, fishingPenguin, iceRink))
 	{
-		state = State::GameOver;
+		gameOver = true;
 	}
-
 
 	//Update audio listener
 	audioManager.SetListenerPosition(camera.GetPos());
@@ -243,8 +256,10 @@ void Game::UpdatePlaying()
 		fishingPenguin->UpdateAnimation(frameTime);
 	}
 
-	if (state == State::GameOver)
+	//Play game over animation
+	if (gameOver)
 	{
+		state = State::GameOverCam;
 		EndPlaying();
 	}
 
@@ -300,6 +315,42 @@ void Game::UpdateMainMenu()
 	}
 }
 
+void Game::UpdateGameOverCam(float frameTime)
+{
+	screenEffect.Update(frameTime);
+	if (nGameOverFlashes >= maxGameOverFlashes && screenEffect.GetCurrentEffectType() != ScreenEffect::EffectType::Flash)
+	{
+		state = State::GameOver;
+		nGameOverFlashes = 0;
+	}
+	else if (screenEffect.GetCurrentEffectType() != ScreenEffect::EffectType::Flash)
+	{
+
+		//Select camPos
+		bool found = false;
+		glm::vec2 camPosXZ;
+		while (!found)
+		{
+			camPosXZ = glm::circularRand(7.0f);
+			//Make sure it's in the rink
+			camPosXZ += glm::vec2(player.GetPos().x, player.GetPos().z);
+			if (camPosXZ.x < iceRink.GetRight()
+				&& camPosXZ.x > -iceRink.GetRight()
+				&& camPosXZ.y < iceRink.GetTop()
+				&& camPosXZ.y > -iceRink.GetTop())
+			{
+				found = true;
+			}
+		}
+		float camPosY = glm::linearRand(3.0f, 13.0f);
+		camera.LookAt(glm::vec3(camPosXZ.x, camPosY, camPosXZ.y), player.GetPos());
+		camera.CalculateVPMatrix();
+		//Do flash
+		screenEffect.SetFlashEffect(1.3f);
+		nGameOverFlashes++;
+	}
+}
+
 void Game::UpdateGameOver()
 {
 	gameOverMenu.Update();
@@ -332,6 +383,7 @@ void Game::EndPlaying()
 
 void Game::DrawShadows()
 {
+	glCullFace(GL_FRONT);
 	//Prepare shadow FBO
 	glViewport(0, 0, light.GetShadowResolutionX(), light.GetShadowResolutionY());
 	glBindFramebuffer(GL_FRAMEBUFFER, light.GetFBO());
@@ -346,6 +398,7 @@ void Game::DrawShadows()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, (GLsizei)window.GetDimensions().x, (GLsizei)window.GetDimensions().y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glCullFace(GL_BACK);
 }
 
 void Game::DrawPlaying()
@@ -388,12 +441,10 @@ void Game::DrawPlaying()
 		screenQuad.EndFrame();
 
 		//Draw using effect
-		flashEffect.Use();
+		screenEffect.UseEffect();
 		auto screenTexture = screenQuad.GetTexture();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, screenTexture);
-		//flashEffect.SetUniformInt("texture0", screenTexture);
-		flashEffect.SetUniformFloat("color", 1.0f);
 
 		screenQuad.Draw();
 	}

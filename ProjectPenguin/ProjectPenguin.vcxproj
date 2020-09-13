@@ -197,6 +197,7 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SaveFile.cpp" />
+    <ClCompile Include="ScreenEffect.cpp" />
     <ClCompile Include="ScreenQuad.cpp" />
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="UINumberDisplay.cpp" />
@@ -232,6 +233,7 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="KeyFrame.h" />
     <ClInclude Include="EliMath.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="ScreenEffect.h" />
     <ClInclude Include="ScreenQuad.h" />
     <ClInclude Include="SaveFile.h" />
     <ClInclude Include="AudioSource.h" />
@@ -256,6 +258,7 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <None Include="Shaders\DepthOnly.geom" />
     <None Include="Shaders\DepthOnly.vert" />
     <None Include="Shaders\DepthOnlyAnimation.vert" />
+    <None Include="Shaders\FlashEffect.frag" />
     <None Include="Shaders\NoTextureShader.frag" />
     <None Include="Shaders\NoTextureShader.vert" />
     <None Include="Shaders\NumberShader.frag" />

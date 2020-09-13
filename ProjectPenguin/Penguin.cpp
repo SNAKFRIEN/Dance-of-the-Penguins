@@ -215,7 +215,7 @@ void Penguin::Update(float dt)
 	switch (state)
 	{
 	case State::Walking:
-		pos += direction * speed;
+		pos += direction * speed * dt;
 		if (stateCountDown < 0.0f)
 		{
 			quackSound.SetPos(pos);

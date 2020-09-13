@@ -32,13 +32,14 @@ float Shadow()
 	float closestDepth = min(texture(shadowCubeMap, fromLight).r, texture(shadowCubeMapBaked, fromLight).r);
 	closestDepth *= lightFarPlane;
 	//Calculate current depth to compare
-	float currrentDepth = length(fromLight);
+	float currentDepth = length(fromLight);
 	//Check if fragment is in Shadow
 	float minBias = 0.005;
 	float maxBias = 0.05;
 	float bias = max(maxBias * (1.0 - dot(normal, lightDir)), minBias);
-	return currrentDepth - bias > closestDepth ? 0.3 : 0.0;
+	return currentDepth - bias > closestDepth ? 0.3 : 0.0;
 }
+
 
 float Cel()
 {

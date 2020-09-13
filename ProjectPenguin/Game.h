@@ -14,6 +14,7 @@
 #include "FishingPenguin.h"
 #include "Light.h"
 #include "ScreenQuad.h"
+#include "ScreenEffect.h"
 
 class Window;
 
@@ -25,6 +26,7 @@ private:
 		MainMenu,
 		Playing,
 		Paused,
+		GameOverCam,
 		GameOver
 	};
 public:
@@ -44,9 +46,10 @@ private:
 
 	void StartPlaying();
 
-	void UpdatePlaying();
+	void UpdatePlaying(float frameTime);
 	void UpdatePauseMenu();
 	void UpdateMainMenu();
+	void UpdateGameOverCam(float frameTime);
 	void UpdateGameOver();
 
 	void EndPlaying();
@@ -106,7 +109,8 @@ private:
 	Light light;
 
 	ScreenQuad screenQuad;
-	Shader flashEffect;
+	ScreenEffect screenEffect;
 
-	bool testComplete = false;
+	const int maxGameOverFlashes = 3;
+	int nGameOverFlashes = 0;
 };

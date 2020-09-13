@@ -9,6 +9,7 @@ public:
 	glm::vec3 GetPos() const;
 
 	void Follow(glm::vec3 target);
+	void LookAt(glm::vec3 eye, glm::vec3 target, glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
 
 	void SetAspectRatio(float ratio); //This function will automatically be called whenever the window is resized
 

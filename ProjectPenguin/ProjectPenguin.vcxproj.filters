@@ -28,6 +28,12 @@
     <Filter Include="Source Files\UserInterface">
       <UniqueIdentifier>{bc358414-963c-4b6a-b4b3-aba8af46575c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\ScreenEffects">
+      <UniqueIdentifier>{f0997035-0223-4a51-8462-18fb413b1d41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\NewFilter1">
+      <UniqueIdentifier>{69f75b27-e5ab-4ede-aa71-1dd34ef018c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -124,6 +130,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScreenQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -233,6 +242,9 @@
     <ClInclude Include="GlGetError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScreenEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CelShader.frag">
@@ -281,10 +293,13 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\PassToScreen.frag">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\ScreenEffects</Filter>
     </None>
     <None Include="Shaders\PassToFragBackground.vert">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\ScreenEffects</Filter>
+    </None>
+    <None Include="Shaders\FlashEffect.frag">
+      <Filter>Shaders\ScreenEffects</Filter>
     </None>
   </ItemGroup>
 </Project>

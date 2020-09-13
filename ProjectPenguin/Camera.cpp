@@ -20,6 +20,11 @@ void Camera::Follow(glm::vec3 target)
 	view = glm::lookAt(pos, target, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+void Camera::LookAt(glm::vec3 eye, glm::vec3 target, glm::vec3 up)
+{
+	view = glm::lookAt(eye, target, up);
+}
+
 void Camera::SetAspectRatio(float ratio)
 {
 	projection = glm::perspective(fov, ratio, nearPlane, farPlane);

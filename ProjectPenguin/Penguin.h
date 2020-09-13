@@ -52,7 +52,7 @@ private:
 
 	//Gameplay
 	glm::vec3 direction;	//Must be normalized at all times
-	float speed = 0.0075f;
+	float speed = 1.5f;
 
 	State state = State::Walking;	//Always use SetState() to make sure the animation is changed too
 
