@@ -1,7 +1,10 @@
 #include "Window.h"
 
 #include <assert.h>
+#include <iostream>
+
 #include "Camera.h"
+#include "ScreenQuad.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -19,7 +22,7 @@ Window::Window(int width, int height, std::string name)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//REPLACE: toggles multi sampling (anti aliasing)
-	glfwWindowHint(GLFW_SAMPLES, 16);
+	//glfwWindowHint(GLFW_SAMPLES, 16);
 
 	//Create the actual window
 	window = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
@@ -40,13 +43,16 @@ Window::Window(int width, int height, std::string name)
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 	//REPLACE: enable multisampling
-	glEnable(GL_MULTISAMPLE);
+	//glEnable(GL_MULTISAMPLE);
 
 	//Set blend function for transparency
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Enable backface culling
 	glEnable(GL_CULL_FACE);
+
+	//Enable depth testing
+	glEnable(GL_DEPTH_TEST);
 }
 
 Window::~Window()
@@ -56,9 +62,15 @@ Window::~Window()
 
 void Window::BeginFrame()
 {
-	//Update camera aspect ratio (REPLACE: It may be possible to do this with callback, which would be better)
-	glfwGetWindowSize(window, &currentWidth, &currentHeight);
-	mainCamera->SetAspectRatio((float)currentWidth / (float)currentHeight);
+	//Call "ResizeCallback" if window has been resized. REPLACE: Doing this with a real callback would be better
+	int newWidth, newHeight;
+	glfwGetWindowSize(window, &newWidth, &newHeight);
+	if (newWidth != currentWidth || newHeight != currentHeight)
+	{
+		currentWidth = newWidth;
+		currentHeight = newHeight;
+		ResizeCallback();
+	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -107,7 +119,39 @@ glm::vec2 Window::GetDimensions() const
 	return glm::vec2((float)currentWidth, (float)currentHeight);
 }
 
+int Window::GetWidth() const
+{
+	return currentWidth;
+}
+
+int Window::GetHeight() const
+{
+	return currentHeight;
+}
+
 void Window::SetMainCamera(Camera* camera)
 {
 	mainCamera = camera;
+	ResizeCallback();
+}
+
+void Window::SetScreenQuad(ScreenQuad* inScreenQuad)
+{
+	screenQuad = inScreenQuad;
+	ResizeCallback();
+}
+
+void Window::ResizeCallback()
+{
+	if (mainCamera)
+	{
+		mainCamera->SetAspectRatio((float)currentWidth / (float)currentHeight);
+	}
+
+	if (screenQuad)
+	{
+		screenQuad->UpdateDimensions();
+	}
+
+	std::cout << "Window is updated";
 }

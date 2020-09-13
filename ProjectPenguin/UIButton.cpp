@@ -26,8 +26,6 @@ UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 r
 		3, 2, 1    // second triangle
 	};
 
-	
-
 	//Generate VAO
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -80,8 +78,6 @@ UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 r
 	}
 	stbi_set_flip_vertically_on_load(false);
 	stbi_image_free(data);
-
-
 
 	//Set shader uniforms
 	shader.Use();

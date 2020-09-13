@@ -5,6 +5,11 @@
 #include <fstream>
 #include <iomanip>
 
+SaveFile::SaveFile()
+{
+	LoadData("SaveData.json");
+}
+
 void SaveFile::LoadData(std::string fileName)
 {
 	if (FileExists(fileName))
@@ -19,6 +24,8 @@ void SaveFile::LoadData(std::string fileName)
 		//Load data
 		highScore = *data.find("highScore");
 		tutorialCompleted = *data.find("tutorialCompleted");
+		shadowResolution = *data.find("shadowResolution");
+		msaa = *data.find("msaa");
 	}
 	//REPLACE: warn the user if save file is not present?
 }
@@ -27,7 +34,9 @@ void SaveFile::SaveData(std::string fileName)
 {
 	nlohmann::json data = {
 		{"highScore", highScore},
-		{"tutorialCompleted", tutorialCompleted}
+		{"tutorialCompleted", tutorialCompleted},
+		{"shadowResolution", shadowResolution},
+		{"msaa", msaa}
 	};
 
 	std::string filePath = "UserData/";
@@ -59,6 +68,16 @@ int SaveFile::GetHighScore() const
 bool SaveFile::GetTutorialCompleted() const
 {
 	return tutorialCompleted;
+}
+
+unsigned int SaveFile::GetShadowRes() const
+{
+	return shadowResolution;
+}
+
+unsigned int SaveFile::GetMsaaQuality() const
+{
+	return msaa;
 }
 
 void SaveFile::SetHighScore(int inScore)

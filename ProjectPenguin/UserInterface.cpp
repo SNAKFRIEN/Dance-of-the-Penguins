@@ -91,6 +91,8 @@ void UICanvas::Update()
 
 void UICanvas::Draw()
 {
+	//Turn on blending
+	glEnable(GL_BLEND);
 	//Loop through all UI elements and draw
 	for (std::pair<const std::string, UIButton>& button : buttons)
 	{
@@ -100,4 +102,6 @@ void UICanvas::Draw()
 	{
 		numberDisplay.second.Draw();
 	}
+	//Turn off blending
+	glDisable(GL_BLEND);
 }

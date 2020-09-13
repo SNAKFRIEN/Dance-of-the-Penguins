@@ -7,6 +7,7 @@ in vec2 texcoord;
 
 uniform sampler2D tex;
 uniform samplerCube shadowCubeMap;
+uniform samplerCube shadowCubeMapBaked;
 
 uniform float lightFarPlane;
 uniform vec3 lightPos;
@@ -28,7 +29,7 @@ float Shadow()
 {
 	//Sample cube map
 	vec3 fromLight = position - lightPos;
-	float closestDepth = texture(shadowCubeMap, fromLight).r;
+	float closestDepth = min(texture(shadowCubeMap, fromLight).r, texture(shadowCubeMapBaked, fromLight).r);
 	closestDepth *= lightFarPlane;
 	//Calculate current depth to compare
 	float currrentDepth = length(fromLight);

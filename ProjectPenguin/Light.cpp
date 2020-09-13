@@ -3,9 +3,11 @@
 #include "glad/glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 
-Light::Light(glm::vec3 pos)
+Light::Light(glm::vec3 pos, unsigned int shadowResolution)
 	:
 	pos(pos),
+	shadowResolutionX(shadowResolution),
+	shadowResolutionY(shadowResolution),
 	nonAnimationShader("DepthOnly.vert", "DepthOnly.frag", "DepthOnly.geom"),
 	animationShader("DepthOnlyAnimation.vert", "DepthOnly.frag", "DepthOnly.geom"),
 	lightTransform(CalculateLightTransform(pos))
@@ -34,12 +36,35 @@ Light::Light(glm::vec3 pos)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+	//Create baked depth cubemap REPLACE: hardcode shadowRes? If yes, REPLACE GetShadowRes() to scale viewPort correctly!!!
+	glGenTextures(1, &depthCubeMapBaked);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMapBaked);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i
+			, 0
+			, GL_DEPTH_COMPONENT
+			, shadowResolutionX
+			, shadowResolutionY
+			, 0
+			, GL_DEPTH_COMPONENT
+			, GL_FLOAT
+			, NULL);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	/*REMOVE? same code as UseBakeTexture() and UseNonBakeTexture
 	//Attach depth map texture as FBO's depth buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubeMap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	*/
 }
 
 void Light::UseNonAnimationShader() const
@@ -50,6 +75,24 @@ void Light::UseNonAnimationShader() const
 void Light::UseAnimationShader() const
 {
 	animationShader.Use();
+}
+
+void Light::UseBakeTexture() const
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubeMapBaked, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Light::UseNonBakeTexture() const
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubeMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 int Light::GetShadowResolutionX() const
@@ -75,6 +118,11 @@ unsigned int Light::GetFBO() const
 unsigned int Light::GetShadowCubeMap() const
 {
 	return depthCubeMap;
+}
+
+unsigned int Light::GetBakedShadowCubeMap() const
+{
+	return depthCubeMapBaked;
 }
 
 glm::vec3 Light::GetPos() const

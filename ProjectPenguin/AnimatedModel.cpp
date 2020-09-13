@@ -6,18 +6,7 @@
 #include "Camera.h"
 #include "GLTFData.h"
 #include "Light.h"
-
-//REMOVE use the proper error check method
-#define GL_ERROR_CHECK()\
-{\
-	int error = glGetError();\
-	if (error != GL_NO_ERROR)\
-	{\
-		std::stringstream errorMessage;\
-		errorMessage << "GL error: 0x" << std::hex << error << "\n" << __FILE__ << " " << std::dec <<__LINE__;\
-		throw std::exception(errorMessage.str().c_str());\
-	}\
-}
+#include "GlGetError.h"
 
 //Static members
 std::unordered_map<std::string, AnimatedModel::ModelData> AnimatedModel::existingModels;
@@ -104,6 +93,9 @@ void AnimatedModel::DrawAllInstances(const Light& light)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, light.GetShadowCubeMap());
 		model.shader->SetUniformInt("shadowCubeMap", 1);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, light.GetBakedShadowCubeMap());
+		model.shader->SetUniformInt("shadowCubeMapBaked", 2);
 
 		GL_ERROR_CHECK();
 

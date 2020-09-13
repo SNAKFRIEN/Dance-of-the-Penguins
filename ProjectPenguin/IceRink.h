@@ -16,7 +16,8 @@ class IceRink
 public:
 	IceRink(bool initModels = true);
 	
-	void Draw(Camera& camera, Input& input);
+	void DrawStatic(Camera& camera, Input& input);
+	void DrawNonStatic(Camera& camera, Input& input);
 	void Reset();
 
 	float GetRight() const;

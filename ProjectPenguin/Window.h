@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 class Camera;
+class ScreenQuad;
 
 class Window
 {
@@ -28,13 +29,20 @@ public:
 	bool MouseButtonIsPressed(int button) const;
 	glm::vec2 GetCursorPos() const;
 	glm::vec2 GetDimensions() const;
+	int GetWidth() const;
+	int GetHeight() const;
 
 	//Custom functionality
 	void SetMainCamera(Camera* camera);
+	void SetScreenQuad(ScreenQuad* screenQuad);
+private:
+	void ResizeCallback();
 private:
 	GLFWwindow* window = nullptr;
 	
+	//Automatically adjust properties when screen size changes
 	Camera* mainCamera = nullptr;
+	ScreenQuad* screenQuad = nullptr;
 
 	int currentWidth;
 	int currentHeight;

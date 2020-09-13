@@ -5,16 +5,7 @@
 
 #include "Camera.h"
 
-#define GL_ERROR_CHECK();\
-{\
-	int error = glGetError();\
-	if (error != GL_NO_ERROR)\
-	{\
-		std::stringstream errorMessage;\
-		errorMessage << "GL error: 0x" << std::hex << error;\
-		throw std::exception(errorMessage.str().c_str());\
-	}\
-}
+#include "GlGetError.h"
 
 ModelNoTexture::ModelNoTexture(std::string name, const glm::mat4& ownerTransform)
 	:

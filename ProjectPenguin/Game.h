@@ -13,6 +13,7 @@
 #include "AudioManager.h"
 #include "FishingPenguin.h"
 #include "Light.h"
+#include "ScreenQuad.h"
 
 class Window;
 
@@ -39,6 +40,8 @@ private:
 	void SetUpGameOverMenu();
 	void SetUpGameplayUI();
 
+	void SetUpBakedShadows();
+
 	void StartPlaying();
 
 	void UpdatePlaying();
@@ -50,6 +53,7 @@ private:
 
 	void DrawShadows();
 	void DrawPlaying();
+	void DrawGamePlayUI();
 	void DrawPauseMenu();
 	void DrawMainMenu();
 	void DrawGameOverMenu();
@@ -100,4 +104,9 @@ private:
 	std::mt19937 rng;
 
 	Light light;
+
+	ScreenQuad screenQuad;
+	Shader flashEffect;
+
+	bool testComplete = false;
 };

@@ -13,17 +13,24 @@ IceRink::IceRink(bool initModels)
 	Reset();
 }
 
-void IceRink::Draw(Camera& camera, Input& input)
+void IceRink::DrawStatic(Camera& camera, Input& input)
 {
 	if (!input.IsPressed(70))
 	{
 		stadiumModel->AddToRenderQueue(camera);
-		iceModel->AddToRenderQueue(camera);
 	}
 
 	for (Model& s : seats)
 	{
 		s.AddToRenderQueue(camera);
+	}
+}
+
+void IceRink::DrawNonStatic(Camera& camera, Input& input)
+{
+	if (!input.IsPressed(70))
+	{
+		iceModel->AddToRenderQueue(camera);
 	}
 }
 

@@ -3,17 +3,7 @@
 #include "Window.h"
 #include <iomanip>
 
-//REMOVE use the proper error check method
-#define GL_ERROR_CHECK();\
-{\
-	int error = glGetError();\
-	if (error != GL_NO_ERROR)\
-	{\
-		std::stringstream errorMessage;\
-		errorMessage << "GL error: 0x" << std::hex << error << "\n" << __FILE__ << " " << __LINE__;\
-		throw std::exception(errorMessage.str().c_str());\
-	}\
-}
+#include "GlGetError.h"
 
 Game::Game(Window& window)
 	:
@@ -26,20 +16,28 @@ Game::Game(Window& window)
 	gameplayUI(window, 1.0f),
 	fishingPenguinRotationRange(1.57079f, 4.71238f),
 	rng(std::random_device()()),
-	light(glm::vec3(0.0f, 10.0f, 0.0f))
+	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
+	flashEffect("PassToFragBackground.vert", "PassToScreen.frag"),
+	screenQuad(window, saveFile)
 {
 	window.SetMainCamera(&camera);
+	window.SetScreenQuad(&screenQuad);
 	camera.SetPos(glm::vec3(0.0f, 10.0f, 1.0f));
 	
 	//Seed randomness for penguin spawns, REPLACE if there's a better way
 	srand(std::random_device()());
 
+	//Setup UI
 	SetUpMainMenu();
 	SetUpPauseMenu();
 	SetUpGameOverMenu();
 
 	SetUpGameplayUI();
 
+	//Bake shadows for static objects
+	SetUpBakedShadows();
+
+	//Load save data
 	saveFile.LoadData("SaveData.json");
 	highScore = saveFile.GetHighScore();
 
@@ -75,6 +73,7 @@ void Game::Draw()
 	{
 	case State::Playing:
 		DrawPlaying();
+		DrawGamePlayUI();
 		break;
 	case State::Paused:
 		DrawPlaying();	//Still show paused gameplay in the background
@@ -118,6 +117,29 @@ void Game::SetUpGameplayUI()
 {
 	gameplayUI.AddNumberDisplay(glm::vec2(0.0f, 0.9f), glm::vec2(0.03f, 0.06f), Anchor::Center, "Score");
 	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
+}
+
+void Game::SetUpBakedShadows()
+{
+	//Draw all objects that can be baked
+	iceRink.DrawStatic(camera, input);
+
+	light.UseBakeTexture();
+	
+	//Prepare shadow FBO
+	glViewport(0, 0, light.GetShadowResolutionX(), light.GetShadowResolutionY());
+	glBindFramebuffer(GL_FRAMEBUFFER, light.GetFBO());
+	glClear(GL_DEPTH_BUFFER_BIT);
+	GL_ERROR_CHECK();
+	//Bind shader and draw shadows
+	light.UseNonAnimationShader();
+	Model::DrawShadows(light);
+	//Revert to default FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, window.GetWidth(), window.GetHeight());
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	light.UseNonBakeTexture();
 }
 
 void Game::StartPlaying()
@@ -316,13 +338,10 @@ void Game::DrawShadows()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	GL_ERROR_CHECK();
 	//Bind shader and draw shadows
-	if (!input.IsPressed(GLFW_KEY_G))
-	{
-		light.UseAnimationShader();
-		AnimatedModel::DrawShadows(light);
-		light.UseNonAnimationShader();
-		Model::DrawShadows(light);
-	}
+	light.UseAnimationShader();
+	AnimatedModel::DrawShadows(light);
+	light.UseNonAnimationShader();
+	Model::DrawShadows(light);
 	//Revert to default FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, (GLsizei)window.GetDimensions().x, (GLsizei)window.GetDimensions().y);
@@ -331,6 +350,7 @@ void Game::DrawShadows()
 
 void Game::DrawPlaying()
 {
+	//Draw all items that cast shadows
 	player.Draw(camera);
 	for (Penguin& p : penguins)
 	{
@@ -340,13 +360,47 @@ void Game::DrawPlaying()
 	{
 		fishingPenguin->Draw(camera);
 	}
-	iceRink.Draw(camera, input);
+	iceRink.DrawNonStatic(camera, input);
 
-	DrawShadows();
+	//Cast shadows
+	if (!input.IsPressed(GLFW_KEY_G))
+	{
+		DrawShadows();
+	}
 
+	//Draw all items that don't cast (dynamic) shadows
+	iceRink.DrawStatic(camera, input);
+	//SetUpBakedShadows();
+
+	if (!input.IsPressed(GLFW_KEY_H))
+	{
+		//Bind screenQuad
+		screenQuad.StartFrame();
+		GL_ERROR_CHECK();
+	}
+
+	//Draw all entities
 	AnimatedModel::DrawAllInstances(light);
 	Model::DrawAllInstances(light);
 
+	if (!input.IsPressed(GLFW_KEY_H))
+	{
+		screenQuad.EndFrame();
+
+		//Draw using effect
+		flashEffect.Use();
+		auto screenTexture = screenQuad.GetTexture();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, screenTexture);
+		//flashEffect.SetUniformInt("texture0", screenTexture);
+		flashEffect.SetUniformFloat("color", 1.0f);
+
+		screenQuad.Draw();
+	}
+}
+
+void Game::DrawGamePlayUI()
+{
 	glEnable(GL_BLEND);
 	gameplayUI.Draw();
 	glDisable(GL_BLEND);

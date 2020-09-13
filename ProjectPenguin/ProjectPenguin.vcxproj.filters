@@ -123,6 +123,9 @@
     <ClCompile Include="Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -224,6 +227,12 @@
     <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScreenQuad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GlGetError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CelShader.frag">
@@ -269,6 +278,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\SmoothShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PassToScreen.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PassToFragBackground.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

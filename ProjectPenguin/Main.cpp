@@ -9,9 +9,6 @@ int main()
 		Window window(1920, 1080);
 		Game game(window);
 
-
-		glEnable(GL_DEPTH_TEST);
-
 		//Loop the game
 		while (!window.IsClosing())
 		{
