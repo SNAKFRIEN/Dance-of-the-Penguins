@@ -19,7 +19,8 @@ Game::Game(Window& window)
 	fishingPenguinRotationRange(1.57079f, 4.71238f),
 	rng(std::random_device()()),
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
-	screenQuad(window, saveFile)
+	screenQuad(window, saveFile),
+	penguinDresser(rng)
 {
 	window.SetMainCamera(&camera);
 	window.SetScreenQuad(&screenQuad);
@@ -196,6 +197,11 @@ void Game::UpdatePlaying(float frameTime)
 		if (penguinSpawnTimer > penguinSpawnInterval)
 		{
 			penguins.emplace_back(penguinSpawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f), audioManager);
+			auto outfit = penguinDresser.GeneratePenguinOutfit();
+			for (auto& accessory : outfit)
+			{
+				penguins[penguins.size() - 1].AddAccessory(accessory.first, accessory.second);
+			}
 			penguinSpawnTimer = 0.0f;
 		}
 	}
@@ -334,10 +340,11 @@ void Game::UpdateGameOverCam(float frameTime)
 			camPosXZ = glm::circularRand(7.0f);
 			//Make sure it's in the rink
 			camPosXZ += glm::vec2(player.GetPos().x, player.GetPos().z);
-			if (camPosXZ.x < iceRink.GetRight()
-				&& camPosXZ.x > -iceRink.GetRight()
-				&& camPosXZ.y < iceRink.GetTop()
-				&& camPosXZ.y > -iceRink.GetTop())
+			float maxOutOfRink = 4.0f;
+			if (camPosXZ.x < iceRink.GetRight() + maxOutOfRink
+				&& camPosXZ.x > -iceRink.GetRight() - maxOutOfRink
+				&& camPosXZ.y < iceRink.GetTop() + maxOutOfRink
+				&& camPosXZ.y > -iceRink.GetTop() - maxOutOfRink)
 			{
 				found = true;
 			}

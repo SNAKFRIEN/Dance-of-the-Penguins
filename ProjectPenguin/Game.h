@@ -15,6 +15,7 @@
 #include "Light.h"
 #include "ScreenQuad.h"
 #include "ScreenEffect.h"
+#include "PenguinDresser.h"
 
 class Window;
 
@@ -65,6 +66,8 @@ private:
 	Camera camera;
 	Input input;
 
+	std::mt19937 rng;
+
 	IceSkater player;
 	std::vector<Penguin> penguins;
 	std::unique_ptr<FishingPenguin> fishingPenguin;
@@ -77,12 +80,13 @@ private:
 	IceRink iceRink;
 
 	Spawner penguinSpawner;
+	PenguinDresser penguinDresser;
 	//Regular penguins
 	static constexpr float penguinSpawnInterval = 4.0f;
 	float penguinSpawnTimer = 0.0f;
 	static constexpr int maxPenguins = 100;
 	//Fishing penguin
-	const float fishingPenguinSpawnTime = 5.0f;
+	const float fishingPenguinSpawnTime = 50.0f;
 	bool fishingPenguinSpawned = false;
 	std::uniform_real_distribution<float> fishingPenguinRotationRange;
 
@@ -103,8 +107,6 @@ private:
 	SaveFile saveFile;
 
 	AudioManager audioManager;
-
-	std::mt19937 rng;
 
 	Light light;
 

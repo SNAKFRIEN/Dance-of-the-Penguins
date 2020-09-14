@@ -5,6 +5,7 @@
 #include "AnimatedModel.h"
 #include "AudioSource.h"
 #include "CircleCollider.h"
+#include "JointAttachment.h"
 
 #include <random>
 
@@ -29,6 +30,7 @@ public:
 	Penguin(Penguin&& rhs) noexcept;
 	Penguin operator=(Penguin&& rhs) = delete;
 	
+	void AddAccessory(std::string name, std::string joint);
 	void Collide(int index, std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink);
 	void Update(float dt);
 	void UpdateAnimation(float dt);
@@ -49,6 +51,7 @@ private:
 	glm::mat4 transform;
 
 	std::unique_ptr<AnimatedModel> model;
+	std::vector<JointAttachment> accessories;
 
 	//Gameplay
 	glm::vec3 direction;	//Must be normalized at all times

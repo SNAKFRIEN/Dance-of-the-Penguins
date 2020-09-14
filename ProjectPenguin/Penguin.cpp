@@ -39,6 +39,7 @@ Penguin::Penguin(const Penguin& rhs)
 	collider(pos, personalSpaceRadius)
 {
 	InitModel();
+	accessories = rhs.accessories;
 	pos = rhs.pos;
 	transform = rhs.transform;
 	direction = rhs.direction;
@@ -50,6 +51,7 @@ Penguin::Penguin(const Penguin& rhs)
 Penguin::Penguin(Penguin&& rhs) noexcept
 	:
 	model(std::move(rhs.model)),
+	accessories(std::move(accessories)),
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
@@ -63,6 +65,11 @@ Penguin::Penguin(Penguin&& rhs) noexcept
 	speed = rhs.speed;
 	SetState(rhs.state);
 	stateCountDown = rhs.stateCountDown;
+}
+
+void Penguin::AddAccessory(std::string name, std::string joint)
+{
+	accessories.emplace_back(name, *model, joint);
 }
 
 void Penguin::Collide(int index, std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink)
@@ -247,6 +254,10 @@ void Penguin::UpdateAnimation(float dt)
 void Penguin::Draw(Camera& camera)
 {
 	model->AddToRenderQueue(camera);
+	for (auto a : accessories)
+	{
+		a.Draw(camera);
+	}
 }
 
 glm::vec3 Penguin::GetPos() const

@@ -39,6 +39,7 @@ private:
 
 	std::unique_ptr<Model> stadiumModel;
 	std::unique_ptr<Model> iceModel;
+	std::unique_ptr<Model> iceHole;
 	std::vector<Model> seats;
 	std::vector<glm::mat4> seatTransforms;
 };

@@ -12,7 +12,9 @@ class Camera;
 class Light;
 
 /*WARNING: This class will leak memory, but due to the predictable nature of the gameplay,
-it does not make a difference whether I implement the rule of 5 or not.*/
+it does not make a difference whether I implement a destructor.*/
+
+//REPLACE? Might wanna remove ownerTransform and add an Update function so I can implement copy constructor
 
 class Model
 {

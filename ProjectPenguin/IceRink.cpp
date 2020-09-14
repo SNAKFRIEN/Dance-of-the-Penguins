@@ -31,6 +31,7 @@ void IceRink::DrawNonStatic(Camera& camera, Input& input)
 	if (!input.IsPressed(70))
 	{
 		iceModel->AddToRenderQueue(camera);
+		iceHole->AddToRenderQueue(camera);
 	}
 }
 
@@ -64,6 +65,7 @@ void IceRink::InitModels()
 {
 	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "SmoothShader.frag");
 	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform);
+	iceHole = std::make_unique<Model>("IceHole.gltf", iceTransform);
 
 	//Load seats
 	//Gain access to the data
