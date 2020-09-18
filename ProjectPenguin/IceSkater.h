@@ -10,13 +10,14 @@ class Input;
 class Penguin;
 class IceRink;
 class FishingPenguin;
+class PenguinStack;
 
 class IceSkater
 {
 public:
 	IceSkater(glm::vec3 pos);
 
-	bool IsColliding(std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink);
+	bool IsColliding(std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, std::unique_ptr<PenguinStack>& penguinStack, const IceRink& rink);
 	void Update(float dt, const Input& input);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
@@ -29,6 +30,7 @@ private:
 	bool IsOutOfRink(const IceRink& rink);
 	bool IsCollidingWithPenguin(std::vector<Penguin>& penguins);
 	bool IsCollidingWithFishingPenguin(std::unique_ptr<FishingPenguin>& fishingPenguin);
+	bool IsCollidingWithPenguinStack(std::unique_ptr<PenguinStack>& penguinStack);
 private:
 	glm::vec3 pos;
 

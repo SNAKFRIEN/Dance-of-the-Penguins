@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "Penguin.h"
 #include "FishingPenguin.h"
+#include "PenguinStack.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/rotate_vector.hpp"
@@ -21,9 +22,9 @@ IceSkater::IceSkater(glm::vec3 inPos)
 	model.SetAnimation("Skating");
 }
 
-bool IceSkater::IsColliding(std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink)
+bool IceSkater::IsColliding(std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, std::unique_ptr<PenguinStack>& penguinStack, const IceRink& rink)
 {
-	return IsOutOfRink(rink) || IsCollidingWithPenguin(penguins) || IsCollidingWithFishingPenguin(fishingPenguin);
+	return IsOutOfRink(rink) || IsCollidingWithPenguin(penguins) || IsCollidingWithFishingPenguin(fishingPenguin) || IsCollidingWithPenguinStack(penguinStack);
 }
 
 void IceSkater::Update(float dt, const Input& input)
@@ -143,4 +144,15 @@ bool IceSkater::IsCollidingWithFishingPenguin(std::unique_ptr<FishingPenguin>& f
 
 	//If no collisions found, return false
 	return false;
+}
+
+bool IceSkater::IsCollidingWithPenguinStack(std::unique_ptr<PenguinStack>& penguinStack)
+{
+	if (!penguinStack)
+	{
+		return false;
+	}
+
+	auto collision = collider.CalculateCollision(penguinStack->GetCollider());
+	return collision.isColliding;
 }

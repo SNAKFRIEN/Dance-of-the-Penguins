@@ -64,7 +64,7 @@ void IceRink::SetIcePos(glm::vec3 newPos)
 void IceRink::InitModels()
 {
 	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "SmoothShader.frag");
-	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform);
+	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform, "SmoothShader.vert", "SmoothBright.frag");
 	iceHole = std::make_unique<Model>("IceHole.gltf", iceTransform);
 
 	//Load seats

@@ -30,7 +30,7 @@ public:
 	Penguin(Penguin&& rhs) noexcept;
 	Penguin operator=(Penguin&& rhs) = delete;
 	
-	void AddAccessory(std::string name, std::string joint);
+	void AddAccessory(std::string name, std::string joint, std::string vertShader, std::string fragShader);
 	void Collide(int index, std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink);
 	void Update(float dt);
 	void UpdateAnimation(float dt);

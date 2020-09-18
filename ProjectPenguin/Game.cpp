@@ -20,7 +20,8 @@ Game::Game(Window& window)
 	rng(std::random_device()()),
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
 	screenQuad(window, saveFile),
-	penguinDresser(rng)
+	penguinDresser(rng),
+	randomStackSpawnInterval(10.0f, 15.0f)	//REPLACE these values
 {
 	window.SetMainCamera(&camera);
 	window.SetScreenQuad(&screenQuad);
@@ -200,7 +201,7 @@ void Game::UpdatePlaying(float frameTime)
 			auto outfit = penguinDresser.GeneratePenguinOutfit();
 			for (auto& accessory : outfit)
 			{
-				penguins[penguins.size() - 1].AddAccessory(accessory.first, accessory.second);
+				penguins[penguins.size() - 1].AddAccessory(accessory.name, accessory.bone, accessory.vertShader, accessory.fragShader);
 			}
 			penguinSpawnTimer = 0.0f;
 		}
@@ -217,6 +218,18 @@ void Game::UpdatePlaying(float frameTime)
 		fishingPenguin = std::make_unique<FishingPenguin>(spawn, rotation, audioManager);
 		fishingPenguinSpawned = true;
 	}
+	//Spawn penguin stack
+	penguinStackSpawnTimer -= frameTime;
+	if (penguinStackSpawnTimer <= 0.0f)
+	{
+		penguinStackSpawnTimer = randomStackSpawnInterval(rng);
+		auto stackSpawn = penguinSpawner.FindDistancedSpawnPoint(player.GetPos(),
+			12.0f,
+			iceRink.GetRight() - iceRink.GetCornerRadius(),
+			iceRink.GetTop() - iceRink.GetCornerRadius());
+		auto stackTarget = penguinSpawner.FindCloseTarget(player.GetPos(), 5.0f);
+		penguinStack = std::make_unique<PenguinStack>(stackSpawn, stackTarget, rng, audioManager);
+	}
 
 	//Update entities (Fixed deltaTime)
 	accumulator += frameTime;
@@ -224,7 +237,14 @@ void Game::UpdatePlaying(float frameTime)
 	while (accumulator > deltaTime)
 	{
 		player.Update(deltaTime, input);
-		camera.Follow(player.GetPos());
+		if (input.IsPressed(GLFW_KEY_V))
+		{
+			camera.Follow(penguinStack->GetPos());
+		}
+		else
+		{
+			camera.Follow(player.GetPos());
+		}
 
 		accumulator -= deltaTime;
 	}
@@ -232,6 +252,10 @@ void Game::UpdatePlaying(float frameTime)
 	for (Penguin& penguin : penguins)
 	{
 		penguin.Update(frameTime);
+	}
+	if (penguinStack)
+	{
+		penguinStack->Update(frameTime);
 	}
 	camera.CalculateVPMatrix();
 
@@ -242,7 +266,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	
 	bool gameOver = false;
-	if (player.IsColliding(penguins, fishingPenguin, iceRink))
+	if (player.IsColliding(penguins, fishingPenguin, penguinStack, iceRink))
 	{
 		gameOver = true;
 	}
@@ -260,6 +284,10 @@ void Game::UpdatePlaying(float frameTime)
 	if (fishingPenguinSpawned)
 	{
 		fishingPenguin->UpdateAnimation(frameTime);
+	}
+	if (penguinStack)
+	{
+		penguinStack->UpdateAnimation(frameTime);
 	}
 
 	//Play game over animation
@@ -419,6 +447,10 @@ void Game::DrawPlaying()
 	if (fishingPenguinSpawned)
 	{
 		fishingPenguin->Draw(camera);
+	}
+	if (penguinStack)
+	{
+		penguinStack->Draw(camera);
 	}
 	iceRink.DrawNonStatic(camera, input);
 

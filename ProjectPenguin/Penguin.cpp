@@ -67,9 +67,9 @@ Penguin::Penguin(Penguin&& rhs) noexcept
 	stateCountDown = rhs.stateCountDown;
 }
 
-void Penguin::AddAccessory(std::string name, std::string joint)
+void Penguin::AddAccessory(std::string name, std::string joint, std::string vertShader, std::string fragShader)
 {
-	accessories.emplace_back(name, *model, joint);
+	accessories.emplace_back(name, *model, joint, vertShader, fragShader);
 }
 
 void Penguin::Collide(int index, std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, const IceRink& rink)

@@ -8,7 +8,7 @@ class Camera;
 class JointAttachment
 {
 public:
-	JointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint);
+	JointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint, std::string vertShader = "CelShader.vert", std::string fragShader = "CelShader.frag");
 	JointAttachment(const JointAttachment& rhs);
 	JointAttachment operator=(const JointAttachment& rhs);
 	JointAttachment(JointAttachment&& rhs) noexcept;

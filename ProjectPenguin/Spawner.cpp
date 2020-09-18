@@ -47,3 +47,11 @@ glm::vec3 Spawner::FindDistancedSpawnPoint(glm::vec3 playerPos, float minPlayerD
 
 	return glm::vec3(newPos.x, 0.0f, newPos.y);
 }
+
+glm::vec3 Spawner::FindCloseTarget(glm::vec3 playerPos, float maxDistance)
+{
+	//Generate target offset
+	glm::vec2 newPos = glm::diskRand(maxDistance);
+	//Center target on player and return
+    return glm::vec3(playerPos.x + newPos.x, 0.0f, playerPos.z + newPos.y);
+}

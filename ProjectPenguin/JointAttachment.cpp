@@ -2,11 +2,11 @@
 
 #include "AnimatedModel.h"
 
-JointAttachment::JointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint)
+JointAttachment::JointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint, std::string vertShader, std::string fragShader)
 	:
 	name(name),
 	jointName(joint),
-	model(name, transform),
+	model(name, transform, vertShader, fragShader),
 	pose(parentModel.GetPose()),
 	ownerModelTransform(parentModel.GetTransform())
 {

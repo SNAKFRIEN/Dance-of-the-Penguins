@@ -31,9 +31,6 @@
     <Filter Include="Shaders\ScreenEffects">
       <UniqueIdentifier>{f0997035-0223-4a51-8462-18fb413b1d41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\NewFilter1">
-      <UniqueIdentifier>{69f75b27-e5ab-4ede-aa71-1dd34ef018c4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -136,6 +133,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PenguinDresser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedJointAttachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PenguinStack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -251,6 +254,12 @@
     <ClInclude Include="PenguinDresser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AnimatedJointAttachment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PenguinStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CelShader.frag">
@@ -306,6 +315,9 @@
     </None>
     <None Include="Shaders\FlashEffect.frag">
       <Filter>Shaders\ScreenEffects</Filter>
+    </None>
+    <None Include="Shaders\SmoothBright.frag">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -8,9 +8,9 @@ PenguinDresser::PenguinDresser(std::mt19937& rng)
 {
 }
 
-std::vector<std::pair<std::string, std::string>> PenguinDresser::GeneratePenguinOutfit()
+std::vector<Accessory> PenguinDresser::GeneratePenguinOutfit()
 {
-	std::vector<std::pair<std::string, std::string>> result;
+	std::vector<Accessory> result;
 	//Determine if dressed
 	if ((bool)randomBool(rng))
 	{
@@ -98,7 +98,7 @@ std::vector<std::pair<std::string, std::string>> PenguinDresser::GeneratePenguin
 			else if(uniqueFate < 83)
 			{
 				//Stealth
-				result.emplace_back("CardboardBox.gltf", "head");
+				result.emplace_back("CardboardBox.gltf", "head", "SmoothShader.vert", "SmoothBright.frag");
 			}
 			else
 			{

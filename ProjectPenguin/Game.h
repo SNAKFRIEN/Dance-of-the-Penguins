@@ -16,6 +16,7 @@
 #include "ScreenQuad.h"
 #include "ScreenEffect.h"
 #include "PenguinDresser.h"
+#include "PenguinStack.h"
 
 class Window;
 
@@ -71,6 +72,7 @@ private:
 	IceSkater player;
 	std::vector<Penguin> penguins;
 	std::unique_ptr<FishingPenguin> fishingPenguin;
+	std::unique_ptr<PenguinStack> penguinStack;
 
 	int score = 0;
 	static constexpr float scoreInterval = 1.0f;
@@ -86,9 +88,15 @@ private:
 	float penguinSpawnTimer = 0.0f;
 	static constexpr int maxPenguins = 100;
 	//Fishing penguin
-	const float fishingPenguinSpawnTime = 50.0f;
+	static constexpr float fishingPenguinSpawnTime = 50.0f;
 	bool fishingPenguinSpawned = false;
 	std::uniform_real_distribution<float> fishingPenguinRotationRange;
+	//Stacked penguins
+	//REPLACE these values
+	static constexpr float stackedPenguinSpawnTime = 3.0f;
+	std::uniform_real_distribution<float> randomStackSpawnInterval;
+	float penguinStackSpawnTimer = 0.01f;
+	
 
 	FrameTimer ft;
 	float accumulator = 0.01f;
