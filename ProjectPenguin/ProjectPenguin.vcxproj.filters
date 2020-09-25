@@ -25,11 +25,11 @@
     <Filter Include="Header Files\Animation">
       <UniqueIdentifier>{80a8e286-581e-4491-aa79-97151b1c1687}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\UserInterface">
-      <UniqueIdentifier>{bc358414-963c-4b6a-b4b3-aba8af46575c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\ScreenEffects">
       <UniqueIdentifier>{f0997035-0223-4a51-8462-18fb413b1d41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UserInterface">
+      <UniqueIdentifier>{bc358414-963c-4b6a-b4b3-aba8af46575c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -183,6 +183,8 @@ void Game::StartPlaying()
 
 	ft.Mark();
 
+	window.HideMouse();
+
 	//Ensure at least one physics update takes place before rendering the first frame of gameplay
 	UpdatePlaying(0.01f);
 }
@@ -220,7 +222,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	//Spawn penguin stack
 	penguinStackSpawnTimer -= frameTime;
-	if (penguinStackSpawnTimer <= 0.0f)
+	if (penguinStackSpawnTimer <= 0.0f && totalPlayTime >= stackedPenguinSpawnTime)
 	{
 		penguinStackSpawnTimer = randomStackSpawnInterval(rng);
 		auto stackSpawn = penguinSpawner.FindDistancedSpawnPoint(player.GetPos(),
@@ -314,6 +316,7 @@ void Game::UpdatePlaying(float frameTime)
 	if (input.IsShortPressed(InputAction::Pause))
 	{
 		state = State::Paused;
+		window.ShowMouse();
 	}
 }
 
@@ -323,11 +326,13 @@ void Game::UpdatePauseMenu()
 	if (input.IsShortPressed(InputAction::Pause))
 	{
 		state = State::Playing;
+		window.HideMouse();
 	}
 	if (pauseMenu.GetButton("Resume").UpdateAndCheckClick(input))
 	{
 		ft.Mark();
 		state = State::Playing;
+		window.HideMouse();
 	}
 	if (pauseMenu.GetButton("Quit").UpdateAndCheckClick(input))
 	{
@@ -405,6 +410,8 @@ void Game::EndPlaying()
 	{
 		highScore = score;
 	}
+
+	window.ShowMouse();
 
 	gameOverMenu.GetNumberDisplay("Score").SetNumber(score);
 	gameOverMenu.GetNumberDisplay("HighScore").SetNumber(highScore);

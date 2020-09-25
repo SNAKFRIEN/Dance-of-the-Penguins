@@ -129,6 +129,16 @@ int Window::GetHeight() const
 	return currentHeight;
 }
 
+void Window::ShowMouse() const
+{
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void Window::HideMouse() const
+{
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
 void Window::SetMainCamera(Camera* camera)
 {
 	mainCamera = camera;

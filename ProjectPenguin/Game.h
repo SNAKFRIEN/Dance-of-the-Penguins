@@ -93,10 +93,9 @@ private:
 	std::uniform_real_distribution<float> fishingPenguinRotationRange;
 	//Stacked penguins
 	//REPLACE these values
-	static constexpr float stackedPenguinSpawnTime = 3.0f;
+	static constexpr float stackedPenguinSpawnTime = 100.0f;
 	std::uniform_real_distribution<float> randomStackSpawnInterval;
 	float penguinStackSpawnTimer = 0.01f;
-	
 
 	FrameTimer ft;
 	float accumulator = 0.01f;

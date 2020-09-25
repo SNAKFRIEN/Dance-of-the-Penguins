@@ -31,6 +31,8 @@ public:
 	glm::vec2 GetDimensions() const;
 	int GetWidth() const;
 	int GetHeight() const;
+	void ShowMouse() const;
+	void HideMouse() const;
 
 	//Custom functionality
 	void SetMainCamera(Camera* camera);
