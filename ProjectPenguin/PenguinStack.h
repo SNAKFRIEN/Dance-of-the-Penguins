@@ -23,25 +23,56 @@ private:
 		AnimatedJointAttachment model;
 		std::unique_ptr<PenguinNode> nextNode = nullptr;
 	};
+	enum class State
+	{
+		Skating,
+		Crashing,
+		Crashed
+	};
+	struct FallingPenguin
+	{
+		FallingPenguin() : model("Goopie.gltf", transform, "GoombaFalling") {}
+		AnimatedModel model;
+		glm::mat4 transform;
+		float speed;
+		float rotationOffset;
+		float distanceMultiplier;
+		float height;
+		float flipSpeed;
+	};
 public:
 	PenguinStack(glm::vec3 pos, glm::vec3 target, std::mt19937& rng, AudioManager& audioManager);
 
-	void Update(float dt);
+	void Update(float dt, const IceRink& rink);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
+	void Crash();
 
 	//REMOVE unused function
 	glm::vec3 GetPos() const;
 	CircleCollider& GetCollider();
 private:
+	State state = State::Skating;
+
+	std::vector<FallingPenguin> fallingPenguins;
+
 	//Movement
 	glm::vec3 pos;
 	const glm::vec3 direction;
 	static constexpr float speed = 6.0f;
 
-	glm::mat4 transform;
+	float fallingTime = 0.0f;
+	std::uniform_real_distribution<float> randomFallingSpeed;
+	std::uniform_real_distribution<float> randomFallingRotationOffset;
+	std::uniform_real_distribution<float> randomFallingDistanceMultiplier;
+	std::uniform_real_distribution<float> randomFallingCurveHeight;
+	std::uniform_real_distribution<float> randomFallingFlipSpeed;
 
+	glm::mat4 transform;
+	const glm::mat4 rotationMatrix;
+	
 	//Visuals
+	int nPenguins = 0;
 	AnimatedModel model;
 	std::mt19937& rng;
 	std::uniform_int_distribution<int> randomNStackedPenguins;

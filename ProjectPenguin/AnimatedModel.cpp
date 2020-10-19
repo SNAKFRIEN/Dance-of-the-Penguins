@@ -11,11 +11,12 @@
 //Static members
 std::unordered_map<std::string, AnimatedModel::ModelData> AnimatedModel::existingModels;
 
-AnimatedModel::AnimatedModel(std::string name, const glm::mat4& ownerTransform, std::string vertexShader, std::string fragShader)
+AnimatedModel::AnimatedModel(std::string name, const glm::mat4& ownerTransform, std::string animationName, std::string vertexShader, std::string fragShader)
 	:
 	ownerTransform(ownerTransform),
 	modelData(ConstructModelData(name, vertexShader, fragShader))
 {
+	SetAnimation(animationName);
 }
 
 void AnimatedModel::Preload(std::string name, std::string vertexShader, std::string fragShader)
@@ -174,6 +175,11 @@ void AnimatedModel::SetAnimation(std::string name)
 {
 	assert(modelData.animations.count(name) > 0);	//Make sure animation exists
 	currentAnimation = name;
+}
+
+std::string AnimatedModel::GetAnimation() const
+{
+	return currentAnimation;
 }
 
 int AnimatedModel::GetJointIndex(std::string jointName) const
@@ -460,7 +466,7 @@ AnimatedModel::ModelData& AnimatedModel::ConstructModelData(std::string name, st
 			}
 			for (tinygltf::AnimationChannel channel : tinyAnimation.channels)
 			{
-				//Verify that this is a joint (rather than a random joint)
+				//Verify that this is a joint (rather than a random node)
 				bool found = false;
 				for (int jointIndex = 0; jointIndex < newModelData.joints.size() && !found; jointIndex++)
 				{

@@ -254,7 +254,7 @@ void Penguin::UpdateAnimation(float dt)
 void Penguin::Draw(Camera& camera)
 {
 	model->AddToRenderQueue(camera);
-	for (auto a : accessories)
+	for (auto& a : accessories)
 	{
 		a.Draw(camera);
 	}
@@ -277,7 +277,7 @@ CircleCollider& Penguin::GetCollider()
 
 void Penguin::InitModel()
 {
-	model = std::make_unique<AnimatedModel>("Goopie.gltf", transform);
+	model = std::make_unique<AnimatedModel>("Goopie.gltf", transform, "Waddle");
 }
 
 void Penguin::SetState(State newState)

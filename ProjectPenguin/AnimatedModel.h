@@ -47,6 +47,7 @@ private:
 public:
 	AnimatedModel(std::string name,
 		const glm::mat4& ownerTransform,
+		std::string animationName,
 		std::string vertexShader = "AnimationCelShader.vert",
 		std::string fragShader = "CelShader.frag");
 	
@@ -59,6 +60,7 @@ public:
 	static void DrawAllInstances(const Light& light);
 	static void DrawShadows(const Light& light);
 	void SetAnimation(std::string name);
+	std::string GetAnimation() const;
 
 	//Functionality for joint attachments
 	int GetJointIndex(std::string jointName) const;

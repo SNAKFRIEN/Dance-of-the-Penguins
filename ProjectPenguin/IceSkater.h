@@ -26,6 +26,7 @@ public:
 
 	glm::vec3 GetPos() const;
 	glm::vec3 GetForward() const;
+	CircleCollider& GetCollider();
 private:
 	bool IsOutOfRink(const IceRink& rink);
 	bool IsCollidingWithPenguin(std::vector<Penguin>& penguins);

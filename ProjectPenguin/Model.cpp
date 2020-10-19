@@ -15,7 +15,8 @@ Model::Model(std::string name, const glm::mat4& ownerTransform, std::string vert
 	ownerTransform(ownerTransform),
 	modelData(ConstructModelData(name, vertexShader, fragShader))
 {
-
+	glm::vec3 printPos = glm::vec3(ownerTransform[3]);
+	std::cout << "Created model " << '\"' << name << '\"' << " at " << "(" << printPos.x << ", " << printPos.y << ", " << printPos.z << ")" << std::endl;
 }
 
 void Model::Preload(std::string name, std::string vertexShader, std::string fragShader)

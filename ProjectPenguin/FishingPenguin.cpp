@@ -4,7 +4,7 @@ FishingPenguin::FishingPenguin(glm::vec3 inPos, float rotation, AudioManager& au
 	:
 	transform(1.0f),
 	audioManager(audioManager),
-	model("Goopie.gltf", transform),
+	model("Goopie.gltf", transform, "FishingIdle"),
 	fishingRod("FishingPole.gltf", model, "lower_arm.R"),
 	bucket("Bucket.gltf", model, "head"),
 	crate("Crate.gltf", transform),

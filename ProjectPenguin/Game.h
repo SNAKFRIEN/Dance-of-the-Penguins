@@ -17,6 +17,7 @@
 #include "ScreenEffect.h"
 #include "PenguinDresser.h"
 #include "PenguinStack.h"
+#include "Collectible.h"
 
 class Window;
 
@@ -79,9 +80,13 @@ private:
 	float scoreTimer = 0.0f;
 	int highScore = 0;
 
+	std::vector<Collectible> collectibles;
+	static constexpr float collectibleInterval = 4.0f;
+	float collectibleTimer = 0.0f;
+
 	IceRink iceRink;
 
-	Spawner penguinSpawner;
+	Spawner spawner;
 	PenguinDresser penguinDresser;
 	//Regular penguins
 	static constexpr float penguinSpawnInterval = 4.0f;
@@ -93,7 +98,7 @@ private:
 	std::uniform_real_distribution<float> fishingPenguinRotationRange;
 	//Stacked penguins
 	//REPLACE these values
-	static constexpr float stackedPenguinSpawnTime = 100.0f;
+	static constexpr float stackedPenguinSpawnTime = 1.0f;
 	std::uniform_real_distribution<float> randomStackSpawnInterval;
 	float penguinStackSpawnTimer = 0.01f;
 

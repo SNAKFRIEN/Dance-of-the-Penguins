@@ -15,11 +15,10 @@
 IceSkater::IceSkater(glm::vec3 inPos)
 	:
 	pos(inPos),
-	model("IceSkater.gltf", transform),
+	model("IceSkater.gltf", transform, "Skating"),
 	collider(pos, collisionRadius)
 {
 	rotation = glm::mat4(1.0f);
-	model.SetAnimation("Skating");
 }
 
 bool IceSkater::IsColliding(std::vector<Penguin>& penguins, std::unique_ptr<FishingPenguin>& fishingPenguin, std::unique_ptr<PenguinStack>& penguinStack, const IceRink& rink)
@@ -100,6 +99,11 @@ glm::vec3 IceSkater::GetPos() const
 glm::vec3 IceSkater::GetForward() const
 {
 	return rotation[2];
+}
+
+CircleCollider& IceSkater::GetCollider()
+{
+	return collider;
 }
 
 bool IceSkater::IsOutOfRink(const IceRink& rink)

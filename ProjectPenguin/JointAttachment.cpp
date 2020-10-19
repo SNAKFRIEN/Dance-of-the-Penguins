@@ -35,7 +35,7 @@ JointAttachment::JointAttachment(JointAttachment&& rhs) noexcept
 	:
 	name(rhs.name),
 	jointName(rhs.jointName),
-	model(rhs.name, rhs.transform),
+	model(rhs.name, transform),
 	ownerModelTransform(rhs.ownerModelTransform),
 	pose(rhs.pose),
 	id(rhs.id)

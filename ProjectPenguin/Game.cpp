@@ -1,7 +1,9 @@
 #include "Game.h"
 
 #include "Window.h"
+//REMOVE: iomanip likely isn't necessary for final release
 #include <iomanip>
+#include <filesystem>
 
 #include "glm/gtc/random.hpp"
 
@@ -49,6 +51,7 @@ Game::Game(Window& window)
 	Model::Preload("Crate.gltf");
 	Model::Preload("FishingPole.gltf");
 	Model::Preload("Bucket.gltf");
+	Model::Preload("Bouquet.gltf");
 }
 
 void Game::Update()
@@ -191,6 +194,8 @@ void Game::StartPlaying()
 
 void Game::UpdatePlaying(float frameTime)
 {
+	frameTime = std::min(frameTime, 0.1f);
+
 	totalPlayTime += frameTime;
 
 	//Spawn new penguins
@@ -199,19 +204,19 @@ void Game::UpdatePlaying(float frameTime)
 		penguinSpawnTimer += frameTime;
 		if (penguinSpawnTimer > penguinSpawnInterval)
 		{
-			penguins.emplace_back(penguinSpawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f), audioManager);
+			penguins.emplace_back(spawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f), audioManager);
 			auto outfit = penguinDresser.GeneratePenguinOutfit();
 			for (auto& accessory : outfit)
 			{
 				penguins[penguins.size() - 1].AddAccessory(accessory.name, accessory.bone, accessory.vertShader, accessory.fragShader);
 			}
-			penguinSpawnTimer = 0.0f;
+			penguinSpawnTimer -= penguinSpawnInterval;
 		}
 	}
 	//Spawn fishingPenguin
 	if (!fishingPenguinSpawned && totalPlayTime >= fishingPenguinSpawnTime)
 	{
-		auto spawn = penguinSpawner.FindDistancedSpawnPoint(player.GetPos(),
+		auto spawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
 			10.0f,
 			iceRink.GetRight() - iceRink.GetCornerRadius(),
 			iceRink.GetTop() - iceRink.GetCornerRadius());
@@ -224,13 +229,25 @@ void Game::UpdatePlaying(float frameTime)
 	penguinStackSpawnTimer -= frameTime;
 	if (penguinStackSpawnTimer <= 0.0f && totalPlayTime >= stackedPenguinSpawnTime)
 	{
-		penguinStackSpawnTimer = randomStackSpawnInterval(rng);
-		auto stackSpawn = penguinSpawner.FindDistancedSpawnPoint(player.GetPos(),
+		penguinStackSpawnTimer += randomStackSpawnInterval(rng);
+		auto stackSpawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
 			12.0f,
 			iceRink.GetRight() - iceRink.GetCornerRadius(),
 			iceRink.GetTop() - iceRink.GetCornerRadius());
-		auto stackTarget = penguinSpawner.FindCloseTarget(player.GetPos(), 5.0f);
+		auto stackTarget = spawner.FindCloseTarget(player.GetPos(), 5.0f);
 		penguinStack = std::make_unique<PenguinStack>(stackSpawn, stackTarget, rng, audioManager);
+	}
+	//Spawn collectibles
+	collectibleTimer += frameTime;
+	if (collectibleTimer > collectibleInterval)
+	{
+		collectibleTimer -= collectibleInterval;
+		glm::vec3 spawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
+			5.0f,
+			iceRink.GetRight() - iceRink.GetCornerRadius(),
+			iceRink.GetTop() - iceRink.GetCornerRadius());
+		spawn.y = 10.0f;
+		collectibles.emplace_back(spawn);
 	}
 
 	//Update entities (Fixed deltaTime)
@@ -242,6 +259,10 @@ void Game::UpdatePlaying(float frameTime)
 		if (input.IsPressed(GLFW_KEY_V))
 		{
 			camera.Follow(penguinStack->GetPos());
+		}
+		else if (input.IsPressed(GLFW_KEY_C))
+		{
+			camera.Follow(collectibles[0].GetPos());
 		}
 		else
 		{
@@ -257,9 +278,27 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	if (penguinStack)
 	{
-		penguinStack->Update(frameTime);
+		penguinStack->Update(frameTime, iceRink);
 	}
 	camera.CalculateVPMatrix();
+	for (Collectible& c : collectibles)
+	{
+		c.Update(frameTime);
+	}
+	const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
+		[&](Collectible& c)
+		{
+			if (player.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	);
+	collectibles.erase(newEnd, collectibles.end());
 
 	//Check collisions
 	for (int i = 0; i < penguins.size(); i++)
@@ -460,6 +499,10 @@ void Game::DrawPlaying()
 		penguinStack->Draw(camera);
 	}
 	iceRink.DrawNonStatic(camera, input);
+	for (Collectible& c : collectibles)
+	{
+		c.Draw(camera);
+	}
 
 	//Cast shadows
 	if (!input.IsPressed(GLFW_KEY_G))

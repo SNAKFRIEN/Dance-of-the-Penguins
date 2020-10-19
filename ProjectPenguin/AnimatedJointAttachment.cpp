@@ -1,10 +1,10 @@
 #include "AnimatedJointAttachment.h"
 
-AnimatedJointAttachment::AnimatedJointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint, std::string vertShader, std::string fragShader)
+AnimatedJointAttachment::AnimatedJointAttachment(std::string name, const AnimatedModel& parentModel, std::string joint, std::string animationName, std::string vertShader, std::string fragShader)
 	:
 	name(name),
 	jointName(joint),
-	model(name, transform, vertShader, fragShader),
+	model(name, transform, animationName, vertShader, fragShader),
 	pose(parentModel.GetPose()),
 	ownerModelTransform(parentModel.GetTransform())
 {
@@ -15,7 +15,7 @@ AnimatedJointAttachment::AnimatedJointAttachment(const AnimatedJointAttachment& 
 	:
 	name(rhs.name),
 	jointName(rhs.jointName),
-	model(rhs.name, transform),
+	model(rhs.name, transform, rhs.GetModel().GetAnimation()),
 	ownerModelTransform(rhs.ownerModelTransform),
 	pose(rhs.pose),
 	id(rhs.id)
@@ -33,7 +33,7 @@ AnimatedJointAttachment::AnimatedJointAttachment(AnimatedJointAttachment&& rhs) 
 	:
 	name(rhs.name),
 	jointName(rhs.jointName),
-	model(rhs.name, rhs.transform),
+	model(rhs.name, rhs.transform, rhs.GetModel().GetAnimation()),
 	ownerModelTransform(rhs.ownerModelTransform),
 	pose(rhs.pose),
 	id(rhs.id)
