@@ -8,9 +8,12 @@
 class Collectible
 {
 public:
+	Collectible() = delete;
 	Collectible(glm::vec3 pos);
 	Collectible(const Collectible& rhs);
 	Collectible operator=(const Collectible& rhs);
+	Collectible(Collectible&& rhs) noexcept;
+	Collectible operator=(Collectible& rhs) = delete;
 
 	void Update(float dt);
 	void Draw(Camera& camera);

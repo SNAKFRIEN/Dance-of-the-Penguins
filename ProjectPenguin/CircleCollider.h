@@ -19,10 +19,13 @@ class CircleCollider
 {
 public:
 	CircleCollider(glm::vec3& ownerPos, const float& radius);
+	
 	CollisionData CalculateCollision(CircleCollider& other);
 	void ResolveSamePos(CollisionData& collisionData);
 	void ResolveDifferentPos(CollisionData& collisionData);
 	bool IsInRink(const IceRink& rink) const;
+
+	glm::vec3 GetPos() const;
 private:
 	glm::vec3& ownerPos;
 	const float& radius;

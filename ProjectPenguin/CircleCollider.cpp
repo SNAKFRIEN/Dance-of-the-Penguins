@@ -76,3 +76,8 @@ bool CircleCollider::IsInRink(const IceRink& rink) const
 		|| glm::length(absPos - glm::vec2(rink.GetRight() - rink.GetCornerRadius(), rink.GetTop() - rink.GetCornerRadius()))
 		<= (rink.GetCornerRadius() - radius);
 }
+
+glm::vec3 CircleCollider::GetPos() const
+{
+	return ownerPos;
+}

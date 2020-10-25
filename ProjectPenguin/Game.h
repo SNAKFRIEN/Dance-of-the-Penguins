@@ -18,6 +18,7 @@
 #include "PenguinDresser.h"
 #include "PenguinStack.h"
 #include "Collectible.h"
+#include "HomingPenguin.h"
 
 class Window;
 
@@ -101,6 +102,8 @@ private:
 	static constexpr float stackedPenguinSpawnTime = 1.0f;
 	std::uniform_real_distribution<float> randomStackSpawnInterval;
 	float penguinStackSpawnTimer = 0.01f;
+	//Ice skating penguins
+	HomingPenguin test;
 
 	FrameTimer ft;
 	float accumulator = 0.01f;
