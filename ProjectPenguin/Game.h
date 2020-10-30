@@ -103,7 +103,11 @@ private:
 	std::uniform_real_distribution<float> randomStackSpawnInterval;
 	float penguinStackSpawnTimer = 0.01f;
 	//Ice skating penguins
-	HomingPenguin test;
+	static constexpr float homingPenguinSpawnTime = 4.0f;
+	static constexpr float homingPenguinSpawnInterval = 2.0f;
+	float homingPenguinSpawnTimer = homingPenguinSpawnInterval;	//Needs to start at max, so the first penguin spawns right away when homingPenguinSpawnTime is reached
+	static constexpr int maxHomingPenguins = 2;
+	std::vector<HomingPenguin> homingPenguins;
 
 	FrameTimer ft;
 	float accumulator = 0.01f;

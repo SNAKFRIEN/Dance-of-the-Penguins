@@ -22,8 +22,7 @@ Game::Game(Window& window)
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
 	screenQuad(window, saveFile),
 	penguinDresser(rng),
-	randomStackSpawnInterval(10.0f, 15.0f),	//REPLACE these values
-	test(glm::vec3(0.0f))
+	randomStackSpawnInterval(10.0f, 15.0f)	//REPLACE these values
 {
 	window.SetMainCamera(&camera);
 	window.SetScreenQuad(&screenQuad);
@@ -250,6 +249,17 @@ void Game::UpdatePlaying(float frameTime)
 		spawn.y = 10.0f;
 		collectibles.emplace_back(spawn);
 	}
+	//Spawn HomingPenguins
+	homingPenguinSpawnTimer += frameTime;
+	if (totalPlayTime >= homingPenguinSpawnTime && homingPenguinSpawnTimer >= homingPenguinSpawnInterval && homingPenguins.size() < maxHomingPenguins)
+	{
+		homingPenguinSpawnTimer -= homingPenguinSpawnInterval;
+		glm::vec3 spawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
+			10.0f,
+			iceRink.GetRight() - iceRink.GetCornerRadius(),
+			iceRink.GetTop() - iceRink.GetCornerRadius());
+		homingPenguins.emplace_back(spawn);
+	}
 
 	//Update entities (Fixed deltaTime)
 	accumulator += frameTime;
@@ -257,6 +267,7 @@ void Game::UpdatePlaying(float frameTime)
 	while (accumulator > deltaTime)
 	{
 		player.Update(deltaTime, input);
+		//REMOVE: debug cameras
 		if (input.IsPressed(GLFW_KEY_V))
 		{
 			camera.Follow(penguinStack->GetPos());
@@ -268,6 +279,10 @@ void Game::UpdatePlaying(float frameTime)
 		else
 		{
 			camera.Follow(player.GetPos());
+		}
+		for (HomingPenguin& hp : homingPenguins)
+		{
+			hp.Update(player, collectibles, iceRink, deltaTime);
 		}
 
 		accumulator -= deltaTime;
@@ -286,21 +301,26 @@ void Game::UpdatePlaying(float frameTime)
 	{
 		c.Update(frameTime);
 	}
+	//Pick up collectibles (either by player or by homing penguin)
 	const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
 		[&](Collectible& c)
 		{
+			for (HomingPenguin& hp : homingPenguins)
+			{
+				if (hp.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
+				{
+					hp.GiveFlower();
+					return true;
+				}
+			}
 			if (player.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
 			{
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 	);
 	collectibles.erase(newEnd, collectibles.end());
-	test.Update(player, collectibles, iceRink, frameTime);
 
 	//Check collisions
 	for (int i = 0; i < penguins.size(); i++)
@@ -332,7 +352,10 @@ void Game::UpdatePlaying(float frameTime)
 	{
 		penguinStack->UpdateAnimation(frameTime);
 	}
-	test.UpdateAnimation(frameTime);
+	for (HomingPenguin& hp : homingPenguins)
+	{
+		hp.UpdateAnimation(frameTime);
+	}
 
 	//Play game over animation
 	if (gameOver)
@@ -506,7 +529,10 @@ void Game::DrawPlaying()
 	{
 		c.Draw(camera);
 	}
-	test.Draw(camera);
+	for (HomingPenguin& hp : homingPenguins)
+	{
+		hp.Draw(camera);
+	}
 
 	//Cast shadows
 	if (!input.IsPressed(GLFW_KEY_G))
