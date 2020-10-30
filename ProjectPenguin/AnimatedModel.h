@@ -59,8 +59,13 @@ public:
 	void AddToRenderQueue(Camera& camera);
 	static void DrawAllInstances(const Light& light);
 	static void DrawShadows(const Light& light);
+
 	void SetAnimation(std::string name);
+	void SetCurrentAnimationTime(float time);
+
 	std::string GetAnimation() const;
+	float GetCurrentAnimationTime() const;
+
 
 	//Functionality for joint attachments
 	int GetJointIndex(std::string jointName) const;

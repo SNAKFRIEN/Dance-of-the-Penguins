@@ -164,7 +164,8 @@ void Game::StartPlaying()
 	//Clear previous run
 	penguins.clear();
 	collectibles.clear();
-	
+	homingPenguins.clear();
+
 	score = 0;
 	scoreTimer = 0.0f;
 	
@@ -173,6 +174,12 @@ void Game::StartPlaying()
 	fishingPenguin.reset();
 	fishingPenguinSpawned = false;
 	iceRink.Reset();
+
+	//Reset spawn timers
+	collectibleTimer = 0.0f;
+	penguinSpawnTimer = 0.0f;
+	penguinStackSpawnTimer = penguinStackInitialSpawnTimerValue;
+	homingPenguinSpawnTimer = homingPenguinSpawnInterval;
 
 	//Set things up for new run
 	player.Reset();
@@ -250,15 +257,19 @@ void Game::UpdatePlaying(float frameTime)
 		collectibles.emplace_back(spawn);
 	}
 	//Spawn HomingPenguins
-	homingPenguinSpawnTimer += frameTime;
-	if (totalPlayTime >= homingPenguinSpawnTime && homingPenguinSpawnTimer >= homingPenguinSpawnInterval && homingPenguins.size() < maxHomingPenguins)
+	
+	if (totalPlayTime >= homingPenguinSpawnTime && homingPenguins.size() < maxHomingPenguins)
 	{
-		homingPenguinSpawnTimer -= homingPenguinSpawnInterval;
-		glm::vec3 spawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
-			10.0f,
-			iceRink.GetRight() - iceRink.GetCornerRadius(),
-			iceRink.GetTop() - iceRink.GetCornerRadius());
-		homingPenguins.emplace_back(spawn);
+		homingPenguinSpawnTimer += frameTime;
+		if (homingPenguinSpawnTimer >= homingPenguinSpawnInterval)
+		{
+			homingPenguinSpawnTimer -= homingPenguinSpawnInterval;
+			glm::vec3 spawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
+				10.0f,
+				iceRink.GetRight() - iceRink.GetCornerRadius(),
+				iceRink.GetTop() - iceRink.GetCornerRadius());
+			homingPenguins.emplace_back(spawn);
+		}
 	}
 
 	//Update entities (Fixed deltaTime)
@@ -275,6 +286,13 @@ void Game::UpdatePlaying(float frameTime)
 		else if (input.IsPressed(GLFW_KEY_C))
 		{
 			camera.Follow(collectibles[0].GetPos());
+		}
+		else if (input.IsPressed(GLFW_KEY_B))
+		{
+			if (!homingPenguins.empty())
+			{
+				camera.Follow(homingPenguins[0].GetPos());
+			}
 		}
 		else
 		{
@@ -302,36 +320,51 @@ void Game::UpdatePlaying(float frameTime)
 		c.Update(frameTime);
 	}
 	//Pick up collectibles (either by player or by homing penguin)
-	const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
-		[&](Collectible& c)
-		{
-			for (HomingPenguin& hp : homingPenguins)
+	{
+		const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
+			[&](Collectible& c)
 			{
-				if (hp.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
+				for (HomingPenguin& hp : homingPenguins)
 				{
-					hp.GiveFlower();
+					if (hp.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
+					{
+						hp.GiveFlower();
+						return true;
+					}
+				}
+				if (player.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
+				{
 					return true;
 				}
-			}
-			if (player.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
-			{
-				return true;
-			}
-			return false;
-		}
-	);
-	collectibles.erase(newEnd, collectibles.end());
+				return false;
+			});
+		collectibles.erase(newEnd, collectibles.end());
+	}
+
 
 	//Check collisions
 	for (int i = 0; i < penguins.size(); i++)
 	{
 		penguins[i].Collide(i, penguins, fishingPenguin, iceRink);
 	}
-	
+	for (HomingPenguin& hp : homingPenguins)
+	{
+		hp.Collide(iceRink);
+	}
 	bool gameOver = false;
-	if (player.IsColliding(penguins, fishingPenguin, penguinStack, iceRink))
+	if (player.IsColliding(penguins, fishingPenguin, penguinStack, homingPenguins, iceRink))
 	{
 		gameOver = true;
+	}
+
+	//Remove homingPenguins that have crashed into the iceRink
+	{
+		const auto newEnd = std::remove_if(homingPenguins.begin(), homingPenguins.end(),
+			[](HomingPenguin& hp)
+			{
+				return hp.IsFinished();
+			});
+		homingPenguins.erase(newEnd, homingPenguins.end());
 	}
 
 	//Update audio listener

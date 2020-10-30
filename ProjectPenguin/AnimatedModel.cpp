@@ -177,9 +177,19 @@ void AnimatedModel::SetAnimation(std::string name)
 	currentAnimation = name;
 }
 
+void AnimatedModel::SetCurrentAnimationTime(float time)
+{
+	animationTime = time;
+}
+
 std::string AnimatedModel::GetAnimation() const
 {
 	return currentAnimation;
+}
+
+float AnimatedModel::GetCurrentAnimationTime() const
+{
+    return animationTime;
 }
 
 int AnimatedModel::GetJointIndex(std::string jointName) const

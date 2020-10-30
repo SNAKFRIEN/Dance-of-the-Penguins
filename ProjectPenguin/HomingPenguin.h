@@ -22,7 +22,7 @@ private:
 		Roaming,
 		HomingFlower,
 		HomingPlayer,
-		Falling
+		Crashing
 	};
 	enum class RoamingDirection
 	{
@@ -34,16 +34,19 @@ public:
 	HomingPenguin(const HomingPenguin& rhs);
 	HomingPenguin operator=(const HomingPenguin& rhs);
 	HomingPenguin(HomingPenguin&& rhs) noexcept;
-	HomingPenguin operator=(HomingPenguin&& rhs) = delete;
+	HomingPenguin operator=(HomingPenguin&& rhs) noexcept;
 
 	void Update(IceSkater& player, std::vector<Collectible>& flowers, const IceRink& rink, float dt);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
 
 	void GiveFlower();
+	void Collide(const IceRink& rink);	//REPLACE: add collision with fishingpenguin and normal penguins?
 
 	CircleCollider& GetCollider();
 	glm::vec3 GetForward() const;
+	glm::vec3 GetPos() const;
+	bool IsFinished() const;
 private:
 	std::mt19937 rng;
 	const std::uniform_real_distribution<float> randomSwerveTime;
@@ -65,6 +68,11 @@ private:
 	static constexpr float playerHomingRotationSpeed = 100.0f;
 	float rotationSpeed = baseRotationSpeed;
 
+	float fallingTime = 0.0f;
+	static constexpr float fallingSpeed = 1.0f;
+	static constexpr glm::vec3 fallingCurveScale = glm::vec3(0.0f, 4.0f, 6.0f);
+	static constexpr float fallingFlipSpeed = glm::radians(250.0f);
+
 	static constexpr glm::vec3 leftWallScannerBasePos = glm::vec3(-2.0f, 0.0f, -3.0f);	//These are used to make sure ice skating penguin avoids walls
 	static constexpr glm::vec3 rightWallScannerBasePos = glm::vec3(2.0f, 0.0f, -3.0f);
 	glm::vec3 leftWallScannerPos;
@@ -81,4 +89,6 @@ private:
 
 	static constexpr float collisionRadius = 0.25f;
 	CircleCollider collider;
+
+	bool finished = false;	//Set to true once this homingPenguin can be erased from the vector
 };

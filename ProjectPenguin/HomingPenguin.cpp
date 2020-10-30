@@ -21,6 +21,7 @@ HomingPenguin::HomingPenguin(glm::vec3 inPos)
 	rightWallScanner(rightWallScannerPos, wallScannerRadii)
 {
 	swerveTimer = randomSwerveTime(rng);
+	std::cout << "HomingPenguin constructed" << std::endl;
 }
 
 HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
@@ -28,27 +29,57 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 	rng(std::random_device()()),
 	randomSwerveTime(0.5f, 5.0f),
 	randomRotation(0.0f, 360.0f),
+
+	state(rhs.state),
+	roamingDirection(rhs.roamingDirection),
+
 	pos(rhs.pos),
 	rotation(rhs.rotation),
-	model("Goopie.gltf", transform, "Skating"),
-	collider(pos, collisionRadius),
-	flowerScanner(pos, scanRadius),
+	//REPLACE: copy transform?
+
+	speed(rhs.speed),
+	rotationSpeed(rhs.rotationSpeed),
+
+	fallingTime(rhs.fallingTime),
+
 	leftWallScanner(leftWallScannerPos, wallScannerRadii),
 	rightWallScanner(rightWallScannerPos, wallScannerRadii),
-	swerveTimer(rhs.swerveTimer)
+
+	flowerScanner(pos, scanRadius),
+
+	model("Goopie.gltf", transform, rhs.model.GetAnimation()),
+
+	collider(pos, collisionRadius),
+
+	finished(rhs.finished)
 {
+	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
+	std::cout << "HomingPenguin copy constructed" << std::endl;
 }
 
 HomingPenguin HomingPenguin::operator=(const HomingPenguin& rhs)
 {
+	std::cout << "HomingPenguin copied" << std::endl;
+	
+	swerveTimer = rhs.swerveTimer;
+
+	state = rhs.state;
+	roamingDirection = rhs.roamingDirection;
+
 	pos = rhs.pos;
 	rotation = rhs.rotation;
-	transform = rhs.transform;
-	state = rhs.state;
+	//REPLACE: copy transform?
+
 	speed = rhs.speed;
-	rotationSpeed = rhs.speed;
-	swerveTimer = rhs.swerveTimer;
-	roamingDirection = rhs.roamingDirection;
+	rotationSpeed = rhs.rotationSpeed;
+
+	fallingTime = rhs.fallingTime;
+
+	model.SetAnimation(rhs.model.GetAnimation());
+	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
+
+	finished = rhs.finished;
+
 	return *this;
 }
 
@@ -57,14 +88,58 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 	rng(std::random_device()()),
 	randomSwerveTime(0.5f, 5.0f),
 	randomRotation(0.0f, 360.0f),
+
+	state(rhs.state),
+	roamingDirection(rhs.roamingDirection),
+
 	pos(rhs.pos),
 	rotation(rhs.rotation),
-	model("Goopie.gltf", transform, "Skating"),
-	collider(pos, collisionRadius),
-	flowerScanner(pos, scanRadius),
+	//REPLACE: copy transform?
+
+	speed(rhs.speed),
+	rotationSpeed(rhs.rotationSpeed),
+
+	fallingTime(rhs.fallingTime),
+
 	leftWallScanner(leftWallScannerPos, wallScannerRadii),
-	rightWallScanner(rightWallScannerPos, wallScannerRadii)
+	rightWallScanner(rightWallScannerPos, wallScannerRadii),
+
+	flowerScanner(pos, scanRadius),
+
+	model("Goopie.gltf", transform, rhs.model.GetAnimation()),
+
+	collider(pos, collisionRadius),
+
+	finished(rhs.finished)
 {
+	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
+	std::cout << "HomingPenguin move constructed" << std::endl;
+}
+
+HomingPenguin HomingPenguin::operator=(HomingPenguin&& rhs) noexcept
+{
+	std::cout << "HomingPenguin moved" << std::endl;
+
+	swerveTimer = rhs.swerveTimer;
+
+	state = rhs.state;
+	roamingDirection = rhs.roamingDirection;
+
+	pos = rhs.pos;
+	rotation = rhs.rotation;
+	//REPLACE: copy transform?
+
+	speed = rhs.speed;
+	rotationSpeed = rhs.rotationSpeed;
+
+	fallingTime = rhs.fallingTime;
+
+	model.SetAnimation(rhs.model.GetAnimation());
+	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
+
+	finished = rhs.finished;
+
+	return *this;
 }
 
 void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers, const IceRink& rink, float dt)
@@ -77,14 +152,12 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers,
 		rightWallScannerPos = pos + glm::rotate(rightWallScannerBasePos, rotation, glm::vec3(0.0f, -1.0f, 0.0f));
 		if (!rightWallScanner.IsInRink(rink))
 		{
-			std::cout << "right wall!!!" << std::endl;
 			speed = wallAvoidSpeed;
 			roamingDirection = RoamingDirection::Left;
 			swerveTimer = randomSwerveTime(rng);	//Reset swerve timer
 		}
 		else if(!leftWallScanner.IsInRink(rink))
 		{
-			std::cout << "left wall!!!" << std::endl;
 			speed = wallAvoidSpeed;
 			roamingDirection = RoamingDirection::Right;
 			swerveTimer = randomSwerveTime(rng);	//Reset swerve timerr
@@ -141,19 +214,16 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers,
 		rightWallScannerPos = pos + glm::rotate(rightWallScannerBasePos, rotation, glm::vec3(0.0f, -1.0f, 0.0f));
 		if (!rightWallScanner.IsInRink(rink))
 		{
-			std::cout << "right wall!!!" << std::endl;
 			speed = wallAvoidSpeed;
 			rotation -= glm::radians(rotationSpeed * dt);
 		}
 		else if (!leftWallScanner.IsInRink(rink))
 		{
-			std::cout << "left wall!!!" << std::endl;
 			speed = wallAvoidSpeed;
 			rotation += glm::radians(rotationSpeed * dt);
 		}
 		else
 		{
-			std::cout << "Homing" << std::endl;
 			speed = baseSpeed;
 			//Find closest flower
 			CollisionData closestFlower;
@@ -193,6 +263,7 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers,
 	}
 		break;
 	case State::HomingPlayer:
+	{
 		glm::vec3 direction = glm::normalize(player.GetPos() - pos);
 		float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, -1.0f, 0.0f));
 		if (angle > 0.0f)
@@ -205,6 +276,28 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers,
 		}
 		pos += glm::rotate(glm::vec3(0.0f, 0.0f, -1.0f), rotation, glm::vec3(0.0f, -1.0f, 0.0f)) * speed * dt;
 		transform = glm::translate(glm::mat4(1.0f), pos) * glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, -1.0f, 0.0f));
+	}
+		break;
+	case State::Crashing:
+		//Uses similar code to penguin stack
+		//Curve is based on fallingTime squared
+		fallingTime += dt;
+		if (fallingTime >= 2.0f)
+		{
+			finished = true;	//The homingPenguin has landed and can be removed from the game
+		}
+		
+		//Calculate curve
+		float t = fallingTime * fallingSpeed;
+		float x = t;
+		float y = -pow(t - 1.0f, 2.0f) + 1.0f; //Curve goes through (0, 0), up to (1, 1) and back down to (2, 0)
+
+		//Transform curve to current position
+		glm::vec3 curvePos = glm::vec3(0.0f, y, -x) * fallingCurveScale;	//curvePos = current position in the curve
+		transform = glm::translate(glm::mat4(1.0f), pos)
+			* glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, -1.0f, 0.0f))
+			* glm::translate(glm::mat4(1.0f), curvePos)
+			* glm::rotate(glm::mat4(1.0f), fallingTime * fallingFlipSpeed, glm::vec3(-1.0f, 0.0f, 0.0f));
 		break;
 	}
 }
@@ -226,6 +319,15 @@ void HomingPenguin::GiveFlower()
 	state = State::HomingPlayer;
 }
 
+void HomingPenguin::Collide(const IceRink& rink)
+{
+	if (!collider.IsInRink(rink))
+	{
+		state = State::Crashing;
+		model.SetAnimation("GoombaFalling");
+	}
+}
+
 CircleCollider& HomingPenguin::GetCollider()
 {
 	return collider;
@@ -234,4 +336,14 @@ CircleCollider& HomingPenguin::GetCollider()
 glm::vec3 HomingPenguin::GetForward() const
 {
 	return glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, -1.0f, 0.0f))[2];
+}
+
+glm::vec3 HomingPenguin::GetPos() const
+{
+	return transform[3];
+}
+
+bool HomingPenguin::IsFinished() const
+{
+	return finished;
 }

@@ -101,12 +101,13 @@ private:
 	//REPLACE these values
 	static constexpr float stackedPenguinSpawnTime = 1.0f;
 	std::uniform_real_distribution<float> randomStackSpawnInterval;
-	float penguinStackSpawnTimer = 0.01f;
+	static constexpr float penguinStackInitialSpawnTimerValue = 0.01f;
+	float penguinStackSpawnTimer = penguinStackInitialSpawnTimerValue;
 	//Ice skating penguins
-	static constexpr float homingPenguinSpawnTime = 4.0f;
-	static constexpr float homingPenguinSpawnInterval = 2.0f;
+	static constexpr float homingPenguinSpawnTime = 30.0f;
+	static constexpr float homingPenguinSpawnInterval = 50.0f;
 	float homingPenguinSpawnTimer = homingPenguinSpawnInterval;	//Needs to start at max, so the first penguin spawns right away when homingPenguinSpawnTime is reached
-	static constexpr int maxHomingPenguins = 2;
+	static constexpr int maxHomingPenguins = 4;
 	std::vector<HomingPenguin> homingPenguins;
 
 	FrameTimer ft;
