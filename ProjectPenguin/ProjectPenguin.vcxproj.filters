@@ -331,5 +331,8 @@
     <None Include="Shaders\SmoothBright.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\AudienceShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

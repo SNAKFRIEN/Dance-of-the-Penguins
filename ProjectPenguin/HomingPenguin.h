@@ -62,10 +62,10 @@ private:
 
 	static constexpr float wallAvoidSpeed = 2.5f;	//Speed used to avoid walls
 	static constexpr float baseSpeed = 3.0f;
-	static constexpr float playerHomingSpeed = 9.0f;	//Speed to pursue the player at
+	static constexpr float playerHomingSpeed = 8.0f;	//Speed to pursue the player at
 	float speed = baseSpeed;
 	static constexpr float baseRotationSpeed = 50.0f;
-	static constexpr float playerHomingRotationSpeed = 100.0f;
+	static constexpr float playerHomingRotationSpeed = 75.0f;
 	float rotationSpeed = baseRotationSpeed;
 
 	float fallingTime = 0.0f;

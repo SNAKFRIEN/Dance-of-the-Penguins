@@ -22,7 +22,7 @@ Game::Game(Window& window)
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
 	screenQuad(window, saveFile),
 	penguinDresser(rng),
-	randomStackSpawnInterval(10.0f, 15.0f)	//REPLACE these values
+	randomStackSpawnInterval(10.0f, 30.0f)	//REPLACE these values
 {
 	window.SetMainCamera(&camera);
 	window.SetScreenQuad(&screenQuad);

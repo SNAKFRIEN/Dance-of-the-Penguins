@@ -63,7 +63,7 @@ void IceRink::SetIcePos(glm::vec3 newPos)
 
 void IceRink::InitModels()
 {
-	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "SmoothShader.frag");
+	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
 	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform, "SmoothShader.vert", "SmoothBright.frag");
 	iceHole = std::make_unique<Model>("IceHole.gltf", iceTransform);
 
@@ -85,6 +85,6 @@ void IceRink::InitModels()
 		temp = glm::rotate(temp, angle, glm::vec3(0.0f, -1.0f, 0.0f));
 
 		seatTransforms.push_back(temp);
-		seats.emplace_back("Seat.gltf", seatTransforms[seatTransforms.size() - 1], "SmoothShader.vert", "SmoothShader.frag");
+		seats.emplace_back("Seat.gltf", seatTransforms[seatTransforms.size() - 1], "SmoothShader.vert", "AudienceShader.frag");
 	}
 }
