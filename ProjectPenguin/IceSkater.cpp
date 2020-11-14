@@ -31,24 +31,11 @@ void IceSkater::Update(float dt, const Input& input)
 {
 	bool pressed = false;
 	glm::vec3 direction(0.0f);
-	if (input.IsPressed(InputAction::Forward))
+	direction.x = input.GetRightAxis();
+	direction.z = -1.0f * input.GetForwardAxis();	//Flip z to align with opengl coordinate system
+	if (glm::length2(direction) >= pow(0.3f, 2.0f))
 	{
-		direction.z = -1.0f;
-		pressed = true;
-	}
-	if (input.IsPressed(InputAction::Backward))
-	{
-		direction.z = 1.0f;
-		pressed = true;
-	}
-	if (input.IsPressed(InputAction::Right))
-	{
-		direction.x = 1.0f;
-		pressed = true;
-	}
-	if (input.IsPressed(InputAction::Left))
-	{
-		direction.x = -1.0f;
+		glm::normalize(direction);
 		pressed = true;
 	}
 

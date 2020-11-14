@@ -52,6 +52,48 @@ bool Input::IsPressed(int key) const
 	return window.KeyIsPressed(key);
 }
 
+float Input::GetForwardAxis() const
+{
+	if (IsPressed(InputAction::Forward))
+	{
+		return 1.0f;
+	}
+	else if (IsPressed(InputAction::Backward))
+	{
+		return -1.0f;
+	}
+	else
+	{
+		GLFWgamepadstate state;
+		if (GetGamepadState(&state))
+		{
+			return -state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
+		}
+	}
+	return 0.0f;
+}
+
+float Input::GetRightAxis() const
+{
+	if (IsPressed(InputAction::Right))
+	{
+		return 1.0f;
+	}
+	else if (IsPressed(InputAction::Left))
+	{
+		return -1.0f;
+	}
+	else
+	{
+		GLFWgamepadstate state;
+		if (GetGamepadState(&state))
+		{
+			return state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
+		}
+	}
+	return 0.0f;
+}
+
 void Input::BindKey(InputAction action, int key)
 {
 	//REPLACE: warn the user when binding a key that's already being used elsewhere?
@@ -77,4 +119,30 @@ glm::vec2 Input::GetMouseUV() const
 	result.y *= -1.0f;
 	result *= 2.0f;
 	return result;
+}
+
+bool Input::GetGamepadState(GLFWgamepadstate* state) const
+{
+	//Check the state of the first controller that can be found (only the first 4 controllers are checked
+	if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1))
+	{
+		glfwGetGamepadState(GLFW_JOYSTICK_1, state);
+		return true;
+	}
+	else if (glfwJoystickIsGamepad(GLFW_JOYSTICK_2))
+	{
+		glfwGetGamepadState(GLFW_JOYSTICK_2, state);
+		return true;
+	}
+	else if (glfwJoystickIsGamepad(GLFW_JOYSTICK_3))
+	{
+		glfwGetGamepadState(GLFW_JOYSTICK_3, state);
+		return true;
+	}
+	else if (glfwJoystickIsGamepad(GLFW_JOYSTICK_4))
+	{
+		glfwGetGamepadState(GLFW_JOYSTICK_4, state);
+		return true;
+	}
+	return false;
 }
