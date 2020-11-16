@@ -40,6 +40,11 @@ private:
 	std::unique_ptr<Model> stadiumModel;
 	std::unique_ptr<Model> iceModel;
 	std::unique_ptr<Model> iceHole;
-	std::vector<Model> seats;
-	std::vector<glm::mat4> seatTransforms;
+	
+	std::unique_ptr<Model> seatsRight;
+	std::unique_ptr<Model> seatsLeft;
+	std::unique_ptr<Model> seatsTopRight;
+	std::unique_ptr<Model> seatsTopLeft;
+	std::unique_ptr<Model> seatsBottomRight;
+	std::unique_ptr<Model> seatsBottomLeft;
 };

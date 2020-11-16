@@ -1,7 +1,6 @@
 #include "IceRink.h"
 
 #include "glm/gtc/matrix_transform.hpp"
-#include "json.hpp"
 
 IceRink::IceRink(bool initModels)
 {
@@ -20,10 +19,12 @@ void IceRink::DrawStatic(Camera& camera, Input& input)
 		stadiumModel->AddToRenderQueue(camera);
 	}
 
-	for (Model& s : seats)
-	{
-		s.AddToRenderQueue(camera);
-	}
+	seatsRight->AddToRenderQueue(camera);
+	seatsLeft->AddToRenderQueue(camera);
+	seatsTopRight->AddToRenderQueue(camera);
+	seatsTopLeft->AddToRenderQueue(camera);
+	seatsBottomRight->AddToRenderQueue(camera);
+	seatsBottomLeft->AddToRenderQueue(camera);
 }
 
 void IceRink::DrawNonStatic(Camera& camera, Input& input)
@@ -66,25 +67,11 @@ void IceRink::InitModels()
 	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
 	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform, "SmoothShader.vert", "SmoothBright.frag");
 	iceHole = std::make_unique<Model>("IceHole.gltf", iceTransform);
-
-	//Load seats
-	//Gain access to the data
-	std::ifstream file("Miscellaneous/AudiencePositions.json");
-	nlohmann::json data;
-	file >> data;
-	auto nSeats = data.size() / 4;
-	seatTransforms.reserve(nSeats);
-	seats.reserve(nSeats);
-	for (int i = 0; i < data.size(); i += 4)
-	{
-		glm::mat4 temp(1.0f);
-		float angle = (float)data[i + 3];
-		glm::vec3 pos = glm::vec3((float)data[i], (float)data[i + 1], (float)data[i + 2]);
-
-		temp = glm::translate(temp, pos);
-		temp = glm::rotate(temp, angle, glm::vec3(0.0f, -1.0f, 0.0f));
-
-		seatTransforms.push_back(temp);
-		seats.emplace_back("Seat.gltf", seatTransforms[seatTransforms.size() - 1], "SmoothShader.vert", "AudienceShader.frag");
-	}
+	//Seats (loaded in batches)
+	seatsRight = std::make_unique<Model>("SeatsRight.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
+	seatsLeft = std::make_unique<Model>("SeatsLeft.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
+	seatsTopRight = std::make_unique<Model>("SeatsTopRight.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
+	seatsTopLeft = std::make_unique<Model>("SeatsTopLeft.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
+	seatsBottomRight = std::make_unique<Model>("SeatsBottomRight.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
+	seatsBottomLeft = std::make_unique<Model>("SeatsBottomLeft.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
 }

@@ -112,7 +112,7 @@ private:
 
 	FrameTimer ft;
 	float accumulator = 0.01f;
-	static constexpr float deltaTime = 0.005f;	//Update physics 200 times per second
+	static constexpr float deltaTime = 0.01f;	//Update physics 100 times per second
 	float totalPlayTime = 0.0f;
 
 	State state = State::MainMenu;
