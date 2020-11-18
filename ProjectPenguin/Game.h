@@ -64,6 +64,8 @@ private:
 	void DrawPauseMenu();
 	void DrawMainMenu();
 	void DrawGameOverMenu();
+
+	std::vector<glm::vec3> GetFlowerPositions() const;
 private:
 	Window& window;
 	Camera camera;

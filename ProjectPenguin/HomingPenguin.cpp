@@ -264,6 +264,15 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers,
 		break;
 	case State::HomingPlayer:
 	{
+		if (speed < playerHomingSpeed)
+		{
+			speed += playerHomingAcceleration * dt;
+		}
+		else
+		{
+			speed = playerHomingSpeed;
+		}
+
 		glm::vec3 direction = glm::normalize(player.GetPos() - pos);
 		float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, -1.0f, 0.0f));
 		if (angle > 0.0f)
@@ -314,7 +323,6 @@ void HomingPenguin::Draw(Camera& camera)
 
 void HomingPenguin::GiveFlower()
 {
-	speed = playerHomingSpeed;
 	rotationSpeed = playerHomingRotationSpeed;
 	state = State::HomingPlayer;
 }

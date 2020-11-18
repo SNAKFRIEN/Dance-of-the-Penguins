@@ -35,6 +35,7 @@ public:
 	void SetUniformMat3(const std::string& name, const glm::mat3& mat) const;
 	void SetUniformMat4(const std::string& name, const glm::mat4& mat) const;
 	void SetUniformMat4Array(const std::string& name, const std::vector<glm::mat4>& values) const;
+	void SetUniformVec3Array(const std::string& name, const std::vector<glm::vec3>& values) const;
 private:
 	std::string FromFile(std::string path);
 	unsigned int CreateShader(std::string name, const char* source, unsigned int type);

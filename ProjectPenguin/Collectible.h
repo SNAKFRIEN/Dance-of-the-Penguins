@@ -25,7 +25,7 @@ private:
 	float rotation = 0.0f;
 
 	static constexpr float hoverHeight = 0.5f;
-	static constexpr float fallSpeed = 1.0f;
+	static constexpr float fallSpeed = 4.0f;
 	static constexpr float rotationSpeed = 1.0f;
 	static constexpr float pickupRange = 0.75f;
 

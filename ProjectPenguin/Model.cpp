@@ -122,6 +122,11 @@ void Model::DrawShadows(const Light& light)
 	}
 }
 
+const Shader& Model::GetShader() const
+{
+	return *modelData.shader;
+}
+
 Model::ModelData& Model::ConstructModelData(std::string name, std::string vertexShader, std::string fragShader)
 {
 	//Check if model has been previously loaded

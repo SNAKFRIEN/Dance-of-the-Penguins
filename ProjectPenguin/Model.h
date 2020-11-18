@@ -49,6 +49,8 @@ public:
 	void AddToRenderQueue(Camera& camera);
 	static void DrawAllInstances(const Light& light);
 	static void DrawShadows(const Light& light);
+
+	const Shader& GetShader() const;
 private:
 	static ModelData& ConstructModelData(std::string name, std::string vertexShader, std::string fragShader);
 private:

@@ -63,6 +63,7 @@ private:
 	static constexpr float wallAvoidSpeed = 2.5f;	//Speed used to avoid walls
 	static constexpr float baseSpeed = 3.0f;
 	static constexpr float playerHomingSpeed = 8.0f;	//Speed to pursue the player at
+	static constexpr float playerHomingAcceleration = 5.0f;
 	float speed = baseSpeed;
 	static constexpr float baseRotationSpeed = 50.0f;
 	static constexpr float playerHomingRotationSpeed = 75.0f;
@@ -86,6 +87,7 @@ private:
 	CircleCollider flowerScanner;
 
 	AnimatedModel model;
+	std::unique_ptr<JointAttachment> flower = nullptr;
 
 	static constexpr float collisionRadius = 0.25f;
 	CircleCollider collider;

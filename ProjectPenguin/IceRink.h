@@ -8,6 +8,7 @@
 #include "Input.h"
 
 class Camera;
+class Collectible;
 
 //This class represents the physical and visual properties of the ice rink.
 //The rink will always be located exactly at the center
@@ -15,9 +16,10 @@ class IceRink
 {
 public:
 	IceRink(bool initModels = true);
-	
+
+	//REMOVE input parameters! these are exclusively used for debugging
 	void DrawStatic(Camera& camera, Input& input);
-	void DrawNonStatic(Camera& camera, Input& input);
+	void DrawNonStatic(Camera& camera, Input& input, const std::vector<glm::vec3>& flowerPositions);
 	void Reset();
 
 	float GetRight() const;

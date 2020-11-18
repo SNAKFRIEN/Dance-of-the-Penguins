@@ -334,5 +334,8 @@
     <None Include="Shaders\AudienceShader.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\IceShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

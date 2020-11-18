@@ -2,6 +2,8 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Collectible.h"
+
 IceRink::IceRink(bool initModels)
 {
 	if (initModels)
@@ -27,10 +29,15 @@ void IceRink::DrawStatic(Camera& camera, Input& input)
 	seatsBottomLeft->AddToRenderQueue(camera);
 }
 
-void IceRink::DrawNonStatic(Camera& camera, Input& input)
+void IceRink::DrawNonStatic(Camera& camera, Input& input, const std::vector<glm::vec3>& flowerPositions)
 {
 	if (!input.IsPressed(70))
 	{
+		//Bind uniforms for ice shader 
+		iceModel->GetShader().Use();
+		iceModel->GetShader().SetUniformInt("nFlowers", (int)flowerPositions.size());
+		iceModel->GetShader().SetUniformVec3Array("flowers", flowerPositions);
+		//Draw
 		iceModel->AddToRenderQueue(camera);
 		iceHole->AddToRenderQueue(camera);
 	}
@@ -65,7 +72,7 @@ void IceRink::SetIcePos(glm::vec3 newPos)
 void IceRink::InitModels()
 {
 	stadiumModel = std::make_unique<Model>("Stadium.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");
-	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform, "SmoothShader.vert", "SmoothBright.frag");
+	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform, "SmoothShader.vert", "IceShader.frag");
 	iceHole = std::make_unique<Model>("IceHole.gltf", iceTransform);
 	//Seats (loaded in batches)
 	seatsRight = std::make_unique<Model>("SeatsRight.gltf", transform, "SmoothShader.vert", "AudienceShader.frag");

@@ -557,11 +557,7 @@ void Game::DrawPlaying()
 	{
 		penguinStack->Draw(camera);
 	}
-	iceRink.DrawNonStatic(camera, input);
-	for (Collectible& c : collectibles)
-	{
-		c.Draw(camera);
-	}
+	iceRink.DrawNonStatic(camera, input, GetFlowerPositions());
 	for (HomingPenguin& hp : homingPenguins)
 	{
 		hp.Draw(camera);
@@ -575,8 +571,11 @@ void Game::DrawPlaying()
 
 	//Draw all items that don't cast (dynamic) shadows
 	iceRink.DrawStatic(camera, input);
-	//SetUpBakedShadows();
-
+	for (Collectible& c : collectibles)
+	{
+		c.Draw(camera);
+	}
+	
 	if (!input.IsPressed(GLFW_KEY_H))
 	{
 		//Bind screenQuad
@@ -628,4 +627,14 @@ void Game::DrawGameOverMenu()
 	glEnable(GL_BLEND);
 	gameOverMenu.Draw();
 	glDisable(GL_BLEND);
+}
+
+std::vector<glm::vec3> Game::GetFlowerPositions() const
+{
+	std::vector<glm::vec3> result;
+	for (const Collectible& flower : collectibles)
+	{
+		result.emplace_back(flower.GetPos());
+	}
+	return std::move(result);
 }
