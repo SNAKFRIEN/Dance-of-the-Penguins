@@ -54,6 +54,16 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 	finished(rhs.finished)
 {
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
+
+	if (rhs.flower.get())
+	{
+		GiveFlower();
+	}
+	else
+	{
+		flower.release();
+	}
+
 	std::cout << "HomingPenguin copy constructed" << std::endl;
 }
 
@@ -79,6 +89,15 @@ HomingPenguin HomingPenguin::operator=(const HomingPenguin& rhs)
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
 
 	finished = rhs.finished;
+
+	if (rhs.flower.get())
+	{
+		GiveFlower();
+	}
+	else
+	{
+		flower.release();
+	}
 
 	return *this;
 }
@@ -113,6 +132,16 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 	finished(rhs.finished)
 {
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
+
+	if (rhs.flower.get())
+	{
+		GiveFlower();
+	}
+	else
+	{
+		flower.release();
+	}
+
 	std::cout << "HomingPenguin move constructed" << std::endl;
 }
 
@@ -138,6 +167,15 @@ HomingPenguin HomingPenguin::operator=(HomingPenguin&& rhs) noexcept
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
 
 	finished = rhs.finished;
+
+	if (rhs.flower.get())
+	{
+		GiveFlower();
+	}
+	else
+	{
+		flower.release();
+	}
 
 	return *this;
 }
@@ -318,12 +356,17 @@ void HomingPenguin::UpdateAnimation(float dt)
 
 void HomingPenguin::Draw(Camera& camera)
 {
+	if (flower.get())
+	{
+		flower->Draw(camera);
+	}
 	model.AddToRenderQueue(camera);
 }
 
 void HomingPenguin::GiveFlower()
 {
 	rotationSpeed = playerHomingRotationSpeed;
+	flower = std::make_unique<JointAttachment>("BouquetGoop.gltf", model, "lower_arm.R");
 	state = State::HomingPlayer;
 }
 

@@ -88,6 +88,9 @@ private:
 	float collectibleTimer = 0.0f;
 
 	IceRink iceRink;
+	static constexpr float audienceBlock1SwitchTime = 30.0f;
+	static constexpr float audienceBlock2SwitchTime = 60.0f;
+	static constexpr float audienceBlock3SwitchTime = 120.0f;
 
 	Spawner spawner;
 	PenguinDresser penguinDresser;

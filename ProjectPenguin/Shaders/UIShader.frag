@@ -14,6 +14,11 @@ void main()
     vec3 rgb = texColor.rgb;
     float alpha = texColor.a;
 
+	if(alpha == 0.0)
+	{
+		discard;
+	}
+
     rgb *= color;
 
     FragColor = vec4(rgb, alpha);

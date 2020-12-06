@@ -120,8 +120,9 @@ void Game::SetUpPauseMenu()
 
 void Game::SetUpGameOverMenu()
 {
-	gameOverMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Retry", "Retry.png");
-	gameOverMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit", "Quit.png");
+	gameOverMenu.AddButton(glm::vec2(-0.8, 0.9), glm::vec2(0.3, -0.4), "Background", "ScoreScreen.png");
+	gameOverMenu.AddButton(glm::vec2(0.0f, -0.6f), glm::vec2(0.8f, -0.9f), "Retry", "Retry.png");
+	gameOverMenu.AddButton(glm::vec2(-0.8f, -0.6f), glm::vec2(0.0f, -0.9f), "Quit", "Quit.png");
 	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.7f), glm::vec2(0.1f, 0.2f), Anchor::Center, "Score");
 	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.55f), glm::vec2(0.05f, 0.1f), Anchor::Center, "HighScore");
 }
@@ -165,6 +166,7 @@ void Game::StartPlaying()
 	penguins.clear();
 	collectibles.clear();
 	homingPenguins.clear();
+	penguinStack.reset();
 
 	score = 0;
 	scoreTimer = 0.0f;
@@ -257,7 +259,6 @@ void Game::UpdatePlaying(float frameTime)
 		collectibles.emplace_back(spawn);
 	}
 	//Spawn HomingPenguins
-	
 	if (totalPlayTime >= homingPenguinSpawnTime && homingPenguins.size() < maxHomingPenguins)
 	{
 		homingPenguinSpawnTimer += frameTime;
@@ -271,6 +272,10 @@ void Game::UpdatePlaying(float frameTime)
 			homingPenguins.emplace_back(spawn);
 		}
 	}
+	//Replace audience
+	iceRink.SetAudienceBlock1(totalPlayTime > audienceBlock1SwitchTime);
+	iceRink.SetAudienceBlock2(totalPlayTime > audienceBlock2SwitchTime);
+	iceRink.SetAudienceBlock3(totalPlayTime > audienceBlock3SwitchTime);
 
 	//Update entities (Fixed deltaTime)
 	accumulator += frameTime;
@@ -319,6 +324,7 @@ void Game::UpdatePlaying(float frameTime)
 	{
 		c.Update(frameTime);
 	}
+	iceRink.Update(totalPlayTime);
 	//Pick up collectibles (either by player or by homing penguin)
 	{
 		const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
