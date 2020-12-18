@@ -403,7 +403,7 @@ void Game::UpdatePlaying(float frameTime)
 		EndPlaying();
 	}
 
-	//Update score
+	//Update score and gameplay UI
 	scoreTimer += frameTime;
 	while (scoreTimer > scoreInterval)
 	{
@@ -412,6 +412,23 @@ void Game::UpdatePlaying(float frameTime)
 		scoreTimer -= 1.0f;
 	}
 	gameplayUI.Update();
+	//Count number of homing penguins
+	/*std::vector<HomingPenguin*> lockedOnPenguins;
+	for (HomingPenguin& p : homingPenguins)
+	{
+		if (p.IsLockedOn())
+		{
+			lockedOnPenguins.emplace_back(&p);
+		}
+	}
+	gameplayUI.SetUpPenguinWarnings((int)lockedOnPenguins.size());
+	for (int i = 0; i < lockedOnPenguins.size(); i++)
+	{
+		gameplayUI.GetPenguinWarning(i).Update(lockedOnPenguins[i]->GetPos(), camera);
+	}
+	*/
+	gameplayUI.SetUpPenguinWarnings(1);
+	gameplayUI.GetPenguinWarning(1).Update(glm::vec3(0), camera);
 
 	//REMOVE output fps and player pos
 	std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;

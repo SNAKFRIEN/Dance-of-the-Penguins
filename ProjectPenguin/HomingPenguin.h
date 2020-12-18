@@ -46,6 +46,7 @@ public:
 	CircleCollider& GetCollider();
 	glm::vec3 GetForward() const;
 	glm::vec3 GetPos() const;
+	bool IsLockedOn() const;
 	bool IsFinished() const;
 private:
 	std::mt19937 rng;

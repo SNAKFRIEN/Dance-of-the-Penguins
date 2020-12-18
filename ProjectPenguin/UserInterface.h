@@ -2,6 +2,7 @@
 
 #include "UIButton.h"
 #include "UINumberDisplay.h"
+#include "PenguinWarning.h"
 #include "Window.h"
 
 #include <unordered_map>
@@ -15,9 +16,11 @@ public:
 
 	void AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName = "DefaultButton.png");
 	void AddNumberDisplay(glm::vec2 pos, glm::vec2 scale, Anchor anchor, std::string name);
+	void SetUpPenguinWarnings(int numberOfPenguinWarnings);
 
 	UIButton& GetButton(std::string name);
 	UINumberDisplay& GetNumberDisplay(std::string name);
+	PenguinWarning& GetPenguinWarning(int index);
 
 	//Recalculate dimensions based on window aspect ratio
 	void Update();
@@ -30,6 +33,7 @@ private:
 	//UI elements
 	std::unordered_map<std::string, UIButton> buttons;
 	std::unordered_map<std::string, UINumberDisplay> numberDisplays;
+	std::vector<PenguinWarning> penguinWarnings;
 
 	//Menu dimensions
 	const float aspectRatio;

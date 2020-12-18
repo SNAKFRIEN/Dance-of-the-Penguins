@@ -31,6 +31,11 @@ void UICanvas::AddNumberDisplay(glm::vec2 pos, glm::vec2 scale, Anchor anchor, s
 	numberDisplays.emplace(name, std::move(UINumberDisplay(pos, scale, anchor, relativePos, relativeScale)));
 }
 
+void UICanvas::SetUpPenguinWarnings(int numberOfPenguinWarnings)
+{
+	penguinWarnings.resize(numberOfPenguinWarnings);
+}
+
 UIButton& UICanvas::GetButton(std::string name)
 {
 	assert(buttons.count(name) != 0);
@@ -41,6 +46,11 @@ UINumberDisplay& UICanvas::GetNumberDisplay(std::string name)
 {
 	assert(numberDisplays.count(name) != 0);
 	return numberDisplays.at(name);
+}
+
+PenguinWarning& UICanvas::GetPenguinWarning(int index)
+{
+	return penguinWarnings[index];
 }
 
 void UICanvas::Update()
@@ -87,6 +97,10 @@ void UICanvas::Update()
 		scale.y *= height * 0.5f;
 		numberDisplay.UpdateSize(pos, scale);
 	}
+	for (PenguinWarning& pw : penguinWarnings)
+	{
+		pw.UpdateWidth(pw.GetHeight() * (windowHeight / windowWidth));
+	}
 }
 
 void UICanvas::Draw()
@@ -101,6 +115,10 @@ void UICanvas::Draw()
 	for (std::pair<const std::string, UINumberDisplay>& numberDisplay : numberDisplays)
 	{
 		numberDisplay.second.Draw();
+	}
+	for (PenguinWarning& pw : penguinWarnings)
+	{
+		pw.Draw();
 	}
 	//Turn off blending
 	glDisable(GL_BLEND);

@@ -147,6 +147,9 @@
     <ClCompile Include="HomingPenguin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PenguinWarning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -272,6 +275,9 @@
     <ClInclude Include="HomingPenguin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PenguinWarning.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CelShader.frag">
@@ -338,6 +344,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\AudienceCelShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PenguinWarning.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PenguinWarning.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

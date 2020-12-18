@@ -394,6 +394,11 @@ glm::vec3 HomingPenguin::GetPos() const
 	return transform[3];
 }
 
+bool HomingPenguin::IsLockedOn() const
+{
+	return state == State::HomingPlayer;
+}
+
 bool HomingPenguin::IsFinished() const
 {
 	return finished;
