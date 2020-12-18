@@ -11,10 +11,10 @@ PenguinWarning::PenguinWarning()
 	shader("PenguinWarning.vert", "PenguinWarning.frag")
 {
 	float vertices[] = {
-		1.0f, 1.0f,		0.1f, 1.0f,		//Top right
-		1.0f, -1.0f,	0.1f, 0.0f,		//Bottom right
+		1.0f, 1.0f,		1.0f, 1.0f,		//Top right
+		1.0f, -1.0f,	1.0f, 0.0f,		//Bottom right
 		-1.0f, -1.0f,	0.0f, 0.0f,		//Bottom left
-		-1.0f, 1.0f,	0.0f, 1.0f		//Top left 
+		-1.0f, 1.0f,	0.0f, 1.0f		//Top left
 	};
 	unsigned int indices[] = {
 		3, 1, 0,   // first triangle
@@ -82,15 +82,16 @@ PenguinWarning::PenguinWarning()
 	shader.SetUniformInt("texture0", 0);
 }
 
-void PenguinWarning::Update(glm::vec3 penguinPos, const Camera& camera)
+void PenguinWarning::Update(glm::vec3 penguinPos, const Camera& camera, glm::vec2 windowDimensions)
 {
-	glm::vec4 v4TargetPos = glm::vec4(0, 0, 0, 1) * glm::translate(glm::mat4(1), penguinPos) * camera.GetVPMatrix();
-	glm::vec2 targetPos = glm::vec2(v4TargetPos.x, v4TargetPos.y);
+	glm::vec4 v4TargetPos = camera.GetVPMatrix() * glm::vec4(penguinPos.x, penguinPos.y + yOffset, penguinPos.z, 1.0f);
+	glm::vec2 targetPos = glm::vec2(v4TargetPos) / v4TargetPos.w;
 
 	std::cout << "WarningPos: " << targetPos.x << ", " << targetPos.y << std::endl;
 
-	//REPLACE calculation so that minBorderDistance is consistent across aspect ratios
-	pos = targetPos;	//glm::clamp(targetPos, glm::vec2(0.0f + minBorderDistance), glm::vec2(1.0f - minBorderDistance));
+	float xMinBorderDistance = yMinBorderDistance * (windowDimensions.y / windowDimensions.x);
+	glm::vec2 minBorderDistance(xMinBorderDistance, yMinBorderDistance);
+	pos = glm::clamp(targetPos, glm::vec2(-1.0f) + minBorderDistance, glm::vec2(1.0f) - minBorderDistance);
 }
 
 void PenguinWarning::UpdateWidth(float inWidth)
