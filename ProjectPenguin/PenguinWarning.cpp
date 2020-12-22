@@ -87,8 +87,6 @@ void PenguinWarning::Update(glm::vec3 penguinPos, const Camera& camera, glm::vec
 	glm::vec4 v4TargetPos = camera.GetVPMatrix() * glm::vec4(penguinPos.x, penguinPos.y + yOffset, penguinPos.z, 1.0f);
 	glm::vec2 targetPos = glm::vec2(v4TargetPos) / v4TargetPos.w;
 
-	std::cout << "WarningPos: " << targetPos.x << ", " << targetPos.y << std::endl;
-
 	float xMinBorderDistance = yMinBorderDistance * (windowDimensions.y / windowDimensions.x);
 	glm::vec2 minBorderDistance(xMinBorderDistance, yMinBorderDistance);
 	pos = glm::clamp(targetPos, glm::vec2(-1.0f) + minBorderDistance, glm::vec2(1.0f) - minBorderDistance);

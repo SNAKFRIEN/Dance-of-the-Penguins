@@ -19,6 +19,7 @@
 #include "PenguinStack.h"
 #include "Collectible.h"
 #include "HomingPenguin.h"
+#include "MIDIPlayer.h"
 
 class Window;
 

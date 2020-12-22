@@ -199,6 +199,8 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClCompile Include="JointAttachment.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MIDILoader.cpp" />
+    <ClCompile Include="MIDIPlayer.cpp" />
     <ClCompile Include="PenguinDresser.cpp" />
     <ClCompile Include="PenguinWarning.cpp" />
     <ClCompile Include="SaveFile.cpp" />
@@ -242,6 +244,8 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="KeyFrame.h" />
     <ClInclude Include="EliMath.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="MIDILoader.h" />
+    <ClInclude Include="MIDIPlayer.h" />
     <ClInclude Include="PenguinDresser.h" />
     <ClInclude Include="PenguinWarning.h" />
     <ClInclude Include="ScreenEffect.h" />

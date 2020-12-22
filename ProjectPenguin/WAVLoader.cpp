@@ -10,6 +10,13 @@ WAVData WAVLoader::LoadWAV(std::string path)
 	//Access file via ifstream
 	std::ifstream file(path, std::ios::binary);
 
+	if (!file.is_open())
+	{
+		std::stringstream errorMessage;
+		errorMessage << path << " could not be loaded because the file could not be opened";
+		throw std::exception(errorMessage.str().c_str());
+	}
+
 	std::stringstream fileStringStream;
 	fileStringStream << file.rdbuf();
 	std::string fileString = fileStringStream.str();

@@ -428,7 +428,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 
 	//REMOVE output fps and player pos
-	std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
+	//std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
 	//std::cout << "Player x: " << std::fixed << std::setprecision(2) << player.GetPos().x << " y: " << player.GetPos().z << std::endl;
 
 	if (input.IsShortPressed(InputAction::Pause))

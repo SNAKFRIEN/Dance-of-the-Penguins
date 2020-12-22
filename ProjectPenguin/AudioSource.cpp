@@ -44,3 +44,13 @@ void AudioSource::SetLooping(bool looping)
 {
 	alSourcei(source, AL_LOOPING, looping);
 }
+
+void AudioSource::SetPitch(float pitch)
+{
+	alSourcef(source, AL_PITCH, pitch);
+}
+
+void AudioSource::SetVolume(float volume)
+{
+	alSourcef(source, AL_GAIN, volume);
+}

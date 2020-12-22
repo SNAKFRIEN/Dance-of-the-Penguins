@@ -18,6 +18,8 @@ public:
 	void SetPos(glm::vec3 pos);
 	void SetVel(glm::vec3 vel);
 	void SetLooping(bool looping);
+	void SetPitch(float pitch);
+	void SetVolume(float volume);
 private:
 	ALuint source = 0;
 };
