@@ -172,7 +172,10 @@ void Shader::SetUniformMat4(const std::string& name, const glm::mat4& mat) const
 
 void Shader::SetUniformMat4Array(const std::string& name, const std::vector<glm::mat4>& values) const
 {
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, name.c_str()), (GLsizei)values.size(), GL_FALSE, &values.front()[0][0]);
+	if (!values.empty())
+	{
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, name.c_str()), (GLsizei)values.size(), GL_FALSE, &values.front()[0][0]);
+	}
 }
 
 void Shader::SetUniformVec3Array(const std::string& name, const std::vector<glm::vec3>& values) const

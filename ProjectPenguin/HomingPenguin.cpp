@@ -18,7 +18,9 @@ HomingPenguin::HomingPenguin(glm::vec3 inPos)
 	collider(pos, collisionRadius),
 	flowerScanner(pos, scanRadius),
 	leftWallScanner(leftWallScannerPos, wallScannerRadii),
-	rightWallScanner(rightWallScannerPos, wallScannerRadii)
+	rightWallScanner(rightWallScannerPos, wallScannerRadii),
+	hat("TrafficConeHat.gltf", model, "head"),
+	vest("SecurityVest.gltf", model, "torso")
 {
 	swerveTimer = randomSwerveTime(rng);
 	std::cout << "HomingPenguin constructed" << std::endl;
@@ -48,6 +50,8 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 	flowerScanner(pos, scanRadius),
 
 	model("Goopie.gltf", transform, rhs.model.GetAnimation()),
+	hat("TrafficConeHat.gltf", model, "head"),
+	vest("SecurityVest.gltf", model, "torso"),
 
 	collider(pos, collisionRadius),
 
@@ -126,6 +130,8 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 	flowerScanner(pos, scanRadius),
 
 	model("Goopie.gltf", transform, rhs.model.GetAnimation()),
+	hat("TrafficConeHat.gltf", model, "head"),
+	vest("SecurityVest.gltf", model, "torso"),
 
 	collider(pos, collisionRadius),
 
@@ -361,6 +367,8 @@ void HomingPenguin::Draw(Camera& camera)
 		flower->Draw(camera);
 	}
 	model.AddToRenderQueue(camera);
+	hat.Draw(camera);
+	vest.Draw(camera);
 }
 
 void HomingPenguin::GiveFlower()
@@ -368,6 +376,7 @@ void HomingPenguin::GiveFlower()
 	rotationSpeed = playerHomingRotationSpeed;
 	flower = std::make_unique<JointAttachment>("BouquetGoop.gltf", model, "lower_arm.R");
 	state = State::HomingPlayer;
+	model.SetAnimation("SkatingWhileHolding");
 }
 
 void HomingPenguin::Collide(const IceRink& rink)

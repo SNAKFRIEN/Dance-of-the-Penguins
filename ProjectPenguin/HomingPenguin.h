@@ -89,6 +89,8 @@ private:
 
 	AnimatedModel model;
 	std::unique_ptr<JointAttachment> flower = nullptr;
+	JointAttachment hat;
+	JointAttachment vest;
 
 	static constexpr float collisionRadius = 0.25f;
 	CircleCollider collider;

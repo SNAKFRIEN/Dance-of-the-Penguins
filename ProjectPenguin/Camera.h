@@ -28,5 +28,5 @@ private:
 
 	//Gameplay properties
 	glm::vec3 pos = glm::vec3(0.0f);
-	static constexpr glm::vec3 offset = glm::vec3(0.0f, 12.0f, 12.0f);
+	static constexpr glm::vec3 offset = glm::vec3(0.0f, 13.0f, 13.0f);
 };

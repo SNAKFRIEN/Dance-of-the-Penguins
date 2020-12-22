@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <sstream>
+
 #include "Camera.h"
 #include "GLTFData.h"
 #include "Light.h"
@@ -173,7 +175,12 @@ void AnimatedModel::DrawShadows(const Light& light)
 
 void AnimatedModel::SetAnimation(std::string name)
 {
-	assert(modelData.animations.count(name) > 0);	//Make sure animation exists
+	if (modelData.animations.count(name) == 0)
+	{
+		std::stringstream errorMessage;
+		errorMessage << "The animation \"" << name << "\" does not exist";
+		throw std::exception(errorMessage.str().c_str());
+	}
 	currentAnimation = name;
 }
 

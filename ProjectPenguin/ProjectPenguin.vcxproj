@@ -269,7 +269,8 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
   <ItemGroup>
     <None Include="Shaders\AnimationCelShader.vert" />
     <None Include="Shaders\AudienceCelShader.frag" />
-    <None Include="Shaders\AudienceShader.frag" />
+    <None Include="Shaders\Background.frag" />
+    <None Include="Shaders\Surroundings.frag" />
     <None Include="Shaders\CelShader.frag" />
     <None Include="Shaders\CelShader.vert" />
     <None Include="Shaders\DepthOnly.frag" />

@@ -19,7 +19,6 @@
 #include "PenguinStack.h"
 #include "Collectible.h"
 #include "HomingPenguin.h"
-#include "MIDIPlayer.h"
 
 class Window;
 
@@ -53,6 +52,7 @@ private:
 
 	void UpdatePlaying(float frameTime);
 	void UpdatePauseMenu();
+	void UpdateMainMenuCam(float frameTime);
 	void UpdateMainMenu();
 	void UpdateGameOverCam(float frameTime);
 	void UpdateGameOver();
@@ -131,6 +131,9 @@ private:
 	UICanvas gameplayUI;
 
 	SaveFile saveFile;
+
+	static constexpr glm::vec3 menuCamPos = glm::vec3(0.0f, 15.0f, 60.0f);
+	static constexpr glm::vec3 menuCamRotation = glm::vec3(0);
 
 	AudioManager audioManager;
 

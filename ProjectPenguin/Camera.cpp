@@ -22,6 +22,7 @@ void Camera::Follow(glm::vec3 target)
 
 void Camera::LookAt(glm::vec3 eye, glm::vec3 target, glm::vec3 up)
 {
+	pos = eye;
 	view = glm::lookAt(eye, target, up);
 }
 

@@ -349,9 +349,6 @@
     <None Include="Shaders\SmoothBright.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\AudienceShader.frag">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\IceShader.frag">
       <Filter>Shaders</Filter>
     </None>
@@ -362,6 +359,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\PenguinWarning.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Surroundings.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Background.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

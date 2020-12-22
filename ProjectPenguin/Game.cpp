@@ -65,6 +65,7 @@ void Game::Update()
 		UpdatePauseMenu();
 		break;
 	case State::MainMenu:
+		UpdateMainMenuCam(frameTime);
 		UpdateMainMenu();
 		break;
 	case State::GameOverCam:
@@ -89,6 +90,7 @@ void Game::Draw()
 		DrawPauseMenu();
 		break;
 	case State::MainMenu:
+		DrawPlaying();
 		DrawMainMenu();
 		break;
 	case State::GameOverCam:
@@ -136,7 +138,7 @@ void Game::SetUpGameplayUI()
 void Game::SetUpBakedShadows()
 {
 	//Draw all objects that can be baked
-	iceRink.DrawStatic(camera, input);
+	iceRink.DrawStatic(camera);
 
 	light.UseBakeTexture();
 
@@ -272,10 +274,6 @@ void Game::UpdatePlaying(float frameTime)
 			homingPenguins.emplace_back(spawn);
 		}
 	}
-	//Replace audience
-	iceRink.SetAudienceBlock1(totalPlayTime > audienceBlock1SwitchTime);
-	iceRink.SetAudienceBlock2(totalPlayTime > audienceBlock2SwitchTime);
-	iceRink.SetAudienceBlock3(totalPlayTime > audienceBlock3SwitchTime);
 
 	//Update entities (Fixed deltaTime)
 	accumulator += frameTime;
@@ -428,7 +426,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 
 	//REMOVE output fps and player pos
-	//std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
+	std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
 	//std::cout << "Player x: " << std::fixed << std::setprecision(2) << player.GetPos().x << " y: " << player.GetPos().z << std::endl;
 
 	if (input.IsShortPressed(InputAction::Pause))
@@ -457,6 +455,14 @@ void Game::UpdatePauseMenu()
 		EndPlaying();
 		state = State::MainMenu;
 	}
+}
+
+void Game::UpdateMainMenuCam(float frameTime)
+{
+	glm::vec3 newPos = glm::mix(camera.GetPos(), menuCamPos, 0.03f);
+	camera.LookAt(newPos, glm::vec3(0.0f));
+
+	camera.CalculateVPMatrix();
 }
 
 void Game::UpdateMainMenu()
@@ -577,7 +583,7 @@ void Game::DrawPlaying()
 	{
 		penguinStack->Draw(camera);
 	}
-	iceRink.DrawNonStatic(camera, input, GetFlowerPositions());
+	iceRink.DrawNonStatic(camera, GetFlowerPositions());
 	for (HomingPenguin& hp : homingPenguins)
 	{
 		hp.Draw(camera);
@@ -590,7 +596,7 @@ void Game::DrawPlaying()
 	}
 
 	//Draw all items that don't cast (dynamic) shadows
-	iceRink.DrawStatic(camera, input);
+	iceRink.DrawStatic(camera);
 	for (Collectible& c : collectibles)
 	{
 		c.Draw(camera);
