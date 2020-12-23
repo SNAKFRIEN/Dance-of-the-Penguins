@@ -3,6 +3,8 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
 
+#include <iostream>
+
 #include "IceSkater.h"
 #include "Collectible.h"
 #include "IceRink.h"

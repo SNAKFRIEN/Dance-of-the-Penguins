@@ -4,6 +4,7 @@
 #include "tiny_gltf.h"
 #include "glm/glm.hpp"
 
+#include <memory>
 #include <unordered_map>
 
 #include "Shader.h"

@@ -3,8 +3,10 @@
 #include "glad/glad.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Camera.h"
+#include <iostream>
+#include <sstream>
 
+#include "Camera.h"
 #include "GlGetError.h"
 
 ModelNoTexture::ModelNoTexture(std::string name, const glm::mat4& ownerTransform)

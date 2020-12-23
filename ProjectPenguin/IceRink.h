@@ -4,6 +4,8 @@
 #include "Model.h"
 #include "ModelNoTexture.h"
 
+#include <memory>
+
 class Camera;
 class Collectible;
 

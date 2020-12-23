@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <iostream>
 #include <sstream>
 
 #include "Camera.h"

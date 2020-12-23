@@ -1,12 +1,14 @@
 #include "Game.h"
 
 #include "Window.h"
+#include "GlGetError.h"
+
+#include <iostream>
+#include <sstream>
 //REMOVE: iomanip likely isn't necessary for final release
 #include <iomanip>
 
 #include "glm/gtc/random.hpp"
-
-#include "GlGetError.h"
 
 Game::Game(Window& window)
 	:
@@ -22,7 +24,8 @@ Game::Game(Window& window)
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
 	screenQuad(window, saveFile),
 	penguinDresser(rng),
-	randomStackSpawnInterval(10.0f, 30.0f)	//REPLACE these values
+	randomStackSpawnInterval(10.0f, 30.0f),	//REPLACE these values
+	gameOverFlashSound("CameraFlash.wav", audioManager)
 {
 	window.SetMainCamera(&camera);
 	window.SetScreenQuad(&screenQuad);
@@ -511,6 +514,8 @@ void Game::UpdateGameOverCam(float frameTime)
 		camera.CalculateVPMatrix();
 		//Do flash
 		screenEffect.SetFlashEffect(1.3f);
+		gameOverFlashSound.SetPos(camera.GetPos());
+		gameOverFlashSound.Play();
 		nGameOverFlashes++;
 	}
 }

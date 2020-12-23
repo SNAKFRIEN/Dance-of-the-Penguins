@@ -144,4 +144,6 @@ private:
 
 	const int maxGameOverFlashes = 3;
 	int nGameOverFlashes = 0;
+
+	AudioSource gameOverFlashSound;
 };

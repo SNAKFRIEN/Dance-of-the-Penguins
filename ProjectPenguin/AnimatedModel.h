@@ -8,6 +8,8 @@
 #include "Joint.h"
 #include "KeyFrame.h"
 
+#include <memory>
+
 class Camera;
 class Light;
 

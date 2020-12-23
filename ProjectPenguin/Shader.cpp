@@ -1,5 +1,9 @@
 #include "Shader.h"
 
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
 #include <glad/glad.h>
 
 #include "GlGetError.h"
