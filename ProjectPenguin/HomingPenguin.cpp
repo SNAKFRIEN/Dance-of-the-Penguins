@@ -18,7 +18,7 @@ HomingPenguin::HomingPenguin(glm::vec3 inPos)
 	rotation(randomRotation(rng)),
 	model("Goopie.gltf", transform, "Skating"),
 	collider(pos, collisionRadius),
-	flowerScanner(pos, scanRadius),
+	candyCaneScanner(pos, scanRadius),
 	leftWallScanner(leftWallScannerPos, wallScannerRadii),
 	rightWallScanner(rightWallScannerPos, wallScannerRadii),
 	hat("TrafficConeHat.gltf", model, "head"),
@@ -49,7 +49,7 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 	leftWallScanner(leftWallScannerPos, wallScannerRadii),
 	rightWallScanner(rightWallScannerPos, wallScannerRadii),
 
-	flowerScanner(pos, scanRadius),
+	candyCaneScanner(pos, scanRadius),
 
 	model("Goopie.gltf", transform, rhs.model.GetAnimation()),
 	hat("TrafficConeHat.gltf", model, "head"),
@@ -61,13 +61,13 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 {
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
 
-	if (rhs.flower.get())
+	if (rhs.candyCane.get())
 	{
-		GiveFlower();
+		GiveCandyCane();
 	}
 	else
 	{
-		flower.release();
+		candyCane.release();
 	}
 
 	std::cout << "HomingPenguin copy constructed" << std::endl;
@@ -96,13 +96,13 @@ HomingPenguin HomingPenguin::operator=(const HomingPenguin& rhs)
 
 	finished = rhs.finished;
 
-	if (rhs.flower.get())
+	if (rhs.candyCane.get())
 	{
-		GiveFlower();
+		GiveCandyCane();
 	}
 	else
 	{
-		flower.release();
+		candyCane.release();
 	}
 
 	return *this;
@@ -129,7 +129,7 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 	leftWallScanner(leftWallScannerPos, wallScannerRadii),
 	rightWallScanner(rightWallScannerPos, wallScannerRadii),
 
-	flowerScanner(pos, scanRadius),
+	candyCaneScanner(pos, scanRadius),
 
 	model("Goopie.gltf", transform, rhs.model.GetAnimation()),
 	hat("TrafficConeHat.gltf", model, "head"),
@@ -141,13 +141,13 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 {
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
 
-	if (rhs.flower.get())
+	if (rhs.candyCane.get())
 	{
-		GiveFlower();
+		GiveCandyCane();
 	}
 	else
 	{
-		flower.release();
+		candyCane.release();
 	}
 
 	std::cout << "HomingPenguin move constructed" << std::endl;
@@ -176,19 +176,19 @@ HomingPenguin HomingPenguin::operator=(HomingPenguin&& rhs) noexcept
 
 	finished = rhs.finished;
 
-	if (rhs.flower.get())
+	if (rhs.candyCane.get())
 	{
-		GiveFlower();
+		GiveCandyCane();
 	}
 	else
 	{
-		flower.release();
+		candyCane.release();
 	}
 
 	return *this;
 }
 
-void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers, const IceRink& rink, float dt)
+void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& collectibles, const IceRink& rink, float dt)
 {
 	switch (state)
 	{
@@ -243,17 +243,17 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers,
 		pos += glm::rotate(glm::vec3(0.0f, 0.0f, -1.0f), rotation, glm::vec3(0.0f, -1.0f, 0.0f)) * speed * dt;
 		transform = glm::translate(glm::mat4(1.0f), pos) * glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, -1.0f, 0.0f));
 
-		//Scan for flowers
-		for(int i = 0; i < flowers.size() && state == State::Roaming; i++)
+		//Scan for candy canes
+		for(int i = 0; i < collectibles.size() && state == State::Roaming; i++)
 		{
-			if (flowerScanner.CalculateCollision(flowers[i].GetCollider()).isColliding)
+			if (candyCaneScanner.CalculateCollision(collectibles[i].GetCollider()).isColliding)
 			{
-				state = State::HomingFlower;
+				state = State::HomingCandyCane;
 			}
 		}
 
 		break;
-	case State::HomingFlower:
+	case State::HomingCandyCane:
 	{
 		//Steer away from obstacles
 		leftWallScannerPos = pos + glm::rotate(leftWallScannerBasePos, rotation, glm::vec3(0.0f, -1.0f, 0.0f));
@@ -271,28 +271,28 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& flowers,
 		else
 		{
 			speed = baseSpeed;
-			//Find closest flower
-			CollisionData closestFlower;
-			closestFlower.isColliding = false;
-			closestFlower.distanceSquared = INFINITY;
-			for (Collectible& flower : flowers)
+			//Find closest candy cane
+			CollisionData closestCandyCane;
+			closestCandyCane.isColliding = false;
+			closestCandyCane.distanceSquared = INFINITY;
+			for (Collectible& collectible : collectibles)
 			{
-				auto temp = flowerScanner.CalculateCollision(flower.GetCollider());
-				if (temp.isColliding && temp.distanceSquared < closestFlower.distanceSquared)
+				auto temp = candyCaneScanner.CalculateCollision(collectible.GetCollider());
+				if (temp.isColliding && temp.distanceSquared < closestCandyCane.distanceSquared)
 				{
-					closestFlower = temp;
+					closestCandyCane = temp;
 				}
 			}
 
-			//Check that a flower was found
-			if (closestFlower.isColliding == false)
+			//Check that a candy cane was found
+			if (closestCandyCane.isColliding == false)
 			{
 				state = State::Roaming;
 			}
 			else
 			{
-				//Steer towards target flower
-				glm::vec3 direction = glm::normalize(closestFlower.colliderB->GetPos() - pos);
+				//Steer towards target candy cane
+				glm::vec3 direction = glm::normalize(closestCandyCane.colliderB->GetPos() - pos);
 				float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, -1.0f, 0.0f));
 				if (angle > 0.0f)
 				{
@@ -364,19 +364,19 @@ void HomingPenguin::UpdateAnimation(float dt)
 
 void HomingPenguin::Draw(Camera& camera)
 {
-	if (flower.get())
+	if (candyCane.get())
 	{
-		flower->Draw(camera);
+		candyCane->Draw(camera);
 	}
 	model.AddToRenderQueue(camera);
 	hat.Draw(camera);
 	vest.Draw(camera);
 }
 
-void HomingPenguin::GiveFlower()
+void HomingPenguin::GiveCandyCane()
 {
 	rotationSpeed = playerHomingRotationSpeed;
-	flower = std::make_unique<JointAttachment>("BouquetGoop.gltf", model, "lower_arm.R");
+	candyCane = std::make_unique<JointAttachment>("CandyCaneGoop.gltf", model, "lower_arm.R");
 	state = State::HomingPlayer;
 	model.SetAnimation("SkatingWhileHolding");
 }

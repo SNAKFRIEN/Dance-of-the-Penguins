@@ -1,7 +1,7 @@
 #version 330 core
 
-const int MAX_FLOWERS = 20;
-const float MAX_FLOWER_HEIGHT = 10.0;
+const int MAX_COLLECTIBLES = 20;
+const float MAX_COLLECTIBLE_HEIGHT = 10.0;
 
 out vec4 FragColor;
 
@@ -16,19 +16,19 @@ uniform samplerCube shadowCubeMapBaked;
 uniform float lightFarPlane;
 uniform vec3 lightPos;
 
-uniform int nFlowers;
-uniform vec3 flowers[MAX_FLOWERS];
+uniform int nCollectibles;
+uniform vec3 collectibles[MAX_COLLECTIBLES];
 
 vec3 lightDir = normalize(lightPos - position);
 
 float Shadow()
 {
-	//Render flower shadows
-	for(int i = 0; i < nFlowers; i++)
+	//Render collectible shadows
+	for(int i = 0; i < nCollectibles; i++)
 	{
 		
-		float radius = (MAX_FLOWER_HEIGHT - flowers[i].y) / MAX_FLOWER_HEIGHT * 0.3;
-		if(distance(position.xz, flowers[i].xz) < radius)
+		float radius = (MAX_COLLECTIBLE_HEIGHT - collectibles[i].y) / MAX_COLLECTIBLE_HEIGHT * 0.3;
+		if(distance(position.xz, collectibles[i].xz) < radius)
 		{
 			
 			return 0.3;

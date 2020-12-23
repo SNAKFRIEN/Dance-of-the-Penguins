@@ -53,7 +53,7 @@ Game::Game(Window& window)
 	Model::Preload("Crate.gltf");
 	Model::Preload("FishingPole.gltf");
 	Model::Preload("Bucket.gltf");
-	Model::Preload("Bouquet.gltf");
+	Model::Preload("CandyCane.gltf");
 }
 
 void Game::Update()
@@ -335,7 +335,7 @@ void Game::UpdatePlaying(float frameTime)
 				{
 					if (hp.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
 					{
-						hp.GiveFlower();
+						hp.GiveCandyCane();
 						return true;
 					}
 				}
@@ -588,7 +588,7 @@ void Game::DrawPlaying()
 	{
 		penguinStack->Draw(camera);
 	}
-	iceRink.DrawNonStatic(camera, GetFlowerPositions());
+	iceRink.DrawNonStatic(camera, GetCandyCanePositions());
 	for (HomingPenguin& hp : homingPenguins)
 	{
 		hp.Draw(camera);
@@ -660,12 +660,12 @@ void Game::DrawGameOverMenu()
 	glDisable(GL_BLEND);
 }
 
-std::vector<glm::vec3> Game::GetFlowerPositions() const
+std::vector<glm::vec3> Game::GetCandyCanePositions() const
 {
 	std::vector<glm::vec3> result;
-	for (const Collectible& flower : collectibles)
+	for (const Collectible& candyCane : collectibles)
 	{
-		result.emplace_back(flower.GetPos());
+		result.emplace_back(candyCane.GetPos());
 	}
 	return std::move(result);
 }

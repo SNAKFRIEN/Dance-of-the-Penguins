@@ -32,7 +32,7 @@ const float right = 24.6;
 const float top = 13.7;
 const float cornerRadius = 5.5;
 
-vec3 Shadow()
+float Shadow()
 {
 	//Sample cube map
 	vec3 fromLight = position - lightPos;
@@ -44,7 +44,7 @@ vec3 Shadow()
 	float minBias = 0.005;
 	float maxBias = 0.05;
 	float bias = max(maxBias * (1.0 - dot(normal, lightDir)), minBias);
-	return currrentDepth - bias > closestDepth ? vec3(0.7) : vec3(0.0);
+	return currrentDepth - bias > closestDepth ? 0.7 : 0.0;
 }
 
 vec3 Smooth()
@@ -74,7 +74,7 @@ vec3 Smooth()
 			* simpleLightColor;
 	}
 
-	return vec3(1) * max(dot(lightDir, normal), 0.0) * clamp(distanceMultiplier, ambient, 1.0) + fromSimpleLights;
+	return vec3(1) * min(max(dot(lightDir, normal), 0.0) * clamp(distanceMultiplier, ambient, 1.0), 1 - Shadow()) + fromSimpleLights;
 }
 
 void main()
@@ -86,6 +86,6 @@ void main()
 	}
 	else
 	{
-		FragColor = textureColor * vec4(min(Smooth(), 1 - Shadow()), 1);
+		FragColor = textureColor * vec4(Smooth(), 1);
 	}
 }

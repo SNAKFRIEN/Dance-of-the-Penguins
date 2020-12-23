@@ -20,7 +20,7 @@ private:
 	enum class State
 	{
 		Roaming,
-		HomingFlower,
+		HomingCandyCane,
 		HomingPlayer,
 		Crashing
 	};
@@ -36,11 +36,11 @@ public:
 	HomingPenguin(HomingPenguin&& rhs) noexcept;
 	HomingPenguin operator=(HomingPenguin&& rhs) noexcept;
 
-	void Update(IceSkater& player, std::vector<Collectible>& flowers, const IceRink& rink, float dt);
+	void Update(IceSkater& player, std::vector<Collectible>& candyCanes, const IceRink& rink, float dt);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
 
-	void GiveFlower();
+	void GiveCandyCane();
 	void Collide(const IceRink& rink);	//REPLACE: add collision with fishingpenguin and normal penguins?
 
 	CircleCollider& GetCollider();
@@ -85,10 +85,10 @@ private:
 
 
 	static constexpr float scanRadius = 5.0f;
-	CircleCollider flowerScanner;
+	CircleCollider candyCaneScanner;
 
 	AnimatedModel model;
-	std::unique_ptr<JointAttachment> flower = nullptr;
+	std::unique_ptr<JointAttachment> candyCane = nullptr;
 	JointAttachment hat;
 	JointAttachment vest;
 

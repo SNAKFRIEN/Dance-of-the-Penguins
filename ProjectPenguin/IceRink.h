@@ -16,11 +16,10 @@ class IceRink
 public:
 	IceRink(bool initModels = true);
 
-	//REMOVE input parameters! these are exclusively used for debugging
 	void DrawStatic(Camera& camera);
-	void DrawNonStatic(Camera& camera, const std::vector<glm::vec3>& flowerPositions);
+	void DrawNonStatic(Camera& camera, const std::vector<glm::vec3>& collectiblePositions);
 	void Reset();
-	void Update(float elapsedTime);	//Makes the audience... Wiggle...
+	void Update(float elapsedTime);
 
 	float GetRight() const;
 	float GetTop() const;
