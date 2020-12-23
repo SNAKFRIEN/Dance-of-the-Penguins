@@ -25,7 +25,8 @@ Game::Game(Window& window)
 	screenQuad(window, saveFile),
 	penguinDresser(rng),
 	randomStackSpawnInterval(10.0f, 30.0f),	//REPLACE these values
-	gameOverFlashSound("CameraFlash.wav", audioManager)
+	gameOverFlashSound("CameraFlash.wav", audioManager),
+	choir(audioManager)
 {
 	window.SetMainCamera(&camera);
 	window.SetScreenQuad(&screenQuad);
@@ -142,6 +143,7 @@ void Game::SetUpBakedShadows()
 {
 	//Draw all objects that can be baked
 	iceRink.DrawStatic(camera);
+	choir.Draw(camera);
 
 	light.UseBakeTexture();
 
@@ -326,6 +328,7 @@ void Game::UpdatePlaying(float frameTime)
 		c.Update(frameTime);
 	}
 	iceRink.Update(totalPlayTime);
+	choir.Update(frameTime);
 	//Pick up collectibles (either by player or by homing penguin)
 	{
 		const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
@@ -602,6 +605,7 @@ void Game::DrawPlaying()
 
 	//Draw all items that don't cast (dynamic) shadows
 	iceRink.DrawStatic(camera);
+	choir.Draw(camera);
 	for (Collectible& c : collectibles)
 	{
 		c.Draw(camera);

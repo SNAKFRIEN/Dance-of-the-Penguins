@@ -19,6 +19,7 @@
 #include "PenguinStack.h"
 #include "Collectible.h"
 #include "HomingPenguin.h"
+#include "Choir.h"
 
 class Window;
 
@@ -71,6 +72,7 @@ private:
 	Window& window;
 	Camera camera;
 	Input input;
+	AudioManager audioManager;
 
 	std::mt19937 rng;
 
@@ -116,6 +118,8 @@ private:
 	static constexpr int maxHomingPenguins = 4;
 	std::vector<HomingPenguin> homingPenguins;
 
+	Choir choir;
+
 	FrameTimer ft;
 	float accumulator = 0.01f;
 	static constexpr float deltaTime = 0.01f;	//Update physics 100 times per second
@@ -134,8 +138,6 @@ private:
 
 	static constexpr glm::vec3 menuCamPos = glm::vec3(0.0f, 15.0f, 60.0f);
 	static constexpr glm::vec3 menuCamRotation = glm::vec3(0);
-
-	AudioManager audioManager;
 
 	Light light;
 

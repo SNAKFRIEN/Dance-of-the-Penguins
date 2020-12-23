@@ -18,7 +18,7 @@ IceRink::IceRink(bool initModels)
 	lightSources.emplace_back(-28.13, 3.77, -12.23);	//Left house0
 	lightSources.emplace_back(-31.32, 3.77, -10.29);	//Left house1
 	lightSources.emplace_back(9.65, 2.2, -15.83);		//Right house (bottom)
-	lightSources.emplace_back(6.77, 2.84, -16.7);		//Right house (top)
+	lightSources.emplace_back(6.77, 1.93, -16.7);		//Right house (top)
 	lightSources.emplace_back(-0.76, 3.42, -18.30);		//Middle house
 
 	//REPLACE: Would be better if these could all use the same shader

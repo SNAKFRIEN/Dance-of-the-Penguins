@@ -17,7 +17,13 @@ private:
 	};
 public:
 	MIDIPlayer(std::string midiName, std::string soundEffectName, float basePitch, AudioManager& audioManager, float speed = 1.0f);
-	void Update(float deltaTime, const Camera& camera);
+	void Update(float deltaTime);
+
+	bool IsFinished() const;
+
+	void SetPosition(glm::vec3 pos);
+	void SetLooping(bool toggle);
+	void Reset();
 private:
 	static constexpr float pitchPerNote = 1.0577789506554859296792575f;	//Change in pitch per note
 	
@@ -28,6 +34,9 @@ private:
 	std::vector<Note> notes;
 	int index = 0;
 	float currentTime = 0.0f;
+	bool finished = false;
 
 	const float speed;
+
+	bool looping = false;
 };
