@@ -9,6 +9,8 @@
 
 #include <random>
 
+class SmokeMachine;
+
 class PenguinStack
 {
 private:
@@ -42,10 +44,10 @@ private:
 public:
 	PenguinStack(glm::vec3 pos, glm::vec3 target, std::mt19937& rng, AudioManager& audioManager);
 
-	void Update(float dt, const IceRink& rink);
+	void Update(float dt, const IceRink& rink, SmokeMachine& smokeMachine);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
-	void Crash();
+	void Crash(SmokeMachine& smokeMachine);
 
 	//REMOVE unused function
 	glm::vec3 GetPos() const;

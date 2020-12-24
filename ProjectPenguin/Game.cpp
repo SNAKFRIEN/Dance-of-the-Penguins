@@ -249,6 +249,7 @@ void Game::UpdatePlaying(float frameTime)
 		iceRink.SetIcePos(spawn);
 		fishingPenguin = std::make_unique<FishingPenguin>(spawn, rotation, audioManager);
 		fishingPenguinSpawned = true;
+		smokeMachine.SpawnSmoke(spawn);
 	}
 	//Spawn penguin stack
 	penguinStackSpawnTimer -= frameTime;
@@ -261,6 +262,7 @@ void Game::UpdatePlaying(float frameTime)
 			iceRink.GetTop() - iceRink.GetCornerRadius());
 		auto stackTarget = spawner.FindCloseTarget(player.GetPos(), 5.0f);
 		penguinStack = std::make_unique<PenguinStack>(stackSpawn, stackTarget, rng, audioManager);
+		smokeMachine.SpawnSmoke(stackSpawn);
 	}
 	//Spawn collectibles
 	collectibleTimer += frameTime;
@@ -330,7 +332,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	if (penguinStack)
 	{
-		penguinStack->Update(frameTime, iceRink);
+		penguinStack->Update(frameTime, iceRink, smokeMachine);
 	}
 	camera.CalculateVPMatrix();
 	for (Collectible& c : collectibles)

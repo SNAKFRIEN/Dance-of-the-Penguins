@@ -2,6 +2,8 @@
 
 #include "glm/gtx/rotate_vector.hpp"
 
+#include "SmokeMachine.h"
+
 PenguinStack::PenguinStack(glm::vec3 inPos, glm::vec3 target, std::mt19937& rng, AudioManager& audioManager)
 	:
 	model("Goopie.gltf", transform, "GoombaBottomSmooth"),
@@ -23,7 +25,7 @@ PenguinStack::PenguinStack(glm::vec3 inPos, glm::vec3 target, std::mt19937& rng,
 	firstNode = std::make_unique<PenguinNode>(model, nStackedPenguins);
 }
 
-void PenguinStack::Update(float dt, const IceRink& rink)
+void PenguinStack::Update(float dt, const IceRink& rink, SmokeMachine& smokeMachine)
 {
 	switch (state)
 	{
@@ -33,8 +35,8 @@ void PenguinStack::Update(float dt, const IceRink& rink)
 		transform = glm::translate(glm::mat4(1.0f), pos) * rotationMatrix;
 		if (!collider.IsInRink(rink))
 		{
-			Crash();
-			Update(0.0f, rink);
+			Crash(smokeMachine);
+			Update(0.0f, rink, smokeMachine);
 		}
 		break;
 	case State::Crashing:
@@ -93,8 +95,9 @@ void PenguinStack::Draw(Camera& camera)
 	}
 }
 
-void PenguinStack::Crash()
+void PenguinStack::Crash(SmokeMachine& smokeMachine)
 {
+	smokeMachine.SpawnSmoke(pos);
 	state = State::Crashing;
 	fallingPenguins.reserve(nPenguins);
 	for (int i = 0; i < nPenguins; i++)
