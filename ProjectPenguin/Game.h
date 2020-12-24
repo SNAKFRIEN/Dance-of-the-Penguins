@@ -108,10 +108,9 @@ private:
 	std::uniform_real_distribution<float> fishingPenguinRotationRange;
 	//Stacked penguins
 	//REPLACE these values
-	static constexpr float stackedPenguinSpawnTime = 100.0f;
 	std::uniform_real_distribution<float> randomStackSpawnInterval;
-	static constexpr float penguinStackInitialSpawnTimerValue = 0.01f;
-	float penguinStackSpawnTimer = penguinStackInitialSpawnTimerValue;
+	static constexpr float stackedPenguinSpawnTime = 100.0f;	//Stacks won't spawn until this far into the game
+	float penguinStackSpawnTimer = stackedPenguinSpawnTime;
 	//Ice skating penguins
 	static constexpr float homingPenguinSpawnTime = 5.0f;
 	static constexpr float homingPenguinSpawnInterval = 10.0f;

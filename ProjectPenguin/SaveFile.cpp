@@ -26,6 +26,8 @@ void SaveFile::LoadData(std::string fileName)
 		tutorialCompleted = *data.find("tutorialCompleted");
 		shadowResolution = *data.find("shadowResolution");
 		msaa = *data.find("msaa");
+		selectedMonitor = *data.find("selectedMonitor");
+		fullScreenOn = *data.find("fullScreenOn");
 	}
 	//REPLACE: warn the user if save file is not present?
 }
@@ -36,7 +38,9 @@ void SaveFile::SaveData(std::string fileName)
 		{"highScore", highScore},
 		{"tutorialCompleted", tutorialCompleted},
 		{"shadowResolution", shadowResolution},
-		{"msaa", msaa}
+		{"msaa", msaa},
+		{"selectedMonitor", selectedMonitor},
+		{"fullScreenOn", fullScreenOn}
 	};
 
 	std::string filePath = "UserData/";
@@ -70,6 +74,16 @@ bool SaveFile::GetTutorialCompleted() const
 	return tutorialCompleted;
 }
 
+void SaveFile::SetHighScore(int inScore)
+{
+	highScore = inScore;
+}
+
+void SaveFile::SetTutorialCompleted(bool inTutorialCompleted)
+{
+	tutorialCompleted = inTutorialCompleted;
+}
+
 unsigned int SaveFile::GetShadowRes() const
 {
 	return shadowResolution;
@@ -80,12 +94,12 @@ unsigned int SaveFile::GetMsaaQuality() const
 	return msaa;
 }
 
-void SaveFile::SetHighScore(int inScore)
+int SaveFile::GetSelectedMonitor() const
 {
-	highScore = inScore;
+	return selectedMonitor;
 }
 
-void SaveFile::SetTutorialCompleted(bool inTutorialCompleted)
+bool SaveFile::GetFullScreenOn() const
 {
-	tutorialCompleted = inTutorialCompleted;
+	return fullScreenOn;
 }

@@ -15,6 +15,7 @@ Input::Input(const Window& window)
 	BindKey(InputAction::Left, GLFW_KEY_A);
 	BindKey(InputAction::Right, GLFW_KEY_D);
 	BindKey(InputAction::Pause, GLFW_KEY_ESCAPE);
+	BindKey(InputAction::Enter, GLFW_KEY_ENTER);
 }
 
 bool Input::IsPressed(const InputAction& action) const

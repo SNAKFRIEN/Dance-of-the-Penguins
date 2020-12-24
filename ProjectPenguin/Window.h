@@ -37,15 +37,26 @@ public:
 	//Custom functionality
 	void SetMainCamera(Camera* camera);
 	void SetScreenQuad(ScreenQuad* screenQuad);
+	void SetSelectedMonitor(int monitorIndex);
+	void SetFullscreen(bool fullScreenOn);
+
+	bool IsFullScreen() const;
 private:
 	void ResizeCallback();
 private:
 	GLFWwindow* window = nullptr;
-	
+	GLFWmonitor* monitor = nullptr;
+
 	//Automatically adjust properties when screen size changes
 	Camera* mainCamera = nullptr;
 	ScreenQuad* screenQuad = nullptr;
 
 	int currentWidth;
 	int currentHeight;
+	
+	//Used for switching out of fullscreen
+	int prevX = 100;
+	int prevY = 100;
+	int prevWidth = currentWidth;
+	int prevHeight = currentHeight;
 };

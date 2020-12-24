@@ -64,7 +64,7 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 
 	if (rhs.candyCane.get())
 	{
-		GiveCandyCane();
+		candyCane = std::make_unique<JointAttachment>("CandyCaneGoop.gltf", model, "lower_arm.R");
 	}
 	else
 	{
@@ -99,7 +99,7 @@ HomingPenguin HomingPenguin::operator=(const HomingPenguin& rhs)
 
 	if (rhs.candyCane.get())
 	{
-		GiveCandyCane();
+		candyCane = std::make_unique<JointAttachment>("CandyCaneGoop.gltf", model, "lower_arm.R");
 	}
 	else
 	{
@@ -144,7 +144,7 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 
 	if (rhs.candyCane.get())
 	{
-		GiveCandyCane();
+		candyCane = std::make_unique<JointAttachment>("CandyCaneGoop.gltf", model, "lower_arm.R");
 	}
 	else
 	{
@@ -179,7 +179,7 @@ HomingPenguin HomingPenguin::operator=(HomingPenguin&& rhs) noexcept
 
 	if (rhs.candyCane.get())
 	{
-		GiveCandyCane();
+		candyCane = std::make_unique<JointAttachment>("CandyCaneGoop.gltf", model, "lower_arm.R");
 	}
 	else
 	{
@@ -376,6 +376,7 @@ void HomingPenguin::Draw(Camera& camera)
 
 void HomingPenguin::GiveCandyCane()
 {
+	assert(state != State::Crashing);
 	rotationSpeed = playerHomingRotationSpeed;
 	candyCane = std::make_unique<JointAttachment>("CandyCaneGoop.gltf", model, "lower_arm.R");
 	state = State::HomingPlayer;
@@ -384,6 +385,7 @@ void HomingPenguin::GiveCandyCane()
 
 void HomingPenguin::Collide(const IceRink& rink, SmokeMachine& smokeMachine)
 {
+	assert(state == State::HomingPlayer);
 	if (!collider.IsInRink(rink))
 	{
 		state = State::Crashing;

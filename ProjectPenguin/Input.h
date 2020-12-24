@@ -16,6 +16,7 @@ enum class InputAction
 	Left,
 	//---Menu navigation---
 	Pause,
+	Enter,
 
 	NumberOfInputActions
 };

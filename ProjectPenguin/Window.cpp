@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <sstream>
 
 #include "Camera.h"
 #include "ScreenQuad.h"
@@ -151,17 +152,57 @@ void Window::SetScreenQuad(ScreenQuad* inScreenQuad)
 	ResizeCallback();
 }
 
+void Window::SetSelectedMonitor(int monitorIndex)
+{
+	int nMonitors = 0;
+	GLFWmonitor** monitors = glfwGetMonitors(&nMonitors);
+	if (monitorIndex > nMonitors)
+	{
+		std::stringstream errorMessage;
+		errorMessage << "The selected monitor (" << monitorIndex << ") does not exist. There are only " << nMonitors << " monitor(s) connected";
+		throw std::exception(errorMessage.str().c_str());
+	}
+	monitor = monitors[monitorIndex];
+}
+
+void Window::SetFullscreen(bool fullScreenOn)
+{
+	assert(monitor);
+	if (fullScreenOn)
+	{
+		//Remember non full screen width and height
+		glfwGetWindowPos(window, &prevX, &prevY);
+		glfwGetWindowSize(window, &prevWidth, &prevHeight);
+		//Enable full screen
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
+		glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, videoMode->width, videoMode->height, videoMode->refreshRate);
+	}
+	else
+	{
+		glfwSetWindowMonitor(window, nullptr, prevX, prevY, prevWidth, prevHeight, 0);
+	}
+}
+
+bool Window::IsFullScreen() const
+{
+	return glfwGetWindowMonitor(window) != nullptr;
+}
+
 void Window::ResizeCallback()
 {
-	if (mainCamera)
+	if (currentWidth > 0 && currentHeight > 0)
 	{
-		mainCamera->SetAspectRatio((float)currentWidth / (float)currentHeight);
-	}
+		if (mainCamera)
+		{
+			mainCamera->SetAspectRatio((float)currentWidth / (float)currentHeight);
+		}
 
-	if (screenQuad)
-	{
-		screenQuad->UpdateDimensions();
-	}
+		if (screenQuad)
+		{
+			screenQuad->UpdateDimensions();
+		}
 
-	std::cout << "Window is updated";
+		std::cout << "Window size is updated";
+	}
 }

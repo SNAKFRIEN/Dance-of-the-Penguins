@@ -48,6 +48,8 @@ Game::Game(Window& window)
 	//Load save data
 	saveFile.LoadData("SaveData.json");
 	highScore = saveFile.GetHighScore();
+	window.SetSelectedMonitor(saveFile.GetSelectedMonitor());
+	window.SetFullscreen(saveFile.GetFullScreenOn());
 
 	//Preload some models to save time later
 	AnimatedModel::Preload("Goopie.gltf");
@@ -78,6 +80,12 @@ void Game::Update()
 	case State::GameOver:
 		UpdateGameOver();
 		break;
+	}
+
+	//Toggle full screen
+	if (input.IsPressed(GLFW_KEY_LEFT_ALT) && input.IsShortPressed(InputAction::Enter))
+	{
+		window.SetFullscreen(!window.IsFullScreen());
 	}
 }
 
@@ -193,7 +201,7 @@ void Game::StartPlaying()
 	//Reset spawn timers
 	collectibleTimer = 0.0f;
 	penguinSpawnTimer = 0.0f;
-	penguinStackSpawnTimer = penguinStackInitialSpawnTimerValue;
+	penguinStackSpawnTimer = stackedPenguinSpawnTime;
 	homingPenguinSpawnTimer = homingPenguinSpawnInterval;
 
 	//Set things up for new run
@@ -253,7 +261,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	//Spawn penguin stack
 	penguinStackSpawnTimer -= frameTime;
-	if (penguinStackSpawnTimer <= 0.0f && totalPlayTime >= stackedPenguinSpawnTime)
+	if (penguinStackSpawnTimer <= 0.0)
 	{
 		penguinStackSpawnTimer += randomStackSpawnInterval(rng);
 		auto stackSpawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
