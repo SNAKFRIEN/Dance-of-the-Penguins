@@ -144,7 +144,7 @@ bool UIButton::UpdateAndCheckClick(const Input& input)
 		&& mouseY < top
 		&& mouseY > bottom)
 	{
-		color = glm::vec3(1.0f);
+		color = onColor;
 		if (input.LMBShortPressed())
 		{
 			return true;
@@ -152,7 +152,7 @@ bool UIButton::UpdateAndCheckClick(const Input& input)
 	}
 	else
 	{
-		color = glm::vec3(0.0f);
+		color = offColor;
 	}
 	return false;
 }
@@ -168,6 +168,16 @@ void UIButton::Draw()
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+}
+
+void UIButton::SetOnColor(glm::vec3 newColor)
+{
+	onColor = newColor;
+}
+
+void UIButton::SetOffColor(glm::vec3 newColor)
+{
+	offColor = newColor;
 }
 
 glm::vec2 UIButton::GetRelativeTopLeft() const

@@ -8,6 +8,7 @@
 #include "IceSkater.h"
 #include "Collectible.h"
 #include "IceRink.h"
+#include "SmokeMachine.h"
 
 HomingPenguin::HomingPenguin(glm::vec3 inPos)
 	:
@@ -39,7 +40,7 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 
 	pos(rhs.pos),
 	rotation(rhs.rotation),
-	//REPLACE: copy transform?
+	transform(rhs.transform),
 
 	speed(rhs.speed),
 	rotationSpeed(rhs.rotationSpeed),
@@ -84,7 +85,7 @@ HomingPenguin HomingPenguin::operator=(const HomingPenguin& rhs)
 
 	pos = rhs.pos;
 	rotation = rhs.rotation;
-	//REPLACE: copy transform?
+	transform = rhs.transform;
 
 	speed = rhs.speed;
 	rotationSpeed = rhs.rotationSpeed;
@@ -119,7 +120,7 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 
 	pos(rhs.pos),
 	rotation(rhs.rotation),
-	//REPLACE: copy transform?
+	transform(rhs.transform),
 
 	speed(rhs.speed),
 	rotationSpeed(rhs.rotationSpeed),
@@ -164,7 +165,7 @@ HomingPenguin HomingPenguin::operator=(HomingPenguin&& rhs) noexcept
 
 	pos = rhs.pos;
 	rotation = rhs.rotation;
-	//REPLACE: copy transform?
+	transform = rhs.transform;
 
 	speed = rhs.speed;
 	rotationSpeed = rhs.rotationSpeed;
@@ -381,11 +382,12 @@ void HomingPenguin::GiveCandyCane()
 	model.SetAnimation("SkatingWhileHolding");
 }
 
-void HomingPenguin::Collide(const IceRink& rink)
+void HomingPenguin::Collide(const IceRink& rink, SmokeMachine& smokeMachine)
 {
 	if (!collider.IsInRink(rink))
 	{
 		state = State::Crashing;
+		smokeMachine.SpawnSmoke(pos);
 		model.SetAnimation("GoombaFalling");
 	}
 }
@@ -413,4 +415,9 @@ bool HomingPenguin::IsLockedOn() const
 bool HomingPenguin::IsFinished() const
 {
 	return finished;
+}
+
+bool HomingPenguin::IsCrashing() const
+{
+    return state == State::Crashing;
 }

@@ -20,6 +20,7 @@
 #include "Collectible.h"
 #include "HomingPenguin.h"
 #include "Choir.h"
+#include "SmokeMachine.h"
 
 class Window;
 
@@ -148,4 +149,6 @@ private:
 	int nGameOverFlashes = 0;
 
 	AudioSource gameOverFlashSound;
+
+	SmokeMachine smokeMachine;
 };

@@ -13,7 +13,6 @@ uniform mat4 mvp;
 void main()
 {
 	gl_Position = mvp * vec4(in_position, 1);
-	position = gl_Position.xyz;
 	normal = normalize(mat3(model) * in_normal);
 	position = vec3(model * vec4(in_position, 1.0));
 	texcoord = in_texcoord;

@@ -52,6 +52,7 @@ private:
 	std::unique_ptr<Model> mountains;
 	std::unique_ptr<Model> backgroundHouses;
 	std::unique_ptr<Model> house;
+	std::unique_ptr<Model> ferrisWheel;
 	std::unique_ptr<Model> blackBox;
 
 	std::vector<glm::vec3> lightSources;

@@ -114,8 +114,13 @@ bool Game::ReadyToQuit() const
 
 void Game::SetUpMainMenu()
 {
-	mainMenu.AddButton(glm::vec2(-0.4f, 0.4f), glm::vec2(0.4f, 0.1f), "Start", "Start.png");
-	mainMenu.AddButton(glm::vec2(-0.4f, -0.1f), glm::vec2(0.4f, -0.4f), "Quit", "Quit.png");
+	mainMenu.AddButton(glm::vec2(0.0f, -0.5f), glm::vec2(0.8f, -0.8f), "Start", "Start.png");
+	mainMenu.AddButton(glm::vec2(-0.8f, -0.5f), glm::vec2(0.0f, -0.8f), "Quit", "Quit.png");
+	//Set colors
+	mainMenu.GetButton("Start").SetOffColor(glm::vec3(1.0f));
+	mainMenu.GetButton("Start").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
+	mainMenu.GetButton("Quit").SetOffColor(glm::vec3(1.0f));
+	mainMenu.GetButton("Quit").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
 }
 
 void Game::SetUpPauseMenu()
@@ -137,6 +142,7 @@ void Game::SetUpGameplayUI()
 {
 	gameplayUI.AddNumberDisplay(glm::vec2(0.0f, 0.9f), glm::vec2(0.03f, 0.06f), Anchor::Center, "Score");
 	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
+	gameplayUI.AddButton(glm::vec2(-0.6f, 0.905f), glm::vec2(0.6f, 0.895f), "ScoreLine", "ScoreLine.png");
 }
 
 void Game::SetUpBakedShadows()
@@ -213,6 +219,9 @@ void Game::UpdatePlaying(float frameTime)
 	frameTime = std::min(frameTime, 0.1f);
 
 	totalPlayTime += frameTime;
+	
+	//Update smoke particle effects (do this before adding new particle effects)
+	smokeMachine.Update(frameTime);
 
 	//Spawn new penguins
 	if (penguins.size() < maxPenguins)
@@ -276,6 +285,7 @@ void Game::UpdatePlaying(float frameTime)
 				10.0f,
 				iceRink.GetRight() - iceRink.GetCornerRadius(),
 				iceRink.GetTop() - iceRink.GetCornerRadius());
+			smokeMachine.SpawnSmoke(spawn);
 			homingPenguins.emplace_back(spawn);
 		}
 	}
@@ -351,7 +361,6 @@ void Game::UpdatePlaying(float frameTime)
 		collectibles.erase(newEnd, collectibles.end());
 	}
 
-
 	//Check collisions
 	for (int i = 0; i < penguins.size(); i++)
 	{
@@ -359,7 +368,10 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	for (HomingPenguin& hp : homingPenguins)
 	{
-		hp.Collide(iceRink);
+		if (hp.IsLockedOn())
+		{
+			hp.Collide(iceRink, smokeMachine);
+		}
 	}
 	bool gameOver = false;
 	if (player.IsColliding(penguins, fishingPenguin, penguinStack, homingPenguins, iceRink))
@@ -621,6 +633,7 @@ void Game::DrawPlaying()
 	//Draw all entities
 	AnimatedModel::DrawAllInstances(light);
 	Model::DrawAllInstances(light);
+	smokeMachine.Draw(camera);
 
 	if (!input.IsPressed(GLFW_KEY_H))
 	{
@@ -638,9 +651,7 @@ void Game::DrawPlaying()
 
 void Game::DrawGamePlayUI()
 {
-	glEnable(GL_BLEND);
 	gameplayUI.Draw();
-	glDisable(GL_BLEND);
 }
 
 void Game::DrawPauseMenu()

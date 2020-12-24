@@ -159,6 +159,12 @@
     <ClCompile Include="Choir.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SmokeEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SmokeMachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -296,6 +302,12 @@
     <ClInclude Include="Choir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SmokeEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SmokeMachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CelShader.frag">
@@ -371,6 +383,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\Background.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\SmokeAnimation.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\SmokeAnimation.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

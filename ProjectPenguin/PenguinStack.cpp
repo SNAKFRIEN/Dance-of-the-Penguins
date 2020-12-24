@@ -118,6 +118,11 @@ CircleCollider& PenguinStack::GetCollider()
 	return collider;
 }
 
+bool PenguinStack::IsCrashing()
+{
+    return state == State::Crashing;
+}
+
 PenguinStack::PenguinNode::PenguinNode(const AnimatedModel& parentModel, int nStackedRemaining)
 	:
 	model("Goopie.gltf", parentModel, "head", "GoombaTopSmooth")

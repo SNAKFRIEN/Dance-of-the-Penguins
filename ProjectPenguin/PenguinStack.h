@@ -26,8 +26,7 @@ private:
 	enum class State
 	{
 		Skating,
-		Crashing,
-		Crashed
+		Crashing
 	};
 	struct FallingPenguin
 	{
@@ -51,6 +50,7 @@ public:
 	//REMOVE unused function
 	glm::vec3 GetPos() const;
 	CircleCollider& GetCollider();
+	bool IsCrashing();
 private:
 	State state = State::Skating;
 

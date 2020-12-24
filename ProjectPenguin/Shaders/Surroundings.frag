@@ -80,7 +80,7 @@ vec3 Smooth()
 void main()
 {
 	vec4 textureColor = texture(tex, texcoord);
-	if(all(lessThan(vec3(-0.001, 0.811, 0.949), textureColor.rgb) && lessThan(textureColor.rgb, vec3(0.001, 0.812, 0.951))))
+	if(all(lessThan(vec3(-0.001, 0.811, 0.949), textureColor.rgb)) && all(lessThan(textureColor.rgb, vec3(0.001, 0.812, 0.951))))
 	{
 		FragColor = vec4(1.0, 0.8, 0.5, 1.0);
 	}

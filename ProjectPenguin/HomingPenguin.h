@@ -13,6 +13,7 @@ class Camera;
 class IceSkater;
 class Collectible;
 class IceRink;
+class SmokeMachine;
 
 class HomingPenguin
 {
@@ -41,13 +42,14 @@ public:
 	void Draw(Camera& camera);
 
 	void GiveCandyCane();
-	void Collide(const IceRink& rink);	//REPLACE: add collision with fishingpenguin and normal penguins?
+	void Collide(const IceRink& rink, SmokeMachine& smokeMachine);	//REPLACE: add collision with fishingpenguin and normal penguins?
 
 	CircleCollider& GetCollider();
 	glm::vec3 GetForward() const;
 	glm::vec3 GetPos() const;
 	bool IsLockedOn() const;
 	bool IsFinished() const;
+	bool IsCrashing() const;
 private:
 	std::mt19937 rng;
 	const std::uniform_real_distribution<float> randomSwerveTime;

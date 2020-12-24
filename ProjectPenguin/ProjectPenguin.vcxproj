@@ -207,6 +207,8 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClCompile Include="SaveFile.cpp" />
     <ClCompile Include="ScreenEffect.cpp" />
     <ClCompile Include="ScreenQuad.cpp" />
+    <ClCompile Include="SmokeEffect.cpp" />
+    <ClCompile Include="SmokeMachine.cpp" />
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="PenguinStack.cpp" />
     <ClCompile Include="UINumberDisplay.cpp" />
@@ -254,6 +256,8 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <ClInclude Include="ScreenQuad.h" />
     <ClInclude Include="SaveFile.h" />
     <ClInclude Include="AudioSource.h" />
+    <ClInclude Include="SmokeEffect.h" />
+    <ClInclude Include="SmokeMachine.h" />
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="PenguinStack.h" />
     <ClInclude Include="UINumberDisplay.h" />
@@ -272,6 +276,8 @@ if not exist "$(OutDir)UserData" md "$(OutDir)UserData"</Command>
     <None Include="Shaders\AnimationCelShader.vert" />
     <None Include="Shaders\AudienceCelShader.frag" />
     <None Include="Shaders\Background.frag" />
+    <None Include="Shaders\SmokeAnimation.frag" />
+    <None Include="Shaders\SmokeAnimation.vert" />
     <None Include="Shaders\Surroundings.frag" />
     <None Include="Shaders\CelShader.frag" />
     <None Include="Shaders\CelShader.vert" />

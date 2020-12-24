@@ -46,6 +46,9 @@ IceRink::IceRink(bool initModels)
 	house->GetShader().Use();
 	house->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
 	house->GetShader().SetUniformVec3Array("simpleLights", lightSources);
+	ferrisWheel->GetShader().Use();
+	ferrisWheel->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
+	ferrisWheel->GetShader().SetUniformVec3Array("simpleLights", lightSources);
 
 	transform = glm::mat4(1.0f);
 	Reset();
@@ -61,6 +64,7 @@ void IceRink::DrawStatic(Camera& camera)
 	mountains->AddToRenderQueue(camera);
 	backgroundHouses->AddToRenderQueue(camera);
 	house->AddToRenderQueue(camera);
+	ferrisWheel->AddToRenderQueue(camera);
 	blackBox->AddToRenderQueue(camera);
 }
 
@@ -123,5 +127,6 @@ void IceRink::InitModels()
 	mountains = std::make_unique<Model>("Mountains.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	backgroundHouses = std::make_unique<Model>("BackgroundHouses.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	house = std::make_unique<Model>("House.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheel = std::make_unique<Model>("FerrisWheel.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	blackBox = std::make_unique<Model>("BlackBox.gltf", transform, "SmoothShader.vert", "Background.frag");
 }

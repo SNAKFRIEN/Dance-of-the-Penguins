@@ -18,6 +18,9 @@ public:
 	bool UpdateAndCheckClick(const Input& input);
 	void Draw();
 
+	void SetOnColor(glm::vec3 newColor);
+	void SetOffColor(glm::vec3 newColor);
+
 	glm::vec2 GetRelativeTopLeft() const;
 	glm::vec2 GetRelativeBottomRight() const;
 	float GetLeft() const;
@@ -45,5 +48,7 @@ private:
 	float bottom;
 
 	//Color
+	glm::vec3 onColor = glm::vec3(1.0f);
+	glm::vec3 offColor = glm::vec3(0.0f);
 	glm::vec3 color = glm::vec3(1.0f);
 };

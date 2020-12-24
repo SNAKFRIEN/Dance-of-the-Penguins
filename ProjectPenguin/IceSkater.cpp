@@ -144,6 +144,10 @@ bool IceSkater::IsCollidingWithPenguinStack(std::unique_ptr<PenguinStack>& pengu
 	{
 		return false;
 	}
+	if (penguinStack->IsCrashing())
+	{
+		return false;
+	}
 
 	auto collision = collider.CalculateCollision(penguinStack->GetCollider());
 	return collision.isColliding;
@@ -153,7 +157,7 @@ bool IceSkater::IsCollidingWithHomingPenguin(std::vector<HomingPenguin>& homingP
 {
 	for (auto& hp : homingPenguins)
 	{
-		if (collider.CalculateCollision(hp.GetCollider()).isColliding)
+		if (!hp.IsCrashing() && collider.CalculateCollision(hp.GetCollider()).isColliding)
 		{
 			return true;
 		}
