@@ -14,14 +14,17 @@ private:
 	};
 public:
 	Choir(AudioManager& audioManager);
-	void Update(float deltaTime);
+	void Update(float deltaTime, float totalTime);
 	void Draw(Camera camera);
 private:
 	glm::mat4 baseTransform;
+	std::vector<glm::mat4> penguinRotationAndTranslationMatrices;
 	std::vector<glm::mat4> penguinTransforms;
+	glm::mat4 conductorTransform;
 
 	Model stand;
 	std::vector<Model> penguins;
+	AnimatedModel conductor;
 	Model leadSinger;
 	
 	std::vector<MIDIPlayer> songs;

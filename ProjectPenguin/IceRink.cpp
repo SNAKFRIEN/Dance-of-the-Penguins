@@ -9,7 +9,7 @@ IceRink::IceRink(bool initModels)
 	:
 	ferrisWheelRotationAndTranslationMat(glm::translate(glm::mat4(1.0f), glm::vec3(30.1384f, 8.02308f, -8.90442f))
 		* glm::rotate(glm::mat4(1.0f), -0.527923701f, glm::vec3(0.0f, 1.0f, 0.0f))),
-	carouselTranslation(glm::translate(glm::mat4(1.0f), glm::vec3(-30.15f, 0.21f, 4.49f)))
+	carouselTranslation(glm::translate(glm::mat4(1.0f), glm::vec3(-30.15f, -0.21f, 4.49f)))
 {
 	if (initModels)
 	{
@@ -26,7 +26,7 @@ IceRink::IceRink(bool initModels)
 	lightSources.emplace_back(6.77, 1.93, -16.7);		//Right house (top)
 	lightSources.emplace_back(-0.76, 3.42, -18.30);		//Middle house
 	lightSources.emplace_back(30.13f, 8.02f, -8.90f);	//Ferris wheel
-	lightSources.emplace_back(-30.15f, 1.21f, 4.49f);	//Carousel
+	lightSources.emplace_back(-30.15f, 2.6f, 4.49f);	//Carousel
 
 	//REPLACE: Would be better if these could all use the same shader (EXCEPT THE BACKGROUND!!!)
 	for (Model& m : staticSurroundings)
@@ -107,6 +107,10 @@ void IceRink::Reset()
 }
 
 void IceRink::Update(float deltaTime)
+{
+}
+
+void IceRink::UpdateFerrisWheelAndCarousel(float deltaTime)
 {
 	ferrisWheelRotation += deltaTime * 0.3f;
 	ferrisWheelTransform = ferrisWheelRotationAndTranslationMat * glm::rotate(glm::mat4(1.0f), ferrisWheelRotation, glm::vec3(0.0f, 0.0f, 1.0f));

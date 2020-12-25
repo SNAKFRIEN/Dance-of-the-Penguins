@@ -353,8 +353,8 @@ void Game::UpdatePlaying(float frameTime)
 	{
 		c.Update(frameTime);
 	}
-	iceRink.Update(frameTime);
-	choir.Update(frameTime);
+	iceRink.UpdateFerrisWheelAndCarousel(frameTime);
+	choir.Update(frameTime, totalPlayTime);
 	//Pick up collectibles (either by player or by homing penguin)
 	{
 		const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
@@ -502,7 +502,7 @@ void Game::UpdateMainMenuCam(float frameTime)
 void Game::UpdateMainMenu(float frameTime)
 {
 	//Update ferris wheel and carousel while rest of game is frozen
-	iceRink.Update(frameTime);
+	iceRink.UpdateFerrisWheelAndCarousel(frameTime);
 
 	mainMenu.Update();
 	if (mainMenu.GetButton("Start").UpdateAndCheckClick(input))

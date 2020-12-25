@@ -1,8 +1,9 @@
 #pragma once
 
 #include "glm/glm.hpp"
+
 #include "Model.h"
-#include "ModelNoTexture.h"
+#include "AnimatedModel.h"
 
 #include <memory>
 
@@ -20,6 +21,7 @@ public:
 	void DrawNonStatic(Camera& camera, const std::vector<glm::vec3>& collectiblePositions);
 	void Reset();
 	void Update(float deltaTime);
+	void UpdateFerrisWheelAndCarousel(float deltaTime);
 
 	float GetRight() const;
 	float GetTop() const;
