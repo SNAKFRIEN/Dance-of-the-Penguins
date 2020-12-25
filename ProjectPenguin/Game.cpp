@@ -72,7 +72,7 @@ void Game::Update()
 		break;
 	case State::MainMenu:
 		UpdateMainMenuCam(frameTime);
-		UpdateMainMenu();
+		UpdateMainMenu(frameTime);
 		break;
 	case State::GameOverCam:
 		UpdateGameOverCam(frameTime);
@@ -122,8 +122,8 @@ bool Game::ReadyToQuit() const
 
 void Game::SetUpMainMenu()
 {
-	mainMenu.AddButton(glm::vec2(0.0f, -0.5f), glm::vec2(0.8f, -0.8f), "Start", "Start.png");
-	mainMenu.AddButton(glm::vec2(-0.8f, -0.5f), glm::vec2(0.0f, -0.8f), "Quit", "Quit.png");
+	mainMenu.AddButton(glm::vec2(-0.8f, -0.5f), glm::vec2(0.0f, -0.8f), "Start", "Start.png");
+	mainMenu.AddButton(glm::vec2(0.0f, -0.5f), glm::vec2(0.8f, -0.8f), "Quit", "Quit.png");
 	//Set colors
 	mainMenu.GetButton("Start").SetOffColor(glm::vec3(1.0f));
 	mainMenu.GetButton("Start").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
@@ -140,8 +140,8 @@ void Game::SetUpPauseMenu()
 void Game::SetUpGameOverMenu()
 {
 	gameOverMenu.AddButton(glm::vec2(-0.8, 0.9), glm::vec2(0.3, -0.4), "Background", "ScoreScreen.png");
-	gameOverMenu.AddButton(glm::vec2(0.0f, -0.6f), glm::vec2(0.8f, -0.9f), "Retry", "Retry.png");
-	gameOverMenu.AddButton(glm::vec2(-0.8f, -0.6f), glm::vec2(0.0f, -0.9f), "Quit", "Quit.png");
+	gameOverMenu.AddButton(glm::vec2(-0.8f, -0.6f), glm::vec2(0.0f, -0.9f), "Retry", "Retry.png");
+	gameOverMenu.AddButton(glm::vec2(0.0f, -0.6f), glm::vec2(0.8f, -0.9f), "Quit", "Quit.png");
 	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.7f), glm::vec2(0.1f, 0.2f), Anchor::Center, "Score");
 	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.55f), glm::vec2(0.05f, 0.1f), Anchor::Center, "HighScore");
 }
@@ -309,11 +309,17 @@ void Game::UpdatePlaying(float frameTime)
 		//REMOVE: debug cameras
 		if (input.IsPressed(GLFW_KEY_V))
 		{
-			camera.Follow(penguinStack->GetPos());
+			if (penguinStack)
+			{
+				camera.Follow(penguinStack->GetPos());
+			}
 		}
 		else if (input.IsPressed(GLFW_KEY_C))
 		{
-			camera.Follow(collectibles[0].GetPos());
+			if (!collectibles.empty())
+			{
+				camera.Follow(collectibles[0].GetPos());
+			}
 		}
 		else if (input.IsPressed(GLFW_KEY_B))
 		{
@@ -347,7 +353,7 @@ void Game::UpdatePlaying(float frameTime)
 	{
 		c.Update(frameTime);
 	}
-	iceRink.Update(totalPlayTime);
+	iceRink.Update(frameTime);
 	choir.Update(frameTime);
 	//Pick up collectibles (either by player or by homing penguin)
 	{
@@ -493,8 +499,11 @@ void Game::UpdateMainMenuCam(float frameTime)
 	camera.CalculateVPMatrix();
 }
 
-void Game::UpdateMainMenu()
+void Game::UpdateMainMenu(float frameTime)
 {
+	//Update ferris wheel and carousel while rest of game is frozen
+	iceRink.Update(frameTime);
+
 	mainMenu.Update();
 	if (mainMenu.GetButton("Start").UpdateAndCheckClick(input))
 	{

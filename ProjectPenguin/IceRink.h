@@ -19,7 +19,7 @@ public:
 	void DrawStatic(Camera& camera);
 	void DrawNonStatic(Camera& camera, const std::vector<glm::vec3>& collectiblePositions);
 	void Reset();
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	float GetRight() const;
 	float GetTop() const;
@@ -43,17 +43,22 @@ private:
 	std::unique_ptr<Model> iceHole;
 
 	//Surroundings
-	//REPLACE: might as well keep all of these in one vector?
-	std::unique_ptr<Model> ground;
-	std::unique_ptr<Model> market;
-	std::unique_ptr<Model> lamps;
-	std::unique_ptr<Model> trees;
-	std::unique_ptr<Model> restaurant;
-	std::unique_ptr<Model> mountains;
-	std::unique_ptr<Model> backgroundHouses;
-	std::unique_ptr<Model> house;
-	std::unique_ptr<Model> ferrisWheel;
-	std::unique_ptr<Model> blackBox;
+	std::vector<Model> staticSurroundings;
 
+	//Animations
+	std::unique_ptr<Model> ferrisWheel;
+	glm::mat4 ferrisWheelTransform;
+	std::vector<Model> ferrisWheelCarts;
+	std::vector<glm::mat4> ferrisWheelCartTransforms;
+	const glm::mat4 ferrisWheelRotationAndTranslationMat;
+	float ferrisWheelRotation = 0.0f;
+	
+	std::unique_ptr<Model> carousel;
+	glm::mat4 carouselTransform;
+	const glm::mat4 carouselTranslation;
+	float carouselRotation = 0.0f;
+
+	//Lights
 	std::vector<glm::vec3> lightSources;
+	std::vector<glm::vec3> ferrisWheelLightSources;
 };

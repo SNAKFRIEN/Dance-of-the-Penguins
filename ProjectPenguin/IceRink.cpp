@@ -1,10 +1,15 @@
 #include "IceRink.h"
 
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/rotate_vector.hpp"
 
 #include "Collectible.h"
 
 IceRink::IceRink(bool initModels)
+	:
+	ferrisWheelRotationAndTranslationMat(glm::translate(glm::mat4(1.0f), glm::vec3(30.1384f, 8.02308f, -8.90442f))
+		* glm::rotate(glm::mat4(1.0f), -0.527923701f, glm::vec3(0.0f, 1.0f, 0.0f))),
+	carouselTranslation(glm::translate(glm::mat4(1.0f), glm::vec3(-30.15f, 0.21f, 4.49f)))
 {
 	if (initModels)
 	{
@@ -20,52 +25,40 @@ IceRink::IceRink(bool initModels)
 	lightSources.emplace_back(9.65, 2.2, -15.83);		//Right house (bottom)
 	lightSources.emplace_back(6.77, 1.93, -16.7);		//Right house (top)
 	lightSources.emplace_back(-0.76, 3.42, -18.30);		//Middle house
+	lightSources.emplace_back(30.13f, 8.02f, -8.90f);	//Ferris wheel
+	lightSources.emplace_back(-30.15f, 1.21f, 4.49f);	//Carousel
 
-	//REPLACE: Would be better if these could all use the same shader
-	ground->GetShader().Use();
-	ground->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	ground->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	market->GetShader().Use();
-	market->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	market->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	lamps->GetShader().Use();
-	lamps->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	lamps->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	trees->GetShader().Use();
-	trees->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	trees->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	restaurant->GetShader().Use();
-	restaurant->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	restaurant->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	mountains->GetShader().Use();
-	mountains->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	mountains->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	backgroundHouses->GetShader().Use();
-	backgroundHouses->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	backgroundHouses->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	house->GetShader().Use();
-	house->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	house->GetShader().SetUniformVec3Array("simpleLights", lightSources);
-	ferrisWheel->GetShader().Use();
-	ferrisWheel->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
-	ferrisWheel->GetShader().SetUniformVec3Array("simpleLights", lightSources);
+	//REPLACE: Would be better if these could all use the same shader (EXCEPT THE BACKGROUND!!!)
+	for (Model& m : staticSurroundings)
+	{
+		m.GetShader().Use();
+		m.GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
+		m.GetShader().SetUniformVec3Array("simpleLights", lightSources);
+	}
+	carousel->GetShader().Use();
+	carousel->GetShader().SetUniformInt("nSimpleLights", (int)lightSources.size());
+	carousel->GetShader().SetUniformVec3Array("simpleLights", lightSources);
 
 	transform = glm::mat4(1.0f);
+
+	//Setup initial ferris wheel transform
+	ferrisWheelTransform = ferrisWheelRotationAndTranslationMat;
+	float ferrisWheelCartRotationOffset = 0.78539816339f;	//Rotation offset per cart
+	for (int i = 0; i < ferrisWheelCartTransforms.size(); i++)
+	{
+		glm::mat4& matrix = ferrisWheelCartTransforms[i];
+		glm::vec3 cartPos = glm::rotateZ(glm::vec3(0.0f, 5.55641f, 0.0f), ferrisWheelRotation + ferrisWheelCartRotationOffset * i);
+		matrix = ferrisWheelRotationAndTranslationMat * glm::translate(glm::mat4(1.0f), cartPos);
+	}
 	Reset();
 }
 
 void IceRink::DrawStatic(Camera& camera)
 {
-	ground->AddToRenderQueue(camera);
-	market->AddToRenderQueue(camera);
-	lamps->AddToRenderQueue(camera);
-	trees->AddToRenderQueue(camera);
-	restaurant->AddToRenderQueue(camera);
-	mountains->AddToRenderQueue(camera);
-	backgroundHouses->AddToRenderQueue(camera);
-	house->AddToRenderQueue(camera);
-	ferrisWheel->AddToRenderQueue(camera);
-	blackBox->AddToRenderQueue(camera);
+	for (Model& m : staticSurroundings)
+	{
+		m.AddToRenderQueue(camera);
+	}
 }
 
 void IceRink::DrawNonStatic(Camera& camera, const std::vector<glm::vec3>& collectiblePositions)
@@ -80,6 +73,31 @@ void IceRink::DrawNonStatic(Camera& camera, const std::vector<glm::vec3>& collec
 	//Draw
 	iceModel->AddToRenderQueue(camera);
 	iceHole->AddToRenderQueue(camera);
+
+	//Calculate light source locations for ferris wheel
+	std::vector<glm::vec3> ferrisWheelLights;
+	ferrisWheelLights.resize(ferrisWheelCartTransforms.size());
+	for (int i = 0; i < ferrisWheelCartTransforms.size(); i++)
+	{
+		ferrisWheelLights[i] = glm::vec3(ferrisWheelCartTransforms[i] * glm::vec4(0.0f, -2.0f, 1.0f, 1.0f));
+	}
+
+	//Draw ferris wheel
+	ferrisWheel->GetShader().Use();
+	ferrisWheel->GetShader().SetUniformInt("nSimpleLights", (int)ferrisWheelLights.size());
+	ferrisWheel->GetShader().SetUniformVec3Array("simpleLights", ferrisWheelLights);
+	ferrisWheel->AddToRenderQueue(camera);
+	
+	for (Model& m : ferrisWheelCarts)
+	{
+		m.GetShader().Use();
+		m.GetShader().SetUniformInt("nSimpleLights", (int)ferrisWheelLights.size());
+		m.GetShader().SetUniformVec3Array("simpleLights", ferrisWheelLights);
+		m.AddToRenderQueue(camera);
+	}
+
+	//Draw carousel
+	carousel->AddToRenderQueue(camera);
 }
 
 void IceRink::Reset()
@@ -88,9 +106,20 @@ void IceRink::Reset()
 	iceTransform = glm::translate(glm::mat4(1.0f), defaultIcePos);	//Make sure that hole in ice is off screen
 }
 
-void IceRink::Update(float elapsedTime)
+void IceRink::Update(float deltaTime)
 {
-	//REMOVE this function if unused
+	ferrisWheelRotation += deltaTime * 0.3f;
+	ferrisWheelTransform = ferrisWheelRotationAndTranslationMat * glm::rotate(glm::mat4(1.0f), ferrisWheelRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+	float ferrisWheelCartRotationOffset = 0.78539816339f;	//Rotation offset per cart
+	for (int i = 0; i < ferrisWheelCartTransforms.size(); i++)
+	{
+		glm::mat4& matrix = ferrisWheelCartTransforms[i];
+		glm::vec3 cartPos = glm::rotateZ(glm::vec3(0.0f, 5.55641f, 0.0f), ferrisWheelRotation + ferrisWheelCartRotationOffset * i);
+		matrix = ferrisWheelRotationAndTranslationMat * glm::translate(glm::mat4(1.0f), cartPos);
+	}
+
+	carouselRotation += deltaTime * 0.4f;
+	carouselTransform = carouselTranslation * glm::rotate(glm::mat4(1.0f), ferrisWheelRotation, glm::vec3(0.0f, -1.0f, 0.0f));
 }
 
 float IceRink::GetRight() const
@@ -118,15 +147,31 @@ void IceRink::InitModels()
 	//Ice
 	iceModel = std::make_unique<Model>("Ice.gltf", iceTransform, "SmoothShader.vert", "IceShader.frag");
 	iceHole = std::make_unique<Model>("IceHole.gltf", iceTransform);
+	
 	//Surroundings
-	ground = std::make_unique<Model>("Ground.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	market = std::make_unique<Model>("Market.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	lamps = std::make_unique<Model>("Lamps.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	trees = std::make_unique<Model>("Trees.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	restaurant = std::make_unique<Model>("Restaurant.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	mountains = std::make_unique<Model>("Mountains.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	backgroundHouses = std::make_unique<Model>("BackgroundHouses.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	house = std::make_unique<Model>("House.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	ferrisWheel = std::make_unique<Model>("FerrisWheel.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
-	blackBox = std::make_unique<Model>("BlackBox.gltf", transform, "SmoothShader.vert", "Background.frag");
+	staticSurroundings.emplace_back("Ground.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("Market.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("Lamps.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("Trees.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("Restaurant.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("Mountains.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("BackgroundHouses.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("House.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("FerrisWheelBase.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("CarouselBase.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("BlackBox.gltf", transform, "SmoothShader.vert", "Background.frag");
+
+	//Animations
+	ferrisWheel = std::make_unique<Model>("FerrisWheel.gltf", ferrisWheelTransform, "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCartTransforms.resize(8);
+	ferrisWheelCarts.emplace_back("FerrisWheelCart1.gltf", ferrisWheelCartTransforms[0], "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCarts.emplace_back("FerrisWheelCart2.gltf", ferrisWheelCartTransforms[1], "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCarts.emplace_back("FerrisWheelCart3.gltf", ferrisWheelCartTransforms[2], "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCarts.emplace_back("FerrisWheelCart4.gltf", ferrisWheelCartTransforms[3], "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCarts.emplace_back("FerrisWheelCart1.gltf", ferrisWheelCartTransforms[4], "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCarts.emplace_back("FerrisWheelCart2.gltf", ferrisWheelCartTransforms[5], "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCarts.emplace_back("FerrisWheelCart3.gltf", ferrisWheelCartTransforms[6], "SmoothShader.vert", "Surroundings.frag");
+	ferrisWheelCarts.emplace_back("FerrisWheelCart4.gltf", ferrisWheelCartTransforms[7], "SmoothShader.vert", "Surroundings.frag");
+
+	carousel = std::make_unique<Model>("CarouselHorses.gltf", carouselTransform, "SmoothShader.vert", "Surroundings.frag");
 }

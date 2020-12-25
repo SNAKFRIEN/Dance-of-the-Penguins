@@ -55,7 +55,7 @@ private:
 	void UpdatePlaying(float frameTime);
 	void UpdatePauseMenu();
 	void UpdateMainMenuCam(float frameTime);
-	void UpdateMainMenu();
+	void UpdateMainMenu(float frameTime);
 	void UpdateGameOverCam(float frameTime);
 	void UpdateGameOver();
 

@@ -1,6 +1,6 @@
 #version 330 core
 
-const int MAX_LIGHTS = 10;
+const int MAX_LIGHTS = 11;
 
 out vec4 FragColor;
 
@@ -83,6 +83,14 @@ void main()
 	if(all(lessThan(vec3(-0.001, 0.811, 0.949), textureColor.rgb)) && all(lessThan(textureColor.rgb, vec3(0.001, 0.812, 0.951))))
 	{
 		FragColor = vec4(1.0, 0.8, 0.5, 1.0);
+	}
+	else if(all(lessThan(vec3(-0.001, 0.999, 0.222), textureColor.rgb)) && all(lessThan(textureColor.rgb, vec3(0.001, 1.001, 0.224))))
+	{
+		FragColor = vec4(0.7, 1.0, 0.7, 1.0);
+	}
+	else if(all(lessThan(vec3(0.006, -0.001, 0.999), textureColor.rgb)) && all(lessThan(textureColor.rgb, vec3(0.008, 0.001, 1.001))))
+	{
+		FragColor = vec4(1.0, 0.7, 0.7, 1.0);
 	}
 	else
 	{
