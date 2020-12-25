@@ -11,7 +11,7 @@ class Camera;
 class Collectible;
 
 //This class represents the physical and visual properties of the ice rink.
-//The rink will always be located exactly at the center
+//The rink will always be located exactly at the origin of the world, as is Holiday tradition
 class IceRink
 {
 public:
@@ -59,6 +59,18 @@ private:
 	glm::mat4 carouselTransform;
 	const glm::mat4 carouselTranslation;
 	float carouselRotation = 0.0f;
+
+	std::vector<AnimatedModel> snowFightingPenguins;
+	std::vector<glm::mat4> snowFightingPenguinTransforms;
+	std::vector<Model> snowBalls;
+	std::vector<glm::mat4> snowBallTransforms;
+	std::vector<float> snowBallCurveTimes;
+	static constexpr float snowBallSpeed = 1.0f;
+	static constexpr glm::vec3 snowBallCurveScale = glm::vec3(0.0f, 3.5f, 5.0f);
+	static constexpr float timeBetweenSnowThrows = 5.0f;
+	float snowThrowTimer = timeBetweenSnowThrows;
+	float snowPickTimer = timeBetweenSnowThrows / 2.0f;
+	int activeSnowPenguinIndex = 0;
 
 	//Lights
 	std::vector<glm::vec3> lightSources;

@@ -1,6 +1,6 @@
 #version 330 core
 
-const int MAX_LIGHTS = 11;
+const int MAX_LIGHTS = 15;
 
 out vec4 FragColor;
 

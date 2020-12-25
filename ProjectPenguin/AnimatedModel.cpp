@@ -30,9 +30,17 @@ void AnimatedModel::Preload(std::string name, std::string vertexShader, std::str
 void AnimatedModel::Update(float dt)
 {
 	animationTime += dt;
-	if (animationTime > modelData.animations[currentAnimation].duration)
+	finished = animationTime > modelData.animations[currentAnimation].duration;
+	if (finished)
 	{
-		animationTime = fmod(animationTime, modelData.animations[currentAnimation].duration);
+		if (looping)
+		{
+			animationTime = fmod(animationTime, modelData.animations[currentAnimation].duration);
+		}
+		else
+		{
+			animationTime = modelData.animations[currentAnimation].duration;
+		}
 	}
 
 	//Find previous and next frame
@@ -182,12 +190,18 @@ void AnimatedModel::SetAnimation(std::string name)
 		errorMessage << "The animation \"" << name << "\" does not exist";
 		throw std::exception(errorMessage.str().c_str());
 	}
+	animationTime = 0.0f;
 	currentAnimation = name;
 }
 
 void AnimatedModel::SetCurrentAnimationTime(float time)
 {
 	animationTime = time;
+}
+
+void AnimatedModel::SetLooping(bool shouldLoop)
+{
+	looping = shouldLoop;
 }
 
 std::string AnimatedModel::GetAnimation() const
@@ -198,6 +212,11 @@ std::string AnimatedModel::GetAnimation() const
 float AnimatedModel::GetCurrentAnimationTime() const
 {
     return animationTime;
+}
+
+bool AnimatedModel::IsFinished() const
+{
+	return finished;
 }
 
 int AnimatedModel::GetJointIndex(std::string jointName) const

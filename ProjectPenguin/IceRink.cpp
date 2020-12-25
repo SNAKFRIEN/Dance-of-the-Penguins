@@ -27,6 +27,7 @@ IceRink::IceRink(bool initModels)
 	lightSources.emplace_back(-0.76, 3.42, -18.30);		//Middle house
 	lightSources.emplace_back(30.13f, 8.02f, -8.90f);	//Ferris wheel
 	lightSources.emplace_back(-30.15f, 2.6f, 4.49f);	//Carousel
+	lightSources.emplace_back(-27.27, 2.45, -4.33);		//Choir
 
 	//REPLACE: Would be better if these could all use the same shader (EXCEPT THE BACKGROUND!!!)
 	for (Model& m : staticSurroundings)
@@ -41,7 +42,7 @@ IceRink::IceRink(bool initModels)
 
 	transform = glm::mat4(1.0f);
 
-	//Setup initial ferris wheel transform
+	//Setup initial ferris wheel transform (this used to be necessary, but not really anymore)
 	ferrisWheelTransform = ferrisWheelRotationAndTranslationMat;
 	float ferrisWheelCartRotationOffset = 0.78539816339f;	//Rotation offset per cart
 	for (int i = 0; i < ferrisWheelCartTransforms.size(); i++)
@@ -50,6 +51,13 @@ IceRink::IceRink(bool initModels)
 		glm::vec3 cartPos = glm::rotateZ(glm::vec3(0.0f, 5.55641f, 0.0f), ferrisWheelRotation + ferrisWheelCartRotationOffset * i);
 		matrix = ferrisWheelRotationAndTranslationMat * glm::translate(glm::mat4(1.0f), cartPos);
 	}
+	
+	//Setup initial snow throwing penguin transforms
+	for (AnimatedModel& p : snowFightingPenguins)
+	{
+		p.Update(0.0f);
+	}
+
 	Reset();
 }
 
@@ -98,6 +106,13 @@ void IceRink::DrawNonStatic(Camera& camera, const std::vector<glm::vec3>& collec
 
 	//Draw carousel
 	carousel->AddToRenderQueue(camera);
+
+	//Draw snow fighting penguins
+	for (int i = 0; i < snowFightingPenguins.size(); i++)
+	{
+		snowFightingPenguins[i].AddToRenderQueue(camera);
+		snowBalls[i].AddToRenderQueue(camera);
+	}
 }
 
 void IceRink::Reset()
@@ -108,17 +123,64 @@ void IceRink::Reset()
 
 void IceRink::Update(float deltaTime)
 {
+	snowThrowTimer -= deltaTime;
+	snowPickTimer -= deltaTime;
+	if (snowThrowTimer <= 0.0f)
+	{
+		snowBallCurveTimes[activeSnowPenguinIndex] = -0.4f;	//Reset throw
+		snowFightingPenguins[activeSnowPenguinIndex].SetAnimation("ThrowingSnowball");
+		snowFightingPenguins[activeSnowPenguinIndex].SetLooping(false);
+
+		activeSnowPenguinIndex++;
+		activeSnowPenguinIndex %= snowFightingPenguins.size();
+		snowThrowTimer += timeBetweenSnowThrows;
+	}
+	if (snowPickTimer <= 0.0f)
+	{
+		snowFightingPenguins[activeSnowPenguinIndex].SetAnimation("PickingSnowball");
+		snowFightingPenguins[activeSnowPenguinIndex].SetLooping(false);
+		snowPickTimer += timeBetweenSnowThrows;
+	}
+
+	for (int i = 0; i < snowBalls.size(); i++)
+	{
+		if (snowBallCurveTimes[i] < 100.0f)
+		{
+			snowBallCurveTimes[i] += deltaTime;
+
+			//Calculate curve
+			float t = snowBallCurveTimes[i] * snowBallSpeed;
+			float y = -pow(t - 1.0f, 2.0f) + 1.0f; //Curve goes through (0, 0), up to (1, 1) and back down to (2, 0)
+
+			//Transform curve to current position
+			glm::vec3 curvePos = glm::vec3(0.0f, y, -t) * snowBallCurveScale;
+			snowBallTransforms[i] = snowFightingPenguinTransforms[i] * glm::translate(glm::mat4(1.0f), curvePos);
+		}
+	}
+
+	for (AnimatedModel& p : snowFightingPenguins)
+	{
+		if ((p.GetAnimation() == "ThrowingSnowball" || p.GetAnimation() == "PickingSnowball")
+			&& p.IsFinished())
+		{
+			p.SetAnimation("Idle");
+			p.SetLooping(true);
+		}
+		p.Update(deltaTime);
+	}
+
+	UpdateFerrisWheelAndCarousel(deltaTime);
 }
 
 void IceRink::UpdateFerrisWheelAndCarousel(float deltaTime)
 {
 	ferrisWheelRotation += deltaTime * 0.3f;
-	ferrisWheelTransform = ferrisWheelRotationAndTranslationMat * glm::rotate(glm::mat4(1.0f), ferrisWheelRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+	ferrisWheelTransform = ferrisWheelRotationAndTranslationMat * glm::rotate(glm::mat4(1.0f), ferrisWheelRotation, glm::vec3(0.0f, 0.0f, -1.0f));
 	float ferrisWheelCartRotationOffset = 0.78539816339f;	//Rotation offset per cart
 	for (int i = 0; i < ferrisWheelCartTransforms.size(); i++)
 	{
 		glm::mat4& matrix = ferrisWheelCartTransforms[i];
-		glm::vec3 cartPos = glm::rotateZ(glm::vec3(0.0f, 5.55641f, 0.0f), ferrisWheelRotation + ferrisWheelCartRotationOffset * i);
+		glm::vec3 cartPos = glm::rotate(glm::vec3(0.0f, 5.55641f, 0.0f), ferrisWheelRotation + ferrisWheelCartRotationOffset * i, glm::vec3(0.0f, 0.0f, -1.0f));
 		matrix = ferrisWheelRotationAndTranslationMat * glm::translate(glm::mat4(1.0f), cartPos);
 	}
 
@@ -161,6 +223,9 @@ void IceRink::InitModels()
 	staticSurroundings.emplace_back("Mountains.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	staticSurroundings.emplace_back("BackgroundHouses.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	staticSurroundings.emplace_back("House.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("Benches.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("Snowmen.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
+	staticSurroundings.emplace_back("ChoirStand.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	staticSurroundings.emplace_back("FerrisWheelBase.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	staticSurroundings.emplace_back("CarouselBase.gltf", transform, "SmoothShader.vert", "Surroundings.frag");
 	staticSurroundings.emplace_back("BlackBox.gltf", transform, "SmoothShader.vert", "Background.frag");
@@ -177,5 +242,18 @@ void IceRink::InitModels()
 	ferrisWheelCarts.emplace_back("FerrisWheelCart3.gltf", ferrisWheelCartTransforms[6], "SmoothShader.vert", "Surroundings.frag");
 	ferrisWheelCarts.emplace_back("FerrisWheelCart4.gltf", ferrisWheelCartTransforms[7], "SmoothShader.vert", "Surroundings.frag");
 
-	carousel = std::make_unique<Model>("CarouselHorses.gltf", carouselTransform, "SmoothShader.vert", "Surroundings.frag");
+	carousel = std::make_unique<Model>("CarouselHorses.gltf", carouselTransform, "SmoothShader.vert", "SmoothBright.frag");	//Import the puppies
+
+	const int nSnowPenguins = 4;
+	snowBallTransforms.resize(nSnowPenguins);
+	snowFightingPenguinTransforms.emplace_back(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(-9.48f, 0.01f, -15.96f)), 1.57079f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	snowFightingPenguinTransforms.emplace_back(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(-9.17f, 0.01f, -15.02f)), 1.57079f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	snowFightingPenguinTransforms.emplace_back(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(-17.6f, 0.01f, -15.02f)), -1.57079f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	snowFightingPenguinTransforms.emplace_back(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(-15.43f, 0.01f, -15.96f)), -1.57079f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	for (int i = 0; i < nSnowPenguins; i++)
+	{
+		snowFightingPenguins.emplace_back("Goopie.gltf", snowFightingPenguinTransforms[i], "Idle");
+		snowBalls.emplace_back("Snowball.gltf", snowBallTransforms[i]);
+		snowBallCurveTimes.emplace_back(100.0f);	//Snowballs start way off screen
+	}
 }

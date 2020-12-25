@@ -64,9 +64,11 @@ public:
 
 	void SetAnimation(std::string name);
 	void SetCurrentAnimationTime(float time);
+	void SetLooping(bool shouldLoop);
 
 	std::string GetAnimation() const;
 	float GetCurrentAnimationTime() const;
+	bool IsFinished() const;
 
 
 	//Functionality for joint attachments
@@ -83,6 +85,9 @@ private:
 	std::string currentAnimation;	//Name of current animation
 	float animationTime = 0.0f;	//Current time in animation
 	std::vector<glm::mat4> pose;	//Stores pose for when it's time to draw
+
+	bool finished = false;
+	bool looping = true;
 
 	//Reference to owner transform
 	const glm::mat4& ownerTransform;

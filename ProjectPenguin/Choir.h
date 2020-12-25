@@ -22,7 +22,6 @@ private:
 	std::vector<glm::mat4> penguinTransforms;
 	glm::mat4 conductorTransform;
 
-	Model stand;
 	std::vector<Model> penguins;
 	AnimatedModel conductor;
 	Model leadSinger;

@@ -342,14 +342,13 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& collecti
 		{
 			finished = true;	//The homingPenguin has landed and can be removed from the game
 		}
-		
+
 		//Calculate curve
 		float t = fallingTime * fallingSpeed;
-		float x = t;
 		float y = -pow(t - 1.0f, 2.0f) + 1.0f; //Curve goes through (0, 0), up to (1, 1) and back down to (2, 0)
 
 		//Transform curve to current position
-		glm::vec3 curvePos = glm::vec3(0.0f, y, -x) * fallingCurveScale;	//curvePos = current position in the curve
+		glm::vec3 curvePos = glm::vec3(0.0f, y, -t) * fallingCurveScale;	//curvePos = current position in the curve
 		transform = glm::translate(glm::mat4(1.0f), pos)
 			* glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, -1.0f, 0.0f))
 			* glm::translate(glm::mat4(1.0f), curvePos)

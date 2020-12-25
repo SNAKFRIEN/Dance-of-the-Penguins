@@ -5,7 +5,6 @@
 Choir::Choir(AudioManager& audioManager)
 	:
 	baseTransform(1.0f),
-	stand("ChoirStand.gltf", baseTransform, "SmoothShader.vert", "SmoothBright.frag"),
 	leadSinger("BuffGoopie.gltf", baseTransform),
 	conductor("Goopie.gltf", conductorTransform, "Idle")
 {
@@ -90,7 +89,6 @@ void Choir::Update(float deltaTime, float totalTime)
 
 void Choir::Draw(Camera camera)
 {
-	stand.AddToRenderQueue(camera);
 	leadSinger.AddToRenderQueue(camera);
 	conductor.AddToRenderQueue(camera);
 	for (Model& p : penguins)

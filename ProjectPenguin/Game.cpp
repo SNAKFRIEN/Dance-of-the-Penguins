@@ -353,7 +353,7 @@ void Game::UpdatePlaying(float frameTime)
 	{
 		c.Update(frameTime);
 	}
-	iceRink.UpdateFerrisWheelAndCarousel(frameTime);
+	iceRink.Update(frameTime);
 	choir.Update(frameTime, totalPlayTime);
 	//Pick up collectibles (either by player or by homing penguin)
 	{

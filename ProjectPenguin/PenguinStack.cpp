@@ -46,12 +46,11 @@ void PenguinStack::Update(float dt, const IceRink& rink, SmokeMachine& smokeMach
 		{
 			//Calculate curve
 			float t = fallingTime * fp.speed;
-			float x = t;
 			float y = -pow(t - 1.0f, 2.0f) + 1.0f; //Curve goes through (0, 0), up to (1, 1) and back down to (2, 0)
 
 			//Apply curve to transform
 			glm::vec3 curveScale(0.0f, fp.height, fp.distanceMultiplier);
-			glm::vec3 curvePos = glm::vec3(0.0f, y, -x) * curveScale;
+			glm::vec3 curvePos = glm::vec3(0.0f, y, -t) * curveScale;
 			curvePos = glm::rotateY(curvePos, fp.rotationOffset);
 			fp.transform = transform
 				* glm::translate(glm::mat4(1.0f), curvePos)
