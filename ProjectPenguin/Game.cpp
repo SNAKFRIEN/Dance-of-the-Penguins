@@ -122,8 +122,9 @@ bool Game::ReadyToQuit() const
 
 void Game::SetUpMainMenu()
 {
-	mainMenu.AddButton(glm::vec2(-0.8f, -0.5f), glm::vec2(0.0f, -0.8f), "Start", "Start.png");
-	mainMenu.AddButton(glm::vec2(0.0f, -0.5f), glm::vec2(0.8f, -0.8f), "Quit", "Quit.png");
+	mainMenu.AddButton(glm::vec2(-0.8f, -0.6f), glm::vec2(0.0f, -0.9f), "Start", "Start.png");
+	mainMenu.AddButton(glm::vec2(0.0f, -0.6f), glm::vec2(0.8f, -0.9f), "Quit", "Quit.png");
+	mainMenu.AddButton(glm::vec2(-0.5f, 0.9f), glm::vec2(0.5f, 0.4f), "Logo", "Logo.png");
 	//Set colors
 	mainMenu.GetButton("Start").SetOffColor(glm::vec3(1.0f));
 	mainMenu.GetButton("Start").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
@@ -468,6 +469,9 @@ void Game::UpdatePlaying(float frameTime)
 		state = State::Paused;
 		window.ShowMouse();
 	}
+
+	//Only used for interpolating camera when returning to main menu
+	currentCamLookat = player.GetPos();
 }
 
 void Game::UpdatePauseMenu()
@@ -494,7 +498,8 @@ void Game::UpdatePauseMenu()
 void Game::UpdateMainMenuCam(float frameTime)
 {
 	glm::vec3 newPos = glm::mix(camera.GetPos(), menuCamPos, 0.03f);
-	camera.LookAt(newPos, glm::vec3(0.0f));
+	currentCamLookat = glm::mix(currentCamLookat, glm::vec3(0.0f, 10.0f, 0.0f), 0.03f);
+	camera.LookAt(newPos, currentCamLookat);
 
 	camera.CalculateVPMatrix();
 }

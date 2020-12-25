@@ -242,7 +242,7 @@ void IceRink::InitModels()
 	ferrisWheelCarts.emplace_back("FerrisWheelCart3.gltf", ferrisWheelCartTransforms[6], "SmoothShader.vert", "Surroundings.frag");
 	ferrisWheelCarts.emplace_back("FerrisWheelCart4.gltf", ferrisWheelCartTransforms[7], "SmoothShader.vert", "Surroundings.frag");
 
-	carousel = std::make_unique<Model>("CarouselHorses.gltf", carouselTransform, "SmoothShader.vert", "SmoothBright.frag");	//Import the puppies
+	carousel = std::make_unique<Model>("CarouselHorses.gltf", carouselTransform, "SmoothShader.vert", "Surroundings.frag");	//Import the puppies
 
 	const int nSnowPenguins = 4;
 	snowBallTransforms.resize(nSnowPenguins);

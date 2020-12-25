@@ -138,6 +138,7 @@ private:
 
 	static constexpr glm::vec3 menuCamPos = glm::vec3(0.0f, 15.0f, 60.0f);
 	static constexpr glm::vec3 menuCamRotation = glm::vec3(0);
+	glm::vec3 currentCamLookat = glm::vec3(0.0f);
 
 	Light light;
 
