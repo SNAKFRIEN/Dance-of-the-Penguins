@@ -144,7 +144,7 @@ void Game::SetUpGameOverMenu()
 	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, -0.36f), glm::vec2(0.0375f, 0.075f), Anchor::Left, "HighScore");
 	gameOverMenu.AddButton(glm::vec2(-0.3f, -0.3), glm::vec2(0.3f, -0.4f), "NewPersonalBest", "NewPersonalBest.png");
 
-	gameOverMenu.GetButton("NewPersonalBest").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
+	gameOverMenu.GetButton("NewPersonalBest").SetOnColor(glm::vec3(1.0f, 1.0f, 0.2f));
 }
 
 void Game::SetUpGameplayUI()
@@ -387,7 +387,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	for (HomingPenguin& hp : homingPenguins)
 	{
-		if (hp.IsLockedOn())
+		if (hp.IsLockedOnToPlayer())
 		{
 			hp.Collide(iceRink, smokeMachine);
 		}
@@ -451,7 +451,7 @@ void Game::UpdatePlaying(float frameTime)
 	std::vector<HomingPenguin*> lockedOnPenguins;
 	for (HomingPenguin& p : homingPenguins)
 	{
-		if (p.IsLockedOn())
+		if (p.IsLockedOnToPlayer() || (p.IsLockedOnToCollectible() && p.TargetInSight()))
 		{
 			lockedOnPenguins.emplace_back(&p);
 		}
@@ -460,6 +460,7 @@ void Game::UpdatePlaying(float frameTime)
 	for (int i = 0; i < lockedOnPenguins.size(); i++)
 	{
 		gameplayUI.GetPenguinWarning(i).Update(lockedOnPenguins[i]->GetPos(), camera, window.GetDimensions());
+		gameplayUI.GetPenguinWarning(i).SetColor(lockedOnPenguins[i]->IsLockedOnToPlayer());
 	}
 
 	//REMOVE output fps and player pos

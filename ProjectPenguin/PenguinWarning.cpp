@@ -11,7 +11,8 @@ unsigned int PenguinWarning::vao = 0;
 unsigned int PenguinWarning::vbo;
 unsigned int PenguinWarning::ebo;
 std::unique_ptr<Shader> PenguinWarning::shader;
-unsigned int PenguinWarning::texture;
+unsigned int PenguinWarning::redTexture;
+unsigned int PenguinWarning::yellowTexture;
 
 PenguinWarning::PenguinWarning()
 {
@@ -62,9 +63,11 @@ void PenguinWarning::PreLoad()
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 		glEnableVertexAttribArray(1);
 
-		//Generate texture
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
+
+
+		//Generate red texture
+		glGenTextures(1, &redTexture);
+		glBindTexture(GL_TEXTURE_2D, redTexture);
 
 		//Set texture settings
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -72,11 +75,42 @@ void PenguinWarning::PreLoad()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		//Load image data into texture
+		//Load red image data into texture
 		int width, height, nrChannels;
 		stbi_set_flip_vertically_on_load(true);
-		std::string texturePath = "UI/PenguinWarning.png";
+		std::string texturePath = "UI/PenguinWarningRed.png";
 		unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::string errorMessage = "The UI texture ";
+			errorMessage.append(texturePath);
+			errorMessage.append(" could not be loaded");
+			throw std::exception(errorMessage.c_str());
+		}
+		stbi_set_flip_vertically_on_load(false);
+		stbi_image_free(data);
+
+
+
+		//Generate yellow texture
+		glGenTextures(1, &yellowTexture);
+		glBindTexture(GL_TEXTURE_2D, yellowTexture);
+
+		//Set texture settings
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		//Load yellow image data into texture
+		stbi_set_flip_vertically_on_load(true);
+		texturePath = "UI/PenguinWarningYellow.png";
+		data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 		if (data)
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -117,14 +151,21 @@ void PenguinWarning::UpdateWidth(float inWidth)
 
 void PenguinWarning::BindGraphics()
 {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
 	glBindVertexArray(vao);
 }
 
 void PenguinWarning::Draw()
 {
+	glActiveTexture(GL_TEXTURE0);
+	if (isRedWarning)
+	{
+		glBindTexture(GL_TEXTURE_2D, redTexture);
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, yellowTexture);
+	}
+
 	shader->Use();
 	shader->SetUniformVec2("pos", pos);
 	shader->SetUniformVec2("scale", glm::vec2(width, height));
@@ -135,4 +176,9 @@ void PenguinWarning::Draw()
 float PenguinWarning::GetHeight() const
 {
 	return height;
+}
+
+void PenguinWarning::SetColor(bool isRed)
+{
+	isRedWarning = isRed;
 }

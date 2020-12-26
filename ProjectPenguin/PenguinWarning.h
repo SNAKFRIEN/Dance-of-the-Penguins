@@ -26,7 +26,11 @@ public:
 	void Draw();
 
 	float GetHeight() const;
+
+	void SetColor(bool isRed);	//Toggle between yellow and red warning
 private:
+	bool isRedWarning = false;	//Toggle between yellow and red warning
+
 	//Dimensions
 	glm::vec2 pos;
 	static constexpr float height = 0.05f;	//Height relative to height of window
@@ -46,5 +50,6 @@ private:
 	static std::unique_ptr<Shader> shader;
 
 	//Texture
-	static unsigned int texture;
+	static unsigned int redTexture;
+	static unsigned int yellowTexture;
 };

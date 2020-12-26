@@ -47,9 +47,11 @@ public:
 	CircleCollider& GetCollider();
 	glm::vec3 GetForward() const;
 	glm::vec3 GetPos() const;
-	bool IsLockedOn() const;
+	bool IsLockedOnToPlayer() const;
+	bool IsLockedOnToCollectible() const;
 	bool IsFinished() const;
 	bool IsCrashing() const;
+	bool TargetInSight() const;	//Returns true when targeted collectible is in sight
 private:
 	std::mt19937 rng;
 	const std::uniform_real_distribution<float> randomSwerveTime;
@@ -88,6 +90,8 @@ private:
 
 	static constexpr float scanRadius = 5.0f;
 	CircleCollider candyCaneScanner;
+	CollisionData closestCandyCane;
+	float warningFov = glm::radians(75.0f);	//Exclusively used to display yellow penguin warnings when close to a collectible
 
 	AnimatedModel model;
 	std::unique_ptr<JointAttachment> candyCane = nullptr;
@@ -98,4 +102,7 @@ private:
 	CircleCollider collider;
 
 	bool finished = false;	//Set to true once this homingPenguin can be erased from the vector
+
+	Model test;
+	glm::mat4 testMat;
 };

@@ -30,7 +30,7 @@ IceRink::IceRink(bool initModels)
 	
 	lightSources.emplace_back(-30.15f, 2.6f, 4.49f);		//Carousel
 	lightSources.emplace_back(-27.27f, 2.45f, -4.33f);		//Choir
-	lightSources.emplace_back(27.7584, 2.99957, 0.668307);	//Far right lantern
+	lightSources.emplace_back(27.76f, 3.0f, 0.67f);			//Far right lantern
 
 
 	//REPLACE: Would be better if these could all use the same shader (EXCEPT THE BACKGROUND!!!)
