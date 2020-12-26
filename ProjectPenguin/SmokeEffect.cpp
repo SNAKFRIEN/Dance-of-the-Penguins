@@ -27,7 +27,7 @@ void SmokeEffect::PreLoad()
 	assert(!preloaded);
 	preloaded = true;
 
-	shader = std::make_unique<Shader>(Shader("SmokeAnimation.vert", "SmokeAnimation.frag"));
+	shader = std::make_unique<Shader>("SmokeAnimation.vert", "SmokeAnimation.frag");
 
 	float vertices[] = {
 		1.0f, 1.0f,		frameWidth, 1.0f,		//Top right
@@ -49,7 +49,7 @@ void SmokeEffect::PreLoad()
 	//Generate VBO
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	//Generate EBO
 	glGenBuffers(1, &ebo);

@@ -371,6 +371,8 @@ void Game::UpdatePlaying(float frameTime)
 				}
 				if (player.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
 				{
+					score += 5;
+					gameplayUI.GetNumberDisplay("Score").SetNumber(score);
 					return true;
 				}
 				return false;

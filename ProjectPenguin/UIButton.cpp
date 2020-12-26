@@ -126,8 +126,8 @@ void UIButton::UpdateSize(float newLeft, float newTop, float newRight, float new
 
 	float vertices[] = {
 		right, top,		1.0f, 1.0f,		//Top right
-		right, bottom,	1.0f, 0.0f,	//Bottom right
-		left, bottom,	0.0f, 0.0f,	//Bottom left
+		right, bottom,	1.0f, 0.0f,		//Bottom right
+		left, bottom,	0.0f, 0.0f,		//Bottom left
 		left, top,		0.0f, 1.0f		//Top left 
 	};
 

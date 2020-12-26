@@ -7,6 +7,7 @@ UICanvas::UICanvas(const Window& window, float aspectRatio)
 	width(2.0f),
 	height(2.0f)
 {
+	PenguinWarning::PreLoad();
 }
 
 void UICanvas::AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName)
@@ -128,6 +129,7 @@ void UICanvas::Draw()
 			numberDisplay.second.Draw();
 		}
 	}
+	PenguinWarning::BindGraphics();
 	for (PenguinWarning& pw : penguinWarnings)
 	{
 		pw.Draw();

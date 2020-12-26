@@ -16,18 +16,22 @@ IceRink::IceRink(bool initModels)
 		InitModels();
 	}
 
-	lightSources.emplace_back(-14.29f, 2.64f, -16.96f);	//Left lantern
-	lightSources.emplace_back(-4.28f, 2.64f, -17.9f);	//Middle left lantern
-	lightSources.emplace_back(4.54, 2.61, -20.86);		//Middle right lantern
-	lightSources.emplace_back(12.8f, 2.64f, -15.97f);	//Right lantern
-	lightSources.emplace_back(-28.13, 3.77, -12.23);	//Left house0
-	lightSources.emplace_back(-31.32, 3.77, -10.29);	//Left house1
-	lightSources.emplace_back(9.65, 2.2, -15.83);		//Right house (bottom)
-	lightSources.emplace_back(6.77, 1.93, -16.7);		//Right house (top)
-	lightSources.emplace_back(-0.76, 3.42, -18.30);		//Middle house
-	lightSources.emplace_back(30.13f, 8.02f, -8.90f);	//Ferris wheel
-	lightSources.emplace_back(-30.15f, 2.6f, 4.49f);	//Carousel
-	lightSources.emplace_back(-27.27, 2.45, -4.33);		//Choir
+	lightSources.emplace_back(-14.29f, 2.64f, -16.96f);		//Left lantern
+	lightSources.emplace_back(-4.28f, 2.64f, -17.9f);		//Middle left lantern
+	lightSources.emplace_back(4.54f, 2.61f, -20.86f);		//Middle right lantern
+	lightSources.emplace_back(12.8f, 2.64f, -15.97f);		//Right lantern
+	lightSources.emplace_back(-28.13f, 3.77f, -12.23f);		//Left house0
+
+	lightSources.emplace_back(-31.32f, 3.77f, -10.29f);		//Left house1
+	lightSources.emplace_back(9.65f, 2.2f, -15.83f);		//Right house (bottom)
+	lightSources.emplace_back(6.77f, 1.93f, -16.7f);		//Right house (top)
+	lightSources.emplace_back(-0.76f, 3.42f, -18.30f);		//Middle house
+	lightSources.emplace_back(30.13f, 8.02f, -8.90f);		//Ferris wheel
+	
+	lightSources.emplace_back(-30.15f, 2.6f, 4.49f);		//Carousel
+	lightSources.emplace_back(-27.27f, 2.45f, -4.33f);		//Choir
+	lightSources.emplace_back(27.7584, 2.99957, 0.668307);	//Far right lantern
+
 
 	//REPLACE: Would be better if these could all use the same shader (EXCEPT THE BACKGROUND!!!)
 	for (Model& m : staticSurroundings)

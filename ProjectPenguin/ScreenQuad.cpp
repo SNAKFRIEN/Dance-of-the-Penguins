@@ -33,7 +33,7 @@ ScreenQuad::ScreenQuad(const Window& window, const SaveFile& settings)
 	//Generate VBO
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	//Generate EBO
 	glGenBuffers(1, &ebo);
