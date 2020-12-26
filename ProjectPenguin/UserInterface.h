@@ -22,6 +22,8 @@ public:
 	UINumberDisplay& GetNumberDisplay(std::string name);
 	PenguinWarning& GetPenguinWarning(int index);
 
+	void HideForOneFrame(std::string name);	//Hide the element for one frame
+
 	//Recalculate dimensions based on window aspect ratio
 	void Update();
 
@@ -34,6 +36,8 @@ private:
 	std::unordered_map<std::string, UIButton> buttons;
 	std::unordered_map<std::string, UINumberDisplay> numberDisplays;
 	std::vector<PenguinWarning> penguinWarnings;
+
+	std::vector<std::string> hiddenElements;
 
 	//Menu dimensions
 	const float aspectRatio;

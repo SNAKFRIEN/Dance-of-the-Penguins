@@ -53,6 +53,11 @@ PenguinWarning& UICanvas::GetPenguinWarning(int index)
 	return penguinWarnings[index];
 }
 
+void UICanvas::HideForOneFrame(std::string name)
+{
+	hiddenElements.emplace_back(name);
+}
+
 void UICanvas::Update()
 {
 	//Update MenuCanvas size
@@ -107,19 +112,29 @@ void UICanvas::Draw()
 {
 	//Turn on blending
 	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 	//Loop through all UI elements and draw
 	for (std::pair<const std::string, UIButton>& button : buttons)
 	{
-		button.second.Draw();
+		if (!std::count(hiddenElements.begin(), hiddenElements.end(), button.first))
+		{
+			button.second.Draw();
+		}
 	}
 	for (std::pair<const std::string, UINumberDisplay>& numberDisplay : numberDisplays)
 	{
-		numberDisplay.second.Draw();
+		if (!std::count(hiddenElements.begin(), hiddenElements.end(), numberDisplay.first))
+		{
+			numberDisplay.second.Draw();
+		}
 	}
 	for (PenguinWarning& pw : penguinWarnings)
 	{
 		pw.Draw();
 	}
+	//Unhide hidden elements
+	hiddenElements.clear();
 	//Turn off blending
 	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 }

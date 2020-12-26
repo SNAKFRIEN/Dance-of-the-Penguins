@@ -125,11 +125,6 @@ void Game::SetUpMainMenu()
 	mainMenu.AddButton(glm::vec2(-0.8f, -0.6f), glm::vec2(0.0f, -0.9f), "Start", "Start.png");
 	mainMenu.AddButton(glm::vec2(0.0f, -0.6f), glm::vec2(0.8f, -0.9f), "Quit", "Quit.png");
 	mainMenu.AddButton(glm::vec2(-0.5f, 0.9f), glm::vec2(0.5f, 0.4f), "Logo", "Logo.png");
-	//Set colors
-	mainMenu.GetButton("Start").SetOffColor(glm::vec3(1.0f));
-	mainMenu.GetButton("Start").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
-	mainMenu.GetButton("Quit").SetOffColor(glm::vec3(1.0f));
-	mainMenu.GetButton("Quit").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
 }
 
 void Game::SetUpPauseMenu()
@@ -140,11 +135,16 @@ void Game::SetUpPauseMenu()
 
 void Game::SetUpGameOverMenu()
 {
-	gameOverMenu.AddButton(glm::vec2(-0.8, 0.9), glm::vec2(0.3, -0.4), "Background", "ScoreScreen.png");
+	gameOverMenu.AddButton(glm::vec2(-0.7f, 0.9f), glm::vec2(0.7f, 0.3f), "Background", "ScoreScreen.png");
 	gameOverMenu.AddButton(glm::vec2(-0.8f, -0.6f), glm::vec2(0.0f, -0.9f), "Retry", "Retry.png");
 	gameOverMenu.AddButton(glm::vec2(0.0f, -0.6f), glm::vec2(0.8f, -0.9f), "Quit", "Quit.png");
-	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.7f), glm::vec2(0.1f, 0.2f), Anchor::Center, "Score");
-	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, 0.55f), glm::vec2(0.05f, 0.1f), Anchor::Center, "HighScore");
+	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, -0.0f), glm::vec2(0.25f, 0.5f), Anchor::Center, "Score");
+	
+	gameOverMenu.AddButton(glm::vec2(-0.4f, -0.3), glm::vec2(0.0f, -0.4f), "PersonalBest", "PersonalBest.png");
+	gameOverMenu.AddNumberDisplay(glm::vec2(0.0f, -0.36f), glm::vec2(0.0375f, 0.075f), Anchor::Left, "HighScore");
+	gameOverMenu.AddButton(glm::vec2(-0.3f, -0.3), glm::vec2(0.3f, -0.4f), "NewPersonalBest", "NewPersonalBest.png");
+
+	gameOverMenu.GetButton("NewPersonalBest").SetOnColor(glm::vec3(1.0f, 1.0f, 0.6f));
 }
 
 void Game::SetUpGameplayUI()
@@ -530,7 +530,6 @@ void Game::UpdateGameOverCam(float frameTime)
 	}
 	else if (screenEffect.GetCurrentEffectType() != ScreenEffect::EffectType::Flash)
 	{
-
 		//Select camPos
 		bool found = false;
 		glm::vec2 camPosXZ;
@@ -561,6 +560,16 @@ void Game::UpdateGameOverCam(float frameTime)
 
 void Game::UpdateGameOver()
 {
+	if (newBest)
+	{
+		gameOverMenu.HideForOneFrame("PersonalBest");
+		gameOverMenu.HideForOneFrame("HighScore");
+	}
+	else
+	{
+		gameOverMenu.HideForOneFrame("NewPersonalBest");
+	}
+
 	gameOverMenu.Update();
 	if (gameOverMenu.GetButton("Retry").UpdateAndCheckClick(input))
 	{
@@ -574,7 +583,8 @@ void Game::UpdateGameOver()
 
 void Game::EndPlaying()
 {
-	if (score > highScore)
+	newBest = score > highScore;
+	if (newBest)
 	{
 		highScore = score;
 	}

@@ -85,7 +85,8 @@ private:
 	int score = 0;
 	static constexpr float scoreInterval = 1.0f;
 	float scoreTimer = 0.0f;
-	int highScore = 0;
+	int highScore = 0;	//REMOVe: Why does this variable exist??
+	bool newBest;
 
 	std::vector<Collectible> collectibles;
 	static constexpr float collectibleInterval = 4.0f;

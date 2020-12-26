@@ -173,11 +173,13 @@ void UIButton::Draw()
 void UIButton::SetOnColor(glm::vec3 newColor)
 {
 	onColor = newColor;
+	color = newColor;
 }
 
 void UIButton::SetOffColor(glm::vec3 newColor)
 {
 	offColor = newColor;
+	color = newColor;
 }
 
 glm::vec2 UIButton::GetRelativeTopLeft() const
