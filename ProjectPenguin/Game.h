@@ -30,6 +30,7 @@ private:
 	enum class State
 	{
 		MainMenu,
+		Tutorial,
 		Playing,
 		Paused,
 		GameOverCam,
@@ -47,11 +48,13 @@ private:
 	void SetUpPauseMenu();
 	void SetUpGameOverMenu();
 	void SetUpGameplayUI();
+	void SetUpTutorialUI();
 
 	void SetUpBakedShadows();
 
 	void StartPlaying();
 
+	void UpdateTutorial(float frameTime);
 	void UpdatePlaying(float frameTime);
 	void UpdatePauseMenu();
 	void UpdateMainMenuCam(float frameTime);
@@ -64,6 +67,7 @@ private:
 	void DrawShadows();
 	void DrawPlaying();
 	void DrawGamePlayUI();
+	void DrawTutorialUI();
 	void DrawPauseMenu();
 	void DrawMainMenu();
 	void DrawGameOverMenu();
@@ -128,12 +132,14 @@ private:
 
 	State state = State::MainMenu;
 	bool quit = false;
+	bool tutorialFinished = false;
 
 	UICanvas mainMenu;
 	UICanvas pauseMenu;
 	UICanvas gameOverMenu;
 
 	UICanvas gameplayUI;
+	UICanvas tutorialUI;
 
 	SaveFile saveFile;
 
@@ -146,7 +152,7 @@ private:
 	ScreenQuad screenQuad;
 	ScreenEffect screenEffect;
 
-	const int maxGameOverFlashes = 3;
+	const int maxGameOverFlashes = 1;	//Used to be multiple :(
 	int nGameOverFlashes = 0;
 
 	AudioSource gameOverFlashSound;

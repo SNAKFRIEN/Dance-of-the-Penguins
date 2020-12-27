@@ -196,6 +196,7 @@ void Window::ResizeCallback()
 		if (mainCamera)
 		{
 			mainCamera->SetAspectRatio((float)currentWidth / (float)currentHeight);
+			mainCamera->CalculateVPMatrix();
 		}
 
 		if (screenQuad)

@@ -23,8 +23,7 @@ HomingPenguin::HomingPenguin(glm::vec3 inPos)
 	leftWallScanner(leftWallScannerPos, wallScannerRadii),
 	rightWallScanner(rightWallScannerPos, wallScannerRadii),
 	hat("TrafficConeHat.gltf", model, "head"),
-	vest("SecurityVest.gltf", model, "torso"),
-	test("Snowball.gltf", testMat)
+	vest("SecurityVest.gltf", model, "torso")
 {
 	swerveTimer = randomSwerveTime(rng);
 	std::cout << "HomingPenguin constructed" << std::endl;
@@ -59,9 +58,7 @@ HomingPenguin::HomingPenguin(const HomingPenguin& rhs)
 
 	collider(pos, collisionRadius),
 
-	finished(rhs.finished),
-
-	test("Snowball.gltf", testMat)
+	finished(rhs.finished)
 {
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
 
@@ -141,9 +138,7 @@ HomingPenguin::HomingPenguin(HomingPenguin&& rhs) noexcept
 
 	collider(pos, collisionRadius),
 
-	finished(rhs.finished),
-
-	test("Snowball.gltf", testMat)
+	finished(rhs.finished)
 {
 	model.SetCurrentAnimationTime(rhs.model.GetCurrentAnimationTime());
 
@@ -200,8 +195,8 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& collecti
 	{
 	case State::Roaming:
 		//Steer away from obstacles
-		leftWallScannerPos = pos + glm::rotate(leftWallScannerBasePos, rotation, glm::vec3(0.0f, -1.0f, 0.0f));
-		rightWallScannerPos = pos + glm::rotate(rightWallScannerBasePos, rotation, glm::vec3(0.0f, -1.0f, 0.0f));
+		leftWallScannerPos = pos + glm::rotateY(leftWallScannerBasePos, -rotation);
+		rightWallScannerPos = pos + glm::rotateY(rightWallScannerBasePos, -rotation);
 		if (!rightWallScanner.IsInRink(rink))
 		{
 			speed = wallAvoidSpeed;
@@ -262,8 +257,8 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& collecti
 	case State::HomingCandyCane:
 	{
 		//Steer away from obstacles
-		leftWallScannerPos = pos + glm::rotate(leftWallScannerBasePos, rotation, glm::vec3(0.0f, -1.0f, 0.0f));
-		rightWallScannerPos = pos + glm::rotate(rightWallScannerBasePos, rotation, glm::vec3(0.0f, -1.0f, 0.0f));
+		leftWallScannerPos = pos + glm::rotateY(leftWallScannerBasePos, -rotation);
+		rightWallScannerPos = pos + glm::rotateY(rightWallScannerBasePos, -rotation);
 		if (!rightWallScanner.IsInRink(rink))
 		{
 			speed = wallAvoidSpeed;
@@ -278,6 +273,7 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& collecti
 		{
 			speed = baseSpeed;
 			//Find closest candy cane
+			CollisionData closestCandyCane;
 			closestCandyCane.isColliding = false;
 			closestCandyCane.distanceSquared = INFINITY;
 			for (Collectible& collectible : collectibles)
@@ -296,6 +292,9 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& collecti
 			}
 			else
 			{
+				//Store closestCandyCanePos
+				closestCandyCanePos = closestCandyCane.colliderB->GetPos();
+
 				//Steer towards target candy cane
 				glm::vec3 direction = glm::normalize(closestCandyCane.colliderB->GetPos() - pos);
 				float angle = glm::orientedAngle(direction, GetForward(), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -359,8 +358,6 @@ void HomingPenguin::Update(IceSkater& player, std::vector<Collectible>& collecti
 			* glm::rotate(glm::mat4(1.0f), fallingTime * fallingFlipSpeed, glm::vec3(-1.0f, 0.0f, 0.0f));
 		break;
 	}
-
-	testMat = glm::translate(glm::mat4(1.0f), pos + GetForward());
 }
 
 void HomingPenguin::UpdateAnimation(float dt)
@@ -377,7 +374,6 @@ void HomingPenguin::Draw(Camera& camera)
 	model.AddToRenderQueue(camera);
 	hat.Draw(camera);
 	vest.Draw(camera);
-	test.AddToRenderQueue(camera);
 }
 
 void HomingPenguin::GiveCandyCane()
@@ -438,12 +434,11 @@ bool HomingPenguin::IsCrashing() const
 bool HomingPenguin::TargetInSight() const
 {
 	assert(state == State::HomingCandyCane);
-	if (closestCandyCane.isColliding && closestCandyCane.colliderB)
-	{
-		glm::vec3 targetPos = closestCandyCane.colliderB->GetPos();
-		targetPos.y = 0.0f;
-		glm::vec3 targetDirection = glm::normalize(targetPos - pos);
-		return glm::angle(GetForward(), targetDirection) < warningFov;
-	}
+	
+	glm::vec3 targetPos = closestCandyCanePos;
+	targetPos.y = 0.0f;
+	glm::vec3 targetDirection = glm::normalize(targetPos - pos);
+	return glm::angle(GetForward(), targetDirection) < warningFov;
+
 	return false;
 }

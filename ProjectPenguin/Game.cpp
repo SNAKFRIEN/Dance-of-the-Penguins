@@ -19,6 +19,7 @@ Game::Game(Window& window)
 	pauseMenu(window, 1.0f),
 	gameOverMenu(window, 1.0f),
 	gameplayUI(window, 1.0f),
+	tutorialUI(window, 1.0f),
 	fishingPenguinRotationRange(1.57079f, 4.71238f),
 	rng(std::random_device()()),
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
@@ -41,6 +42,7 @@ Game::Game(Window& window)
 	SetUpGameOverMenu();
 
 	SetUpGameplayUI();
+	SetUpTutorialUI();
 
 	//Bake shadows for static objects
 	SetUpBakedShadows();
@@ -64,6 +66,9 @@ void Game::Update()
 	const float frameTime = ft.Mark();
 	switch (state)
 	{
+	case State::Tutorial:
+		UpdateTutorial(frameTime);
+		break;
 	case State::Playing:
 		UpdatePlaying(frameTime);
 		break;
@@ -93,9 +98,18 @@ void Game::Draw()
 {
 	switch (state)
 	{
+	case State::Tutorial:
+		DrawPlaying();
+		DrawGamePlayUI();
+		DrawTutorialUI();
+		break;
 	case State::Playing:
 		DrawPlaying();
 		DrawGamePlayUI();
+		if (!tutorialFinished)
+		{
+			DrawTutorialUI();
+		}
 		break;
 	case State::Paused:
 		DrawPlaying();	//Still show paused gameplay in the background
@@ -152,6 +166,11 @@ void Game::SetUpGameplayUI()
 	gameplayUI.AddNumberDisplay(glm::vec2(0.0f, 0.9f), glm::vec2(0.03f, 0.06f), Anchor::Center, "Score");
 	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
 	gameplayUI.AddButton(glm::vec2(-0.6f, 0.905f), glm::vec2(0.6f, 0.895f), "ScoreLine", "ScoreLine.png");
+}
+
+void Game::SetUpTutorialUI()
+{
+	tutorialUI.AddButton(glm::vec2(-1.0f, 0.525f), glm::vec2(1.0f, 0.275f), "Tutorial", "Tutorial.png");
 }
 
 void Game::SetUpBakedShadows()
@@ -211,16 +230,41 @@ void Game::StartPlaying()
 	penguins.reserve(maxPenguins);
 	penguinSpawnTimer = 0.0f;
 
-	state = State::Playing;
+	if (tutorialFinished)
+	{
+		state = State::Playing;
+		window.HideMouse();
+	}
+	else
+	{
+		state = State::Tutorial;
+	}
 
 	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
 
 	ft.Mark();
 
-	window.HideMouse();
-
 	//Ensure at least one physics update takes place before rendering the first frame of gameplay
 	UpdatePlaying(0.01f);
+}
+
+void Game::UpdateTutorial(float frameTime)
+{
+	accumulator += frameTime;
+	accumulator = std::min(accumulator, 0.02f);
+	while (accumulator > deltaTime)
+	{
+		accumulator -= deltaTime;
+		camera.Follow(player.GetPos());
+	}
+	camera.CalculateVPMatrix();
+
+	tutorialUI.Update();
+	if (abs(input.GetForwardAxis()) > 0.1f || abs(input.GetRightAxis()) > 0.1f)
+	{
+		state = State::Playing;
+		window.HideMouse();
+	}
 }
 
 void Game::UpdatePlaying(float frameTime)
@@ -229,6 +273,11 @@ void Game::UpdatePlaying(float frameTime)
 
 	totalPlayTime += frameTime;
 	
+	if (totalPlayTime > 5.0f)
+	{
+		tutorialFinished = true;
+	}
+
 	//Update smoke particle effects (do this before adding new particle effects)
 	smokeMachine.Update(frameTime);
 
@@ -691,25 +740,24 @@ void Game::DrawGamePlayUI()
 	gameplayUI.Draw();
 }
 
+void Game::DrawTutorialUI()
+{
+	tutorialUI.Draw();
+}
+
 void Game::DrawPauseMenu()
 {
-	glEnable(GL_BLEND);
 	pauseMenu.Draw();
-	glDisable(GL_BLEND);
 }
 
 void Game::DrawMainMenu()
 {
-	glEnable(GL_BLEND);
 	mainMenu.Draw();
-	glDisable(GL_BLEND);
 }
 
 void Game::DrawGameOverMenu()
 {
-	glEnable(GL_BLEND);
 	gameOverMenu.Draw();
-	glDisable(GL_BLEND);
 }
 
 std::vector<glm::vec3> Game::GetCandyCanePositions() const

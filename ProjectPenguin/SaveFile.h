@@ -13,10 +13,8 @@ public:
 
 	//Gameplay values
 	int GetHighScore() const;
-	bool GetTutorialCompleted() const;
 
 	void SetHighScore(int inScore);
-	void SetTutorialCompleted(bool inTutorialCompleted);
 
 	//Settings
 	unsigned int GetShadowRes() const;
@@ -28,7 +26,6 @@ public:
 private:
 	//Gameplay values
 	int highScore = 0;
-	bool tutorialCompleted = false;
 
 	//Graphics settings
 	unsigned int shadowResolution = 512;

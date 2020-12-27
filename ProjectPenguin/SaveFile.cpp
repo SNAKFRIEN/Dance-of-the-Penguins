@@ -23,7 +23,6 @@ void SaveFile::LoadData(std::string fileName)
 		
 		//Load data
 		highScore = *data.find("highScore");
-		tutorialCompleted = *data.find("tutorialCompleted");
 		shadowResolution = *data.find("shadowResolution");
 		msaa = *data.find("msaa");
 		selectedMonitor = *data.find("selectedMonitor");
@@ -36,7 +35,6 @@ void SaveFile::SaveData(std::string fileName)
 {
 	nlohmann::json data = {
 		{"highScore", highScore},
-		{"tutorialCompleted", tutorialCompleted},
 		{"shadowResolution", shadowResolution},
 		{"msaa", msaa},
 		{"selectedMonitor", selectedMonitor},
@@ -69,19 +67,9 @@ int SaveFile::GetHighScore() const
 	return highScore;
 }
 
-bool SaveFile::GetTutorialCompleted() const
-{
-	return tutorialCompleted;
-}
-
 void SaveFile::SetHighScore(int inScore)
 {
 	highScore = inScore;
-}
-
-void SaveFile::SetTutorialCompleted(bool inTutorialCompleted)
-{
-	tutorialCompleted = inTutorialCompleted;
 }
 
 unsigned int SaveFile::GetShadowRes() const

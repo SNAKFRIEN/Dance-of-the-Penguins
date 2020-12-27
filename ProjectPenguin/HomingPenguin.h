@@ -90,7 +90,7 @@ private:
 
 	static constexpr float scanRadius = 5.0f;
 	CircleCollider candyCaneScanner;
-	CollisionData closestCandyCane;
+	glm::vec3 closestCandyCanePos;
 	float warningFov = glm::radians(75.0f);	//Exclusively used to display yellow penguin warnings when close to a collectible
 
 	AnimatedModel model;
@@ -102,7 +102,4 @@ private:
 	CircleCollider collider;
 
 	bool finished = false;	//Set to true once this homingPenguin can be erased from the vector
-
-	Model test;
-	glm::mat4 testMat;
 };
