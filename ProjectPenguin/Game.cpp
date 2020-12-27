@@ -278,8 +278,9 @@ void Game::UpdatePlaying(float frameTime)
 		tutorialFinished = true;
 	}
 
-	//Update smoke particle effects (do this before adding new particle effects)
+	//Update particle effects (do this before adding new particle effects)
 	smokeMachine.Update(frameTime);
+	plus5Dispenser.Update(frameTime);
 
 	//Spawn new penguins
 	if (penguins.size() < maxPenguins)
@@ -421,6 +422,7 @@ void Game::UpdatePlaying(float frameTime)
 				if (player.GetCollider().CalculateCollision(c.GetCollider()).isColliding)
 				{
 					score += 5;
+					plus5Dispenser.Dispense(player.GetPos());
 					gameplayUI.GetNumberDisplay("Score").SetNumber(score);
 					return true;
 				}
@@ -719,7 +721,10 @@ void Game::DrawPlaying()
 	//Draw all entities
 	AnimatedModel::DrawAllInstances(light);
 	Model::DrawAllInstances(light);
+	glEnable(GL_BLEND);
 	smokeMachine.Draw(camera);
+	plus5Dispenser.Draw(camera);
+	glDisable(GL_BLEND);
 
 	if (!input.IsPressed(GLFW_KEY_H))
 	{

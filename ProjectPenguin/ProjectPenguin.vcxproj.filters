@@ -165,6 +165,12 @@
     <ClCompile Include="SmokeMachine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Plus5Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plus5EffectDispenser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Penguin.h">
@@ -308,6 +314,12 @@
     <ClInclude Include="SmokeMachine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Plus5Effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Plus5EffectDispenser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CelShader.frag">
@@ -388,7 +400,7 @@
     <None Include="Shaders\SmokeAnimation.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\SmokeAnimation.vert">
+    <None Include="Shaders\BillBoard.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

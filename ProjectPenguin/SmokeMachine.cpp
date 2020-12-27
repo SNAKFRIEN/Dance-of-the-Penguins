@@ -15,7 +15,7 @@ void SmokeMachine::SpawnSmoke(glm::vec3 pos)
 
 void SmokeMachine::Update(float deltaTime)
 {
-	//Remove finished smokes
+	//Update smokes
 	for (SmokeEffect& smoke : smokeEffects)
 	{
 		smoke.Update(deltaTime);
@@ -34,7 +34,7 @@ void SmokeMachine::Update(float deltaTime)
 void SmokeMachine::Draw(const Camera& camera)
 {
 	SmokeEffect::BindGraphics();
-	for (SmokeEffect smoke : smokeEffects)
+	for (SmokeEffect& smoke : smokeEffects)
 	{
 		smoke.Draw(camera);
 	}

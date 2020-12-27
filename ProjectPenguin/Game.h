@@ -21,6 +21,7 @@
 #include "HomingPenguin.h"
 #include "Choir.h"
 #include "SmokeMachine.h"
+#include "Plus5EffectDispenser.h"
 
 class Window;
 
@@ -158,4 +159,5 @@ private:
 	AudioSource gameOverFlashSound;
 
 	SmokeMachine smokeMachine;
+	Plus5EffectDispenser plus5Dispenser;
 };

@@ -1,4 +1,4 @@
-#include "SmokeEffect.h"
+#include "Plus5Effect.h"
 
 #include <glad/glad.h>
 #include "stb_image.h"
@@ -7,33 +7,32 @@
 
 #include "Camera.h"
 
-bool SmokeEffect::preloaded = false;
-unsigned int SmokeEffect::vao = 0;
-unsigned int SmokeEffect::vbo;
-unsigned int SmokeEffect::ebo;
-std::unique_ptr<Shader> SmokeEffect::shader;
-unsigned int SmokeEffect::texture;
+bool Plus5Effect::preloaded = false;
+unsigned int Plus5Effect::vao = 0;
+unsigned int Plus5Effect::vbo;
+unsigned int Plus5Effect::ebo;
+std::unique_ptr<Shader> Plus5Effect::shader;
+unsigned int Plus5Effect::texture;
 
-SmokeEffect::SmokeEffect(glm::vec3 inPos)
+Plus5Effect::Plus5Effect(glm::vec3 inPos)
 	:
 	pos(inPos)
 {
 	assert(preloaded);
-	translation = glm::translate(glm::mat4(1.0f), pos);
 }
 
-void SmokeEffect::PreLoad()
+void Plus5Effect::PreLoad()
 {
 	assert(!preloaded);
 	preloaded = true;
 
-	shader = std::make_unique<Shader>("BillBoard.vert", "SmokeAnimation.frag");
+	shader = std::make_unique<Shader>("BillBoard.vert", "PassToScreen.frag");
 
 	float vertices[] = {
-		1.0f, 1.0f,		frameWidth, 1.0f,		//Top right
-		1.0f, -1.0f,	frameWidth, 0.0f,		//Bottom right
-		-1.0f, -1.0f,	0.0f, 0.0f,		//Bottom left
-		-1.0f, 1.0f,	0.0f, 1.0f		//Top left
+		0.2f, 0.2f,		1.0f, 1.0f,		//Top right
+		0.2f, -0.2f,	1.0f, 0.0f,		//Bottom right
+		-0.2f, -0.2f,	0.0f, 0.0f,		//Bottom left
+		-0.2f, 0.2f,	0.0f, 1.0f		//Top left
 	};
 	unsigned int indices[] = {
 		3, 1, 0,   // first triangle
@@ -77,7 +76,7 @@ void SmokeEffect::PreLoad()
 	//Load image data into texture
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true);
-	std::string texturePath = "UI/Clouds.png";
+	std::string texturePath = "UI/+5.png";
 	unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 	if (data)
 	{
@@ -99,17 +98,15 @@ void SmokeEffect::PreLoad()
 	//Set shader uniforms
 	shader->Use();
 	shader->SetUniformInt("texture0", 0);
-	shader->SetUniformFloat("frameWidth", frameWidth);
 }
 
-void SmokeEffect::Update(float deltaTime)
+void Plus5Effect::Update(float deltaTime)
 {
 	currentTime += deltaTime;
-	currentFrame = (int)(currentTime / timePerFrame);
-	finished = currentFrame >= nFrames;
+	pos.y += speed * deltaTime;
 }
 
-void SmokeEffect::BindGraphics()
+void Plus5Effect::BindGraphics()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -119,18 +116,17 @@ void SmokeEffect::BindGraphics()
 	glBindVertexArray(vao);
 }
 
-void SmokeEffect::Draw(const Camera& camera)
+void Plus5Effect::Draw(const Camera& camera)
 {
 	//Make effect face the camera at all times
-	glm::mat4 transform = translation * glm::orientation(glm::vec3(0.0f, 1.0f, 0.0f), normalize(camera.GetPos() - pos));
+	glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * glm::rotate(glm::mat4(1.0f), glm::radians(-45.0f), glm::vec3(1.0f, 0.0, 0.0f));
 	shader->SetUniformMat4("model", transform);
 	shader->SetUniformMat4("mvp", camera.GetVPMatrix() * transform);
-	shader->SetUniformInt("currentFrame", currentFrame);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-bool SmokeEffect::IsFinished() const
+bool Plus5Effect::IsFinished() const
 {
-	return finished;
+	return currentTime > maxLifeTime;
 }
