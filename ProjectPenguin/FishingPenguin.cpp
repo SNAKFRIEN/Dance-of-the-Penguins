@@ -43,6 +43,15 @@ CircleCollider& FishingPenguin::GetPondCollider()
 	return pondCollider;
 }
 
+void FishingPenguin::SetPos(glm::vec3 inPos, float rotation)
+{
+	transform = glm::translate(glm::mat4(1.0f) , inPos);
+	transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	pondPos = inPos;
+	penguinPos = glm::vec3(0.0f, 0.0f, 0.95);
+	penguinPos = transform * glm::vec4(penguinPos, 1.0f);
+}
+
 void FishingPenguin::SetState(State newState)
 {
 	state = newState;

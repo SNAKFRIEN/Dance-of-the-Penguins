@@ -35,8 +35,7 @@ Game::Game(Window& window)
 	windSound("Wind.wav", audioManager),
 	windChimeSound("WindChimes.wav", audioManager),
 	randomWindChimeInterval(10.0f, 30.0f),
-	candyCaneSound("CandyCane.wav", audioManager),
-	choir(audioManager)
+	candyCaneSound("CandyCane.wav", audioManager)
 {
 	window.SetMainCamera(&camera);
 	window.SetScreenQuad(&screenQuad);
@@ -91,6 +90,8 @@ Game::Game(Window& window)
 	Model::Preload("FishingPole.gltf");
 	Model::Preload("Bucket.gltf");
 	Model::Preload("CandyCane.gltf");
+
+	fishingPenguin = std::make_unique<FishingPenguin>(defabc, abcrot, audioManager);
 }
 
 void Game::Update()
@@ -204,7 +205,7 @@ void Game::SetUpGameplayUI()
 {
 	gameplayUI.AddNumberDisplay(glm::vec2(0.0f, 0.9f), glm::vec2(0.03f, 0.06f), Anchor::Center, "Score");
 	gameplayUI.GetNumberDisplay("Score").SetNumber(score);
-	gameplayUI.AddButton(glm::vec2(-0.6f, 0.905f), glm::vec2(0.6f, 0.895f), "ScoreLine", "ScoreLine.png");
+	gameplayUI.AddButton(glm::vec2(-1.5, 0.375f), glm::vec2(0.0f, -0.375f), "Logo", "Logo.png");
 }
 
 void Game::SetUpTutorialUI()
@@ -216,7 +217,6 @@ void Game::SetUpBakedShadows()
 {
 	//Draw all objects that can be baked
 	iceRink.DrawStatic(camera);
-	choir.Draw(camera);
 
 	light.UseBakeTexture();
 
@@ -253,8 +253,7 @@ void Game::StartPlaying()
 	
 	totalPlayTime = 0.0f;
 
-	fishingPenguin.reset();
-	fishingPenguinSpawned = false;
+	fishingPenguinSpawned = true;
 	iceRink.Reset();
 
 	//Reset spawn timers
@@ -331,7 +330,7 @@ void Game::UpdatePlaying(float frameTime)
 		penguinSpawnTimer += frameTime;
 		if (penguinSpawnTimer > penguinSpawnInterval)
 		{
-			penguins.emplace_back(spawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f));
+			penguins.emplace_back(glm::vec3(-10.0f, 0.0f, 0.0f));
 			auto outfit = penguinDresser.GeneratePenguinOutfit();
 			for (auto& accessory : outfit)
 			{
@@ -341,18 +340,23 @@ void Game::UpdatePlaying(float frameTime)
 		}
 	}
 	//Spawn fishingPenguin
-	if (!fishingPenguinSpawned && totalPlayTime >= fishingPenguinSpawnTime)
+	defabc.z -= input.GetForwardAxis() * 0.05f;
+	defabc.x += input.GetRightAxis() * 0.05f;
+
+	if (input.IsPressed(GLFW_KEY_3))
 	{
-		auto spawn = spawner.FindDistancedSpawnPoint(player.GetPos(),
-			10.0f,
-			iceRink.GetRight() - iceRink.GetCornerRadius(),
-			iceRink.GetTop() - iceRink.GetCornerRadius());
-		float rotation = fishingPenguinRotationRange(rng);
-		iceRink.SetIcePos(spawn);
-		fishingPenguin = std::make_unique<FishingPenguin>(spawn, rotation, audioManager);
-		fishingPenguinSpawned = true;
-		smokeMachine.SpawnSmoke(spawn);
+		abcrot += 0.03f;
 	}
+	if (input.IsPressed(GLFW_KEY_1))
+	{
+		abcrot -= 0.03f;
+	}
+
+	iceRink.SetIcePos(defabc);
+	fishingPenguin->SetPos(defabc, abcrot);
+	fishingPenguinSpawned = true;
+
+
 	//Spawn penguin stack
 	penguinStackSpawnTimer -= frameTime;
 	if (penguinStackSpawnTimer <= 0.0)
@@ -403,7 +407,12 @@ void Game::UpdatePlaying(float frameTime)
 		player.Update(deltaTime, input);
 		iceSkatingSound0.SetPos(player.GetPos());
 		iceSkatingSound1.SetPos(player.GetPos());
-		camera.Follow(player.GetPos());
+
+		//camera follow fishing penguins
+		glm::vec3 abcdef = glm::mix(fishingPenguin->GetPenguinCollider().GetPos(), fishingPenguin->GetPondCollider().GetPos(), 0.5f);
+		camera.Follow(abcdef + glm::vec3(-1.1f, 0.5f, 0.0f));
+
+
 		for (HomingPenguin& hp : homingPenguins)
 		{
 			hp.Update(player, collectibles, iceRink, deltaTime);
@@ -434,7 +443,6 @@ void Game::UpdatePlaying(float frameTime)
 		c.Update(frameTime);
 	}
 	iceRink.Update(frameTime);
-	choir.Update(frameTime, totalPlayTime);
 	//Pick up collectibles (either by player or by homing penguin)
 	{
 		const auto newEnd = std::remove_if(collectibles.begin(), collectibles.end(),
@@ -514,7 +522,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 
 	//Play game over animation
-	if (gameOver)
+	if (false && gameOver)
 	{
 		iceSkatingSound0.Stop();
 		iceSkatingSound1.Stop();
@@ -720,7 +728,7 @@ void Game::DrawShadows()
 void Game::DrawPlaying()
 {
 	//Draw all items that cast shadows
-	player.Draw(camera);
+	//player.Draw(camera);
 	for (Penguin& p : penguins)
 	{
 		p.Draw(camera);
@@ -744,7 +752,7 @@ void Game::DrawPlaying()
 
 	//Draw all items that don't cast (dynamic) shadows
 	iceRink.DrawStatic(camera);
-	choir.Draw(camera);
+	
 	for (Collectible& c : collectibles)
 	{
 		c.Draw(camera);

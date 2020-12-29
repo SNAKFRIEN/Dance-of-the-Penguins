@@ -88,13 +88,13 @@ private:
 	std::unique_ptr<PenguinStack> penguinStack;
 
 	int score = 0;
-	static constexpr float scoreInterval = 1.0f;
+	static constexpr float scoreInterval = 5000.0f;
 	float scoreTimer = 0.0f;
 	int highScore = 0;	//REMOVE: Why does this variable exist??
 	bool newBest;
 
 	std::vector<Collectible> collectibles;
-	static constexpr float collectibleInterval = 4.0f;
+	static constexpr float collectibleInterval = 400000.0f;
 	float collectibleTimer = 0.0f;
 
 	IceRink iceRink;
@@ -105,26 +105,24 @@ private:
 	Spawner spawner;
 	PenguinDresser penguinDresser;
 	//Regular penguins
-	static constexpr float penguinSpawnInterval = 4.0f;
+	static constexpr float penguinSpawnInterval = 0.01f;
 	float penguinSpawnTimer = 0.0f;
 	static constexpr int maxPenguins = 100;
 	//Fishing penguin
-	static constexpr float fishingPenguinSpawnTime = 50.0f;
+	static constexpr float fishingPenguinSpawnTime = 0.0f;
 	bool fishingPenguinSpawned = false;
 	std::uniform_real_distribution<float> fishingPenguinRotationRange;
 	//Stacked penguins
 	//REPLACE these values
 	std::uniform_real_distribution<float> randomStackSpawnInterval;
-	static constexpr float stackedPenguinSpawnTime = 100.0f;	//Stacks won't spawn until this far into the game
+	static constexpr float stackedPenguinSpawnTime = 100000.0f;	//Stacks won't spawn until this far into the game
 	float penguinStackSpawnTimer = stackedPenguinSpawnTime;
 	//Ice skating penguins
-	static constexpr float homingPenguinSpawnTime = 30.0f;
+	static constexpr float homingPenguinSpawnTime = 4000.0f;
 	static constexpr float homingPenguinSpawnInterval = 30.0f;
 	float homingPenguinSpawnTimer = homingPenguinSpawnInterval;	//Needs to start at max, so the first penguin spawns right away when homingPenguinSpawnTime is reached
 	static constexpr int maxHomingPenguins = 4;
 	std::vector<HomingPenguin> homingPenguins;
-
-	Choir choir;
 
 	FrameTimer ft;
 	float accumulator = 0.01f;
@@ -167,6 +165,9 @@ private:
 	std::uniform_real_distribution<float> randomWindChimeInterval;
 	AudioSource windChimeSound;
 	AudioSource candyCaneSound;
+
+	glm::vec3 defabc = glm::vec3(0);
+	float abcrot = 0.0f;
 
 
 	SmokeMachine smokeMachine;

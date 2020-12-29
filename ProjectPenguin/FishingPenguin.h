@@ -26,6 +26,8 @@ public:
 
 	CircleCollider& GetPenguinCollider();
 	CircleCollider& GetPondCollider();
+
+	void SetPos(glm::vec3, float rot);
 private:
 	void SetState(State newState);
 private:

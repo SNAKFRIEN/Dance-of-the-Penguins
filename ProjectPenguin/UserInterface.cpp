@@ -129,7 +129,7 @@ void UICanvas::Draw()
 	{
 		if (!std::count(hiddenElements.begin(), hiddenElements.end(), numberDisplay.first))
 		{
-			numberDisplay.second.Draw();
+			//numberDisplay.second.Draw();
 		}
 	}
 	PenguinWarning::BindGraphics();
