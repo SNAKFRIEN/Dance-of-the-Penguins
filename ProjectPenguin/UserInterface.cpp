@@ -1,12 +1,15 @@
 #include "UserInterface.h"
 
-UICanvas::UICanvas(const Window& window, float aspectRatio)
+UICanvas::UICanvas(const Window& window, AudioManager& audioManager, float aspectRatio)
 	:
 	window(window),
 	aspectRatio(aspectRatio),
 	width(2.0f),
-	height(2.0f)
+	height(2.0f),
+	buttonQuacker("Quack.wav", audioManager)
 {
+	buttonQuacker.SetFollowListener(true);
+	buttonQuacker.SetVolume(0.05f);
 	PenguinWarning::PreLoad();
 }
 
@@ -17,7 +20,7 @@ void UICanvas::AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string n
 	float buttonRight = bottomRight.x * width * 0.5f;
 	float buttonTop = topLeft.y * height * 0.5f;
 	float buttonBottom = bottomRight.y * height * 0.5f;
-	buttons.emplace(name, std::move(UIButton(buttonLeft, buttonTop, buttonRight, buttonBottom, topLeft, bottomRight, textureName)));
+	buttons.emplace(name, std::move(UIButton(buttonLeft, buttonTop, buttonRight, buttonBottom, topLeft, bottomRight, textureName, buttonQuacker)));
 }
 
 void UICanvas::AddNumberDisplay(glm::vec2 pos, glm::vec2 scale, Anchor anchor, std::string name)

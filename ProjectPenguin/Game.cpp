@@ -15,11 +15,11 @@ Game::Game(Window& window)
 	window(window),
 	player(glm::vec3(0.0f, 0.0f, 0.0f)),
 	input(window),
-	mainMenu(window, 1.0f),
-	pauseMenu(window, 1.0f),
-	gameOverMenu(window, 1.0f),
-	gameplayUI(window, 1.0f),
-	tutorialUI(window, 1.0f),
+	mainMenu(window, audioManager, 1.0f),
+	pauseMenu(window, audioManager, 1.0f),
+	gameOverMenu(window, audioManager, 1.0f),
+	gameplayUI(window, audioManager, 1.0f),
+	tutorialUI(window, audioManager, 1.0f),
 	fishingPenguinRotationRange(1.57079f, 4.71238f),
 	rng(std::random_device()()),
 	light(glm::vec3(0.0f, 10.0f, 0.0f), saveFile.GetShadowRes()),
@@ -27,6 +27,15 @@ Game::Game(Window& window)
 	penguinDresser(rng),
 	randomStackSpawnInterval(10.0f, 30.0f),	//REPLACE these values
 	gameOverFlashSound("CameraFlash.wav", audioManager),
+	bonkSound("Bonk.wav", audioManager),
+	iceSkatingSound0("IceSkatingSnow.wav", audioManager),
+	iceSkatingSound1("IceSkatingMetal.wav", audioManager),
+	penguinStackSound("Stack.wav", audioManager),
+	penguinStackFallSound("StackFall.wav", audioManager),
+	windSound("Wind.wav", audioManager),
+	windChimeSound("WindChimes.wav", audioManager),
+	randomWindChimeInterval(10.0f, 30.0f),
+	candyCaneSound("CandyCane.wav", audioManager),
 	choir(audioManager)
 {
 	window.SetMainCamera(&camera);
@@ -43,6 +52,29 @@ Game::Game(Window& window)
 
 	SetUpGameplayUI();
 	SetUpTutorialUI();
+
+	//Tweak audio
+	gameOverFlashSound.SetVolume(0.4f);
+	bonkSound.SetPitch(0.5f);
+	bonkSound.SetVolume(2.0f);
+	iceSkatingSound0.SetLooping(true);
+	iceSkatingSound0.SetPitch(1.5f);
+	iceSkatingSound0.SetVolume(2.0f);
+	iceSkatingSound1.SetLooping(true);
+	iceSkatingSound1.SetPitch(1.5f);
+	iceSkatingSound1.SetVolume(2.5f);
+	penguinStackSound.SetPitch(2.0f);
+	penguinStackSound.SetLooping(true);
+	penguinStackSound.SetVolume(2.0f);
+	penguinStackFallSound.SetPitch(2.0f);
+	penguinStackFallSound.SetVolume(2.0f);
+	windSound.SetLooping(true);
+	windSound.SetPitch(0.5f);
+	windSound.SetVolume(2.0f);
+	windSound.SetFollowListener(true);
+	windSound.Play();
+	windChimeSound.SetVolume(0.5f);
+	candyCaneSound.SetVolume(2.0f);
 
 	//Bake shadows for static objects
 	SetUpBakedShadows();
@@ -85,6 +117,13 @@ void Game::Update()
 	case State::GameOver:
 		UpdateGameOver();
 		break;
+	}
+
+	windChimeSoundCountDown -= frameTime;
+	if (windChimeSoundCountDown <= 0.0f)
+	{
+		windChimeSound.Play();
+		windChimeSoundCountDown = randomWindChimeInterval(rng);
 	}
 
 	//Toggle full screen
@@ -234,6 +273,8 @@ void Game::StartPlaying()
 	{
 		state = State::Playing;
 		window.HideMouse();
+		iceSkatingSound0.Play();
+		iceSkatingSound1.Play();
 	}
 	else
 	{
@@ -262,6 +303,8 @@ void Game::UpdateTutorial(float frameTime)
 	tutorialUI.Update();
 	if (abs(input.GetForwardAxis()) > 0.1f || abs(input.GetRightAxis()) > 0.1f)
 	{
+		iceSkatingSound0.Play();
+		iceSkatingSound1.Play();
 		state = State::Playing;
 		window.HideMouse();
 	}
@@ -288,7 +331,7 @@ void Game::UpdatePlaying(float frameTime)
 		penguinSpawnTimer += frameTime;
 		if (penguinSpawnTimer > penguinSpawnInterval)
 		{
-			penguins.emplace_back(spawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f), audioManager);
+			penguins.emplace_back(spawner.FindOffScreenSpawnPoint(camera.GetPos(), player.GetPos(), camera.GetFOVRadians(), 1.0f));
 			auto outfit = penguinDresser.GeneratePenguinOutfit();
 			for (auto& accessory : outfit)
 			{
@@ -320,8 +363,9 @@ void Game::UpdatePlaying(float frameTime)
 			iceRink.GetRight() - iceRink.GetCornerRadius(),
 			iceRink.GetTop() - iceRink.GetCornerRadius());
 		auto stackTarget = spawner.FindCloseTarget(player.GetPos(), 5.0f);
-		penguinStack = std::make_unique<PenguinStack>(stackSpawn, stackTarget, rng, audioManager);
+		penguinStack = std::make_unique<PenguinStack>(stackSpawn, stackTarget, rng);
 		smokeMachine.SpawnSmoke(stackSpawn);
+		penguinStackSound.Play();
 	}
 	//Spawn collectibles
 	collectibleTimer += frameTime;
@@ -357,6 +401,8 @@ void Game::UpdatePlaying(float frameTime)
 	while (accumulator > deltaTime)
 	{
 		player.Update(deltaTime, input);
+		iceSkatingSound0.SetPos(player.GetPos());
+		iceSkatingSound1.SetPos(player.GetPos());
 		//REMOVE: debug cameras
 		if (input.IsPressed(GLFW_KEY_V))
 		{
@@ -397,7 +443,15 @@ void Game::UpdatePlaying(float frameTime)
 	}
 	if (penguinStack)
 	{
-		penguinStack->Update(frameTime, iceRink, smokeMachine);
+		penguinStack->Update(frameTime, iceRink, smokeMachine, penguinStackFallSound, bonkSound);
+		if (!penguinStack->IsCrashing())
+		{
+			penguinStackSound.SetPos(penguinStack->GetPos());
+		}
+		else
+		{
+			penguinStackSound.Stop();
+		}
 	}
 	camera.CalculateVPMatrix();
 	for (Collectible& c : collectibles)
@@ -423,6 +477,8 @@ void Game::UpdatePlaying(float frameTime)
 				{
 					score += 5;
 					plus5Dispenser.Dispense(player.GetPos());
+					candyCaneSound.SetPos(player.GetPos());
+					candyCaneSound.Play();
 					gameplayUI.GetNumberDisplay("Score").SetNumber(score);
 					return true;
 				}
@@ -440,7 +496,7 @@ void Game::UpdatePlaying(float frameTime)
 	{
 		if (hp.IsLockedOnToPlayer())
 		{
-			hp.Collide(iceRink, smokeMachine);
+			hp.Collide(iceRink, smokeMachine, bonkSound);
 		}
 	}
 	bool gameOver = false;
@@ -485,6 +541,9 @@ void Game::UpdatePlaying(float frameTime)
 	//Play game over animation
 	if (gameOver)
 	{
+		iceSkatingSound0.Stop();
+		iceSkatingSound1.Stop();
+		penguinStackSound.Stop();
 		state = State::GameOverCam;
 		EndPlaying();
 	}
@@ -520,6 +579,9 @@ void Game::UpdatePlaying(float frameTime)
 
 	if (input.IsShortPressed(InputAction::Pause))
 	{
+		iceSkatingSound0.Stop();
+		iceSkatingSound1.Stop();
+		penguinStackSound.Stop();
 		state = State::Paused;
 		window.ShowMouse();
 	}
@@ -533,12 +595,16 @@ void Game::UpdatePauseMenu()
 	pauseMenu.Update();
 	if (input.IsShortPressed(InputAction::Pause))
 	{
+		iceSkatingSound0.Play();
+		iceSkatingSound1.Play();
 		state = State::Playing;
 		window.HideMouse();
 	}
 	if (pauseMenu.GetButton("Resume").UpdateAndCheckClick(input))
 	{
 		ft.Mark();
+		iceSkatingSound0.Play();
+		iceSkatingSound1.Play();
 		state = State::Playing;
 		window.HideMouse();
 	}
@@ -570,6 +636,7 @@ void Game::UpdateMainMenu(float frameTime)
 	}
 	if (mainMenu.GetButton("Quit").UpdateAndCheckClick(input))
 	{
+		window.SetTitle(":(");
 		quit = true;
 	}
 }

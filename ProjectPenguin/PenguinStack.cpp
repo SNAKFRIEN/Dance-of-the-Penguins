@@ -4,7 +4,7 @@
 
 #include "SmokeMachine.h"
 
-PenguinStack::PenguinStack(glm::vec3 inPos, glm::vec3 target, std::mt19937& rng, AudioManager& audioManager)
+PenguinStack::PenguinStack(glm::vec3 inPos, glm::vec3 target, std::mt19937& rng)
 	:
 	model("Goopie.gltf", transform, "GoombaBottomSmooth"),
 	collider(pos, collisionRadius),
@@ -25,7 +25,7 @@ PenguinStack::PenguinStack(glm::vec3 inPos, glm::vec3 target, std::mt19937& rng,
 	firstNode = std::make_unique<PenguinNode>(model, nStackedPenguins);
 }
 
-void PenguinStack::Update(float dt, const IceRink& rink, SmokeMachine& smokeMachine)
+void PenguinStack::Update(float dt, const IceRink& rink, SmokeMachine& smokeMachine, AudioSource& fallSound, AudioSource& bonkSound)
 {
 	switch (state)
 	{
@@ -36,7 +36,11 @@ void PenguinStack::Update(float dt, const IceRink& rink, SmokeMachine& smokeMach
 		if (!collider.IsInRink(rink))
 		{
 			Crash(smokeMachine);
-			Update(0.0f, rink, smokeMachine);
+			fallSound.SetPos(pos);
+			fallSound.Play();
+			bonkSound.SetPos(pos);
+			bonkSound.Play();
+			Update(0.0f, rink, smokeMachine, fallSound, bonkSound);
 		}
 		break;
 	case State::Crashing:

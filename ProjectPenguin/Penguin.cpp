@@ -8,15 +8,13 @@
 #include "IceRink.h"
 #include "FishingPenguin.h"
 
-Penguin::Penguin(glm::vec3 inPos, AudioManager& audioManager, bool initModel)
+Penguin::Penguin(glm::vec3 inPos, bool initModel)
 	:
 	pos(inPos),
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
 	stateCountDown(minMaxWalkTime(rng)),
-	audioManager(audioManager),
-	quackSound("Quack.wav", audioManager),
 	collider(pos, personalSpaceRadius)
 {
 	if (initModel)
@@ -34,8 +32,6 @@ Penguin::Penguin(const Penguin& rhs)
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
-	audioManager(rhs.audioManager),
-	quackSound("Quack.wav", audioManager),
 	collider(pos, personalSpaceRadius)
 {
 	InitModel();
@@ -55,8 +51,6 @@ Penguin::Penguin(Penguin&& rhs) noexcept
 	rng(std::random_device()()),
 	minMaxWalkTime(1.0f, 5.0f),
 	minMaxThinktime(1.0f, 3.0f),
-	audioManager(rhs.audioManager),
-	quackSound(std::move(rhs.quackSound)),
 	collider(pos, personalSpaceRadius)
 {
 	pos = rhs.pos;
@@ -225,9 +219,6 @@ void Penguin::Update(float dt)
 		pos += direction * speed * dt;
 		if (stateCountDown < 0.0f)
 		{
-			quackSound.SetPos(pos);
-			quackSound.SetVel(direction * speed);
-			quackSound.Play();
 			SetState(State::Thinking);
 			stateCountDown = minMaxThinktime(rng);
 		}

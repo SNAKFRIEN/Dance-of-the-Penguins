@@ -28,9 +28,11 @@ IceRink::IceRink(bool initModels)
 	lightSources.emplace_back(-0.76f, 3.42f, -18.30f);		//Middle house
 	lightSources.emplace_back(30.13f, 8.02f, -8.90f);		//Ferris wheel
 	
-	lightSources.emplace_back(-30.15f, 2.6f, 4.49f);		//Carousel
+	lightSources.emplace_back(-30.15f, 2.6f, 4.49f);		//Carousel middle
 	lightSources.emplace_back(-27.27f, 2.45f, -4.33f);		//Choir
-	lightSources.emplace_back(27.76f, 3.0f, 0.67f);			//Far right lantern
+	lightSources.emplace_back(28.0f, 2.0f, 0.67f);			//Far right lantern
+	lightSources.emplace_back(-27.15f, 3.0f, 4.49f);			//Carousel right
+	lightSources.emplace_back(-30.15f, 3.0f, 7.0f);			//Carousel front
 
 
 	//REPLACE: Would be better if these could all use the same shader (EXCEPT THE BACKGROUND!!!)

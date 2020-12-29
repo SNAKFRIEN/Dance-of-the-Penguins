@@ -23,6 +23,8 @@ public:
 	void SetListenerPosition(glm::vec3 pos);
 	void SetListenerVelocity(glm::vec3 vel);
 	void SetListenerOrientation(glm::vec3 lookAtDir);
+
+	glm::vec3 GetListenerPosition() const;
 private:
 	ALenum GetFormat(short bitsPerSample, short channels) const;
 private:

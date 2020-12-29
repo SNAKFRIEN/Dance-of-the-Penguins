@@ -385,7 +385,7 @@ void HomingPenguin::GiveCandyCane()
 	model.SetAnimation("SkatingWhileHolding");
 }
 
-void HomingPenguin::Collide(const IceRink& rink, SmokeMachine& smokeMachine)
+void HomingPenguin::Collide(const IceRink& rink, SmokeMachine& smokeMachine, AudioSource& bonk)
 {
 	assert(state == State::HomingPlayer);
 	if (!collider.IsInRink(rink))
@@ -393,6 +393,8 @@ void HomingPenguin::Collide(const IceRink& rink, SmokeMachine& smokeMachine)
 		state = State::Crashing;
 		smokeMachine.SpawnSmoke(pos);
 		model.SetAnimation("GoombaFalling");
+		bonk.SetPos(pos);
+		bonk.Play();
 	}
 }
 

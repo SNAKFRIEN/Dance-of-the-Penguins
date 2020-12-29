@@ -72,6 +72,13 @@ void AudioManager::SetListenerOrientation(glm::vec3 lookAtDir)
 		0.0f, 1.0f, 0.0f };
 }
 
+glm::vec3 AudioManager::GetListenerPosition() const
+{
+	float x, y, z;
+    alGetListener3f(AL_POSITION, &x, &y, &z);
+	return glm::vec3(x, y, z);
+}
+
 ALenum AudioManager::GetFormat(short bitsPerSample, short channels) const
 {
 	if (bitsPerSample == 8)

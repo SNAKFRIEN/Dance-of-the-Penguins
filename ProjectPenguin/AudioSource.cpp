@@ -1,6 +1,8 @@
 #include "AudioSource.h"
 
 AudioSource::AudioSource(std::string name, AudioManager& audioManager)
+	:
+	audioManager(audioManager)
 {
 	source = audioManager.CreateSource(name);
 	
@@ -20,7 +22,8 @@ AudioSource::~AudioSource()
 
 AudioSource::AudioSource(AudioSource&& rhs)
 	:
-	source(rhs.source)
+	source(rhs.source),
+	audioManager(rhs.audioManager)
 {
 	rhs.source = 0;
 }
@@ -28,6 +31,11 @@ AudioSource::AudioSource(AudioSource&& rhs)
 void AudioSource::Play()
 {
 	alSourcePlay(source);
+}
+
+void AudioSource::Stop()
+{
+	alSourceStop(source);
 }
 
 void AudioSource::SetPos(glm::vec3 pos)
@@ -53,4 +61,15 @@ void AudioSource::SetPitch(float pitch)
 void AudioSource::SetVolume(float volume)
 {
 	alSourcef(source, AL_GAIN, volume);
+}
+
+void AudioSource::SetFollowListener(bool follow)
+{
+	alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
+	SetPos(glm::vec3(0.0f));
+}
+
+void AudioSource::SetRollOff(float value)
+{
+	alSourcef(source, AL_ROLLOFF_FACTOR, value);
 }

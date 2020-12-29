@@ -2,8 +2,7 @@
 
 #include "MIDILoader.h"
 //REMOVE
-//#include <iostream>
-//#include "Camera.h"
+#include <iostream>
 
 MIDIPlayer::MIDIPlayer(std::string midiName, std::string soundEffectName, float basePitch, AudioManager& audioManager, float speed)
 	:
@@ -28,6 +27,7 @@ MIDIPlayer::MIDIPlayer(std::string midiName, std::string soundEffectName, float 
 	for (int i = 0; i < nChannels; i++)
 	{
 		channels.emplace_back(soundEffectName, audioManager);
+		channels[i].SetVolume(0.2f);
 	}
 }
 
@@ -37,9 +37,9 @@ void MIDIPlayer::Update(float deltaTime)
 	while (index < notes.size() && currentTime > notes[index].timeStamp)
 	{
 		//REMOVE following commented line
-		//std::cout << "NOTE PLAYED ====================================== " << notes[index].pitch << " TIME " << notes[index].timeStamp << std::endl;
+		std::cout << "NOTE PLAYED ====================================== " << notes[index].pitch << " TIME " << notes[index].timeStamp << std::endl;
 		channels[activeChannel].SetPitch(notes[index].pitch);
-		channels[activeChannel].SetVolume((1.1f * notes[index].pitch) - 0.5f);
+		//channels[activeChannel].SetVolume((1.1f * notes[index].pitch) - 0.8f);
 		channels[activeChannel].Play();
 		index++;
 		activeChannel++;
@@ -64,6 +64,14 @@ void MIDIPlayer::SetPosition(glm::vec3 pos)
 	for (AudioSource& channel : channels)
 	{
 		channel.SetPos(pos);
+	}
+}
+
+void MIDIPlayer::SetFollowListener(bool value)
+{
+	for (AudioSource& channel : channels)
+	{
+		channel.SetFollowListener(value);
 	}
 }
 

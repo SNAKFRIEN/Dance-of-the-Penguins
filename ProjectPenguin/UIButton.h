@@ -3,11 +3,12 @@
 #include "Shader.h"
 
 class Input;
+class AudioSource;
 
 class UIButton
 {
 public:
-	UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight, std::string textureName);
+	UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight, std::string textureName, AudioSource& buttonQuacker);
 	~UIButton();
 	UIButton(const UIButton&) = delete;
 	UIButton operator=(const UIButton&) = delete;
@@ -51,4 +52,7 @@ private:
 	glm::vec3 onColor = glm::vec3(1.0f, 1.0f, 0.6f);
 	glm::vec3 offColor = glm::vec3(1.0f);
 	glm::vec3 color = glm::vec3(1.0f);
+
+	//Sound
+	AudioSource& buttonQuacker;
 };

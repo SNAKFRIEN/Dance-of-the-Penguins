@@ -4,6 +4,7 @@
 #include "UINumberDisplay.h"
 #include "PenguinWarning.h"
 #include "Window.h"
+#include "AudioSource.h"
 
 #include <unordered_map>
 
@@ -12,7 +13,7 @@
 class UICanvas
 {
 public:
-	UICanvas(const Window& window, float aspectRatio);
+	UICanvas(const Window& window, AudioManager& audioManager, float aspectRatio);
 
 	void AddButton(glm::vec2 topLeft, glm::vec2 bottomRight, std::string name, std::string textureName = "DefaultButton.png");
 	void AddNumberDisplay(glm::vec2 pos, glm::vec2 scale, Anchor anchor, std::string name);
@@ -43,4 +44,7 @@ private:
 	const float aspectRatio;
 	float width;
 	float height;
+
+	//Sounds
+	AudioSource buttonQuacker;
 };

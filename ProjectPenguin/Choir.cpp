@@ -31,12 +31,18 @@ Choir::Choir(AudioManager& audioManager)
 		penguins.emplace_back("ChoirGoop.gltf", penguinTransforms[i]);
 	}
 
-	songs.emplace_back("DeckTheHalls.mid", "Quack.wav", 43.66f, audioManager);
+	songs.emplace_back("LetItSnow.mid", "Quack.wav", 26.14f, audioManager);
+	songs.emplace_back("ItsBeginningToLookALotLikeChristmas.mid", "Quack.wav", 21.83f, audioManager, 0.85f);
+	songs.emplace_back("AwayInAManger.mid", "Quack.wav", 21.83f, audioManager);
+	songs.emplace_back("ChristmasTree.mid", "Quack.wav", 21.83f, audioManager, 2.0f);
+	songs.emplace_back("SilentNight.mid", "Quack.wav", 26.14f, audioManager);
+	songs.emplace_back("WeWishYouAMerryChristmas.mid", "Quack.wav", 21.83f, audioManager);
+	songs.emplace_back("DeckTheHalls.mid", "Quack.wav", 32.7f, audioManager);
 	songs.emplace_back("JingleBells.mid", "Quack.wav", 21.83f, audioManager);
 
 	for (MIDIPlayer& m : songs)
 	{
-		m.SetPosition(glm::vec3(-28.7035f, 0.417051f, -1.3664f));
+		m.SetFollowListener(true);
 	}
 }
 

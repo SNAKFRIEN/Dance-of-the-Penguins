@@ -3,128 +3,110 @@
 PenguinDresser::PenguinDresser(std::mt19937& rng)
 	:
 	rng(rng),
-	randomBool(0, 1),
-	randomChance100(0, 99)
+	randomBool(0, 1)
 {
 }
 
 std::vector<Accessory> PenguinDresser::GeneratePenguinOutfit()
 {
 	std::vector<Accessory> result;
+
 	//Determine if dressed
-	if ((bool)randomBool(rng))
+	if (Random(0, 3) < 3)
 	{
-		//Choose between randomized outfit and unique penguin
-		int regularFate = randomChance100(rng);
-		if (regularFate < 50)	//50% chance of being unique penguin, this will be REPLACEd before release
+		//Choose between common and unique penguin
+		if (Random(0, 100) < 98)
 		{
-			//Hat
-			if ((bool)randomBool(rng))
+			int randomValue = Random(0, 8);
+			switch (randomValue)
 			{
-				int hatFate = randomChance100(rng);
-				if (hatFate < 17)
-				{
-					result.emplace_back("EarmuffsCat.gltf", "head");
-				}
-				else if (hatFate < 33)
-				{
-					result.emplace_back("EarmuffsRabbit.gltf", "head");
-				}
-				else if (hatFate < 50)
-				{
-					result.emplace_back("RussianHat.gltf", "head");
-				}
-				else if (hatFate < 67)
-				{
-					result.emplace_back("TrafficConeHat.gltf", "head");
-				}
-				else if (hatFate < 83)
-				{
-					result.emplace_back("Monocle.gltf", "head");
-				}
-				else
-				{
-					result.emplace_back("Moustache.gltf", "head");
-				}
-
-			}
-			//Torso
-			/*
-			if ((bool)randomBool(rng))
-			{
-				int torsoFate = randomChance100(rng);
-				if (torsoFate < 50)
-				{
-					result.emplace_back("Tutu.gltf", "torso");
-				}
-				else
-				{
-					result.emplace_back("HotDog.gltf", "torso");
-				}
-			}
-			*/
-			//Hands
-			if ((bool)randomBool(rng))
-			{
-				//Choose hand
-				if ((bool)randomBool(rng))
-				{
-
-				}
-				else
-				{
-
-				}
-			}
-		}
-		else //Is unique penguin
-		{
-			int uniqueFate = randomChance100(rng);
-			if (uniqueFate < 14)
-			{
-				//Ballerina
+			case 0:
+				result.emplace_back("EarmuffsCat.gltf", "head");
+				break;
+			case 1:
+				result.emplace_back("EarmuffsRabbit.gltf", "head");
+				break;
+			case 2:
+				result.emplace_back("RussianHat.gltf", "head");
+				break;
+			case 3:
+				result.emplace_back("Monocle.gltf", "head");
+				break;
+			case 4:
+				result.emplace_back("Moustache.gltf", "head");
+				break;
+			case 5:
+				result.emplace_back("CowboyHat.gltf", "head");
+				break;
+			case 6:
 				result.emplace_back("Tutu.gltf", "torso");
-			}
-			else if (uniqueFate < 28)
-			{
-				//HotDog
-				result.emplace_back("HotDog.gltf", "torso");
-				result.emplace_back("Mustard.gltf", "lower_arm.L");
-				result.emplace_back("Ketchup.gltf", "lower_arm.R");
-			}
-			else if (uniqueFate < 43)
-			{
-				//MIB
+				break;
+			case 7:
+				result.emplace_back("Backpack.gltf", "torso");
+				break;
+			case 8:
 				result.emplace_back("Suitcase.gltf", "lower_arm.R");
 				result.emplace_back("Sunglasses.gltf", "head");
 				result.emplace_back("Tie.gltf", "torso");
+				break;
 			}
-			else if (uniqueFate < 57)
+			assert(!result.empty());
+		}
+		else //Is unique penguin
+		{
+			int randomValue = Random(0, 7);
+			switch (randomValue)
 			{
+			case 0:
+				//Football
+				result.emplace_back("Football.gltf", "lower_arm.L");
+				result.emplace_back("FootballHelmet.gltf", "head");
+				result.emplace_back("FootballArmor.gltf", "torso");
+				break;
+			case 1:
 				//Bobblehead
 				result.emplace_back("BubbleHead.gltf", "head", "SmoothShader.vert", "SmoothBright.frag");
-			}
-			else if(uniqueFate < 71)
-			{
+				break;
+			case 2:
 				//Stealth
 				result.emplace_back("CardboardBox.gltf", "head", "SmoothShader.vert", "SmoothBright.frag");
-			}
-			else if(uniqueFate < 85)
-			{
+				break;
+			case 3:
 				//King
 				result.emplace_back("Cape.gltf", "torso");
 				result.emplace_back("Crown.gltf", "head");
-				result.emplace_back("Staff.gltf", "lower_arm.L");
+				result.emplace_back("Staff.gltf", "lower_arm.R");
+				break;
+			case 4:
+				//Chef
+				result.emplace_back("ChefHat.gltf", "head");
+				result.emplace_back("ChefPan.gltf", "lower_arm.L");
+				break;
+			case 5:
+				//Dino suit
+				result.emplace_back("DinoHead.gltf", "head");
+				result.emplace_back("DinoBody.gltf", "torso");
+				break;
+			case 6:
+				//Astronaut
+				result.emplace_back("AstronautHelmet.gltf", "head");
+				result.emplace_back("AstronautSuit.gltf", "torso");
+				break;
+			case 7:
+				//Santa
+				result.emplace_back("SantaHat.gltf", "head");
+				result.emplace_back("SantaSuit.gltf", "torso");
 			}
-			else
-			{
-				//American Football
-				result.emplace_back("Football.gltf", "lower_arm.L");
-				result.emplace_back("FootballArmor.gltf", "torso");
-				result.emplace_back("FootballHelmet.gltf", "head");
-			}
+			assert(!result.empty());
 		}
+		assert(!result.empty());
 	}
 
     return std::move(result);
+}
+
+int PenguinDresser::Random(int min, int max)
+{
+	std::uniform_int_distribution<int> randomValue(min, max);
+	return randomValue(rng);
 }

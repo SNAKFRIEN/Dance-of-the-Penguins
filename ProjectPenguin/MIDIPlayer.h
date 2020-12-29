@@ -22,6 +22,7 @@ public:
 	bool IsFinished() const;
 
 	void SetPosition(glm::vec3 pos);
+	void SetFollowListener(bool value);
 	void SetLooping(bool toggle);
 	void Reset();
 private:

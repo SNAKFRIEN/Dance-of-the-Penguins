@@ -90,7 +90,7 @@ private:
 	int score = 0;
 	static constexpr float scoreInterval = 1.0f;
 	float scoreTimer = 0.0f;
-	int highScore = 0;	//REMOVe: Why does this variable exist??
+	int highScore = 0;	//REMOVE: Why does this variable exist??
 	bool newBest;
 
 	std::vector<Collectible> collectibles;
@@ -118,8 +118,8 @@ private:
 	static constexpr float stackedPenguinSpawnTime = 100.0f;	//Stacks won't spawn until this far into the game
 	float penguinStackSpawnTimer = stackedPenguinSpawnTime;
 	//Ice skating penguins
-	static constexpr float homingPenguinSpawnTime = 5.0f;
-	static constexpr float homingPenguinSpawnInterval = 10.0f;
+	static constexpr float homingPenguinSpawnTime = 30.0f;
+	static constexpr float homingPenguinSpawnInterval = 30.0f;
 	float homingPenguinSpawnTimer = homingPenguinSpawnInterval;	//Needs to start at max, so the first penguin spawns right away when homingPenguinSpawnTime is reached
 	static constexpr int maxHomingPenguins = 4;
 	std::vector<HomingPenguin> homingPenguins;
@@ -157,6 +157,17 @@ private:
 	int nGameOverFlashes = 0;
 
 	AudioSource gameOverFlashSound;
+	AudioSource bonkSound;
+	AudioSource iceSkatingSound0;
+	AudioSource iceSkatingSound1;
+	AudioSource penguinStackSound;
+	AudioSource penguinStackFallSound;
+	AudioSource windSound;
+	float windChimeSoundCountDown = 2.0f;
+	std::uniform_real_distribution<float> randomWindChimeInterval;
+	AudioSource windChimeSound;
+	AudioSource candyCaneSound;
+
 
 	SmokeMachine smokeMachine;
 	Plus5EffectDispenser plus5Dispenser;

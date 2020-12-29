@@ -14,6 +14,7 @@ class IceSkater;
 class Collectible;
 class IceRink;
 class SmokeMachine;
+class AudioSource;
 
 class HomingPenguin
 {
@@ -42,7 +43,7 @@ public:
 	void Draw(Camera& camera);
 
 	void GiveCandyCane();
-	void Collide(const IceRink& rink, SmokeMachine& smokeMachine);	//REPLACE: add collision with fishingpenguin and normal penguins?
+	void Collide(const IceRink& rink, SmokeMachine& smokeMachine, AudioSource& bonk);	//REPLACE: add collision with fishingpenguin and normal penguins?
 
 	CircleCollider& GetCollider();
 	glm::vec3 GetForward() const;

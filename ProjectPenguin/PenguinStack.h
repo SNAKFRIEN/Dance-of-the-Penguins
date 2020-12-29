@@ -42,9 +42,9 @@ private:
 		float flipSpeed;
 	};
 public:
-	PenguinStack(glm::vec3 pos, glm::vec3 target, std::mt19937& rng, AudioManager& audioManager);
+	PenguinStack(glm::vec3 pos, glm::vec3 target, std::mt19937& rng);
 
-	void Update(float dt, const IceRink& rink, SmokeMachine& smokeMachine);
+	void Update(float dt, const IceRink& rink, SmokeMachine& smokeMachine, AudioSource& fallSound, AudioSource& bonkSound);
 	void UpdateAnimation(float dt);
 	void Draw(Camera& camera);
 	void Crash(SmokeMachine& smokeMachine);

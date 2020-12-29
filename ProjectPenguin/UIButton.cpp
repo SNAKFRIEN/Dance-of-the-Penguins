@@ -1,11 +1,12 @@
 #include "UIButton.h"
 
 #include "Input.h"
+#include "AudioSource.h"
 
 #include <glad/glad.h>
 #include "stb_image.h"
 
-UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight, std::string textureName)
+UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 relativeTopLeft, glm::vec2 relativeBottomRight, std::string textureName, AudioSource& buttonQuacker)
 	:
 	shader("UIShader.vert", "UIShader.frag"),
 	left(left),
@@ -13,7 +14,8 @@ UIButton::UIButton(float left, float top, float right, float bottom, glm::vec2 r
 	right(right),
 	bottom(bottom),
 	relativeTopLeft(relativeTopLeft),
-	relativeBottomRight(relativeBottomRight)
+	relativeBottomRight(relativeBottomRight),
+	buttonQuacker(buttonQuacker)
 {
 	float vertices[] = {
 		right, top,		1.0f, 1.0f,		//Top right
@@ -111,7 +113,8 @@ UIButton::UIButton(UIButton&& rhs) noexcept
 	bottom(rhs.bottom),
 	relativeTopLeft(rhs.relativeTopLeft),
 	relativeBottomRight(rhs.relativeBottomRight),
-	color(rhs.color)
+	color(rhs.color),
+	buttonQuacker(rhs.buttonQuacker)
 {
 	rhs.vao = 0;
 	rhs.texture = 0;
@@ -147,6 +150,7 @@ bool UIButton::UpdateAndCheckClick(const Input& input)
 		color = onColor;
 		if (input.LMBShortPressed())
 		{
+			buttonQuacker.Play();
 			return true;
 		}
 	}
