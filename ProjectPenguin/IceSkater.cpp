@@ -10,9 +10,6 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
 
-//REMOVE, only used for debug brake (hold space to stand still)
-#include "GLFW/glfw3.h"
-
 IceSkater::IceSkater(glm::vec3 inPos)
 	:
 	pos(inPos),
@@ -54,11 +51,8 @@ void IceSkater::Update(float dt, const Input& input)
 		}
 		rotation = glm::rotate(rotation, deltaRotation, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
-
-	if (!input.IsPressed(GLFW_KEY_SPACE))
-	{
-		pos += GetForward() * speed * dt;
-	}
+	
+	pos += GetForward() * speed * dt;
 
 	transform = glm::translate(glm::mat4(1.0f), pos) * rotation;
 }

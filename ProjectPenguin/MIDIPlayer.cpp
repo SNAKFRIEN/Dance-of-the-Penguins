@@ -2,13 +2,13 @@
 
 #include "MIDILoader.h"
 //REMOVE
-#include <iostream>
+//#include <iostream>
 
 MIDIPlayer::MIDIPlayer(std::string midiName, std::string soundEffectName, float basePitch, AudioManager& audioManager, float speed)
 	:
 	speed(speed)
 {
-	std::string midiPath = "Audio/";
+	std::string midiPath = "Audio/Songs/";
 	midiPath.append(midiName);
 	MIDILoader loader;
 	auto midiData = loader.LoadMIDI(midiPath);
@@ -37,7 +37,7 @@ void MIDIPlayer::Update(float deltaTime)
 	while (index < notes.size() && currentTime > notes[index].timeStamp)
 	{
 		//REMOVE following commented line
-		std::cout << "NOTE PLAYED ====================================== " << notes[index].pitch << " TIME " << notes[index].timeStamp << std::endl;
+		//std::cout << "NOTE PLAYED ====================================== " << notes[index].pitch << " TIME " << notes[index].timeStamp << std::endl;
 		channels[activeChannel].SetPitch(notes[index].pitch);
 		//channels[activeChannel].SetVolume((1.1f * notes[index].pitch) - 0.8f);
 		channels[activeChannel].Play();

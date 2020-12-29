@@ -1,8 +1,5 @@
 #include "SmokeMachine.h"
 
-//REMOVE
-#include <iostream>
-
 SmokeMachine::SmokeMachine()
 {
 	SmokeEffect::PreLoad();

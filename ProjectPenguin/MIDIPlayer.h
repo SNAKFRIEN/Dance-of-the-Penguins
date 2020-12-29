@@ -4,9 +4,6 @@
 
 #include "AudioSource.h"
 
-//REMOVE
-class Camera;
-
 class MIDIPlayer
 {
 private:

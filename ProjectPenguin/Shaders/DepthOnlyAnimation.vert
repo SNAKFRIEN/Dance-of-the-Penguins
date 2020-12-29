@@ -3,10 +3,8 @@
 const int MAX_JOINTS = 200;
 const int MAX_WEIGHTS = 4;
 
+//normals and texture coordinates not used
 layout (location = 0) in vec3 in_position;
-//REMOVE in_normal and in_texcoord if possible, they're not used in this shader
-layout (location = 1) in vec3 in_normal;
-layout (location = 2) in vec2 in_texcoord;
 layout (location = 3) in ivec4 in_jointIndices;
 layout (location = 4) in vec4 in_weights;
 

@@ -6,9 +6,6 @@ in vec3 normal;
 in vec2 texcoord;
 
 uniform sampler2D tex;
-//REMOVE?
-//uniform samplerCube shadowCubeMap;
-//uniform samplerCube shadowCubeMapBaked;
 
 //uniform float lightFarPlane;
 uniform vec3 lightPos;

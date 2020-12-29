@@ -403,32 +403,7 @@ void Game::UpdatePlaying(float frameTime)
 		player.Update(deltaTime, input);
 		iceSkatingSound0.SetPos(player.GetPos());
 		iceSkatingSound1.SetPos(player.GetPos());
-		//REMOVE: debug cameras
-		if (input.IsPressed(GLFW_KEY_V))
-		{
-			if (penguinStack)
-			{
-				camera.Follow(penguinStack->GetPos());
-			}
-		}
-		else if (input.IsPressed(GLFW_KEY_C))
-		{
-			if (!collectibles.empty())
-			{
-				camera.Follow(collectibles[0].GetPos());
-			}
-		}
-		else if (input.IsPressed(GLFW_KEY_B))
-		{
-			if (!homingPenguins.empty())
-			{
-				camera.Follow(homingPenguins[0].GetPos());
-			}
-		}
-		else
-		{
-			camera.Follow(player.GetPos());
-		}
+		camera.Follow(player.GetPos());
 		for (HomingPenguin& hp : homingPenguins)
 		{
 			hp.Update(player, collectibles, iceRink, deltaTime);
@@ -574,7 +549,7 @@ void Game::UpdatePlaying(float frameTime)
 	}
 
 	//REMOVE output fps and player pos
-	std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
+	//std::cout << "fps: " << std::fixed << std::setprecision(2) << (1.0f / frameTime) << std::endl;
 	//std::cout << "Player x: " << std::fixed << std::setprecision(2) << player.GetPos().x << " y: " << player.GetPos().z << std::endl;
 
 	if (input.IsShortPressed(InputAction::Pause))
@@ -765,10 +740,7 @@ void Game::DrawPlaying()
 	}
 
 	//Cast shadows
-	if (!input.IsPressed(GLFW_KEY_G))
-	{
-		DrawShadows();
-	}
+	DrawShadows();
 
 	//Draw all items that don't cast (dynamic) shadows
 	iceRink.DrawStatic(camera);
@@ -777,39 +749,36 @@ void Game::DrawPlaying()
 	{
 		c.Draw(camera);
 	}
-	
-	if (!input.IsPressed(GLFW_KEY_H))
-	{
-		//Bind screenQuad
-		screenQuad.StartFrame();
-		GL_ERROR_CHECK();
-	}
+
+	//Bind screenQuad
+	screenQuad.StartFrame();
+	GL_ERROR_CHECK();
 
 	//Draw all entities
 	AnimatedModel::DrawAllInstances(light);
 	Model::DrawAllInstances(light);
 	glEnable(GL_BLEND);
 	smokeMachine.Draw(camera);
-	plus5Dispenser.Draw(camera);
 	glDisable(GL_BLEND);
 
-	if (!input.IsPressed(GLFW_KEY_H))
-	{
-		screenQuad.EndFrame();
+	screenQuad.EndFrame();
 
-		//Draw using effect
-		screenEffect.UseEffect();
-		auto screenTexture = screenQuad.GetTexture();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, screenTexture);
+	//Draw using effect
+	screenEffect.UseEffect();
+	auto screenTexture = screenQuad.GetTexture();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, screenTexture);
 
-		screenQuad.Draw();
-	}
+	screenQuad.Draw();
 }
 
 void Game::DrawGamePlayUI()
 {
 	gameplayUI.Draw();
+
+	glEnable(GL_BLEND);
+	plus5Dispenser.Draw(camera);
+	glDisable(GL_BLEND);
 }
 
 void Game::DrawTutorialUI()

@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "Game.h"
 
-int main()
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
 	try
 	{

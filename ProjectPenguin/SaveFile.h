@@ -28,7 +28,7 @@ private:
 	int highScore = 0;
 
 	//Graphics settings
-	unsigned int shadowResolution = 512;
+	unsigned int shadowResolution = 1024;
 	unsigned int msaa = 4;
 	int selectedMonitor = -1;
 	bool fullScreenOn = true;

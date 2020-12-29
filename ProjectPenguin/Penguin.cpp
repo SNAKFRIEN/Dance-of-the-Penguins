@@ -274,17 +274,13 @@ void Penguin::InitModel()
 void Penguin::SetState(State newState)
 {
 	state = newState;
-	//REMOVE model is only optional thanks to unit testing. This if statement is actually redundant
-	if (model)
+	switch (state)
 	{
-		switch (state)
-		{
-		case State::Thinking:
-			model->SetAnimation("Idle");
-			break;
-		case State::Walking:
-			model->SetAnimation("Waddle");
-			break;
-		}
+	case State::Thinking:
+		model->SetAnimation("Idle");
+		break;
+	case State::Walking:
+		model->SetAnimation("Waddle");
+		break;
 	}
 }

@@ -36,7 +36,7 @@ ALuint AudioManager::CreateSource(std::string name)
 	if (buffers.count(name) == 0)
 	{
 		//Retrieve data from file
-		std::string path = "Audio/";
+		std::string path = "Audio/SoundEffects/";
 		path.append(name);
 		WAVLoader loader;
 		WAVData data;
