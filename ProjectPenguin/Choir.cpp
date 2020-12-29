@@ -31,13 +31,14 @@ Choir::Choir(AudioManager& audioManager)
 		penguins.emplace_back("ChoirGoop.gltf", penguinTransforms[i]);
 	}
 
-	songs.emplace_back("LetItSnow.mid", "Quack.wav", 26.14f, audioManager);
-	songs.emplace_back("ItsBeginningToLookALotLikeChristmas.mid", "Quack.wav", 21.83f, audioManager, 0.85f);
+	songs.emplace_back("DeckTheHalls.mid", "Quack.wav", 32.7f, audioManager);
+	songs.emplace_back("GoodKingWenceslas.mid", "Quack.wav", 21.83f, audioManager);
+	songs.emplace_back("DingDongMerrilyOnHigh.mid", "Quack.wav", 26.14f, audioManager, 0.85f);
+	songs.emplace_back("JoyToTheWorld.mid", "Quack.wav", 26.14f, audioManager, 0.85f);
 	songs.emplace_back("AwayInAManger.mid", "Quack.wav", 21.83f, audioManager);
-	songs.emplace_back("ChristmasTree.mid", "Quack.wav", 21.83f, audioManager, 2.0f);
+	songs.emplace_back("OChristmasTree.mid", "Quack.wav", 21.83f, audioManager, 2.0f);
 	songs.emplace_back("SilentNight.mid", "Quack.wav", 26.14f, audioManager);
 	songs.emplace_back("WeWishYouAMerryChristmas.mid", "Quack.wav", 21.83f, audioManager);
-	songs.emplace_back("DeckTheHalls.mid", "Quack.wav", 32.7f, audioManager);
 	songs.emplace_back("JingleBells.mid", "Quack.wav", 21.83f, audioManager);
 
 	for (MIDIPlayer& m : songs)
